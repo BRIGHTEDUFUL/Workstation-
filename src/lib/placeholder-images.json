@@ -26,39 +26,39 @@
     },
     {
       "id": "template-1",
-      "description": "Corporate Blue template",
-      "imageUrl": "https://picsum.photos/seed/template1/500/281",
-      "imageHint": "corporate blue"
+      "description": "Luxe Gold & Black",
+      "imageUrl": "https://picsum.photos/seed/luxegold/500/281",
+      "imageHint": "luxury gold black"
     },
     {
       "id": "template-2",
-      "description": "Creative Gradient template",
-      "imageUrl": "https://picsum.photos/seed/template2/500/281",
-      "imageHint": "creative gradient"
+      "description": "Sapphire Wave",
+      "imageUrl": "https://picsum.photos/seed/sapphirewave/500/281",
+      "imageHint": "sapphire blue"
     },
     {
       "id": "template-3",
-      "description": "Minimalist White template",
-      "imageUrl": "https://picsum.photos/seed/template3/500/281",
-      "imageHint": "minimalist white"
+      "description": "Emerald Geometric",
+      "imageUrl": "https://picsum.photos/seed/emeraldgeo/500/281",
+      "imageHint": "emerald geometric"
     },
     {
       "id": "template-4",
-      "description": "Elegant Dark template",
-      "imageUrl": "https://picsum.photos/seed/template4/500/281",
-      "imageHint": "elegant dark"
+      "description": "Carbon Fiber Tech",
+      "imageUrl": "https://picsum.photos/seed/carbontech/500/281",
+      "imageHint": "carbon tech"
     },
     {
       "id": "template-5",
-      "description": "Playful Pink template",
-      "imageUrl": "https://picsum.photos/seed/template5/500/281",
-      "imageHint": "playful pink"
+      "description": "Crimson Executive",
+      "imageUrl": "https://picsum.photos/seed/crimsonexec/500/281",
+      "imageHint": "crimson red"
     },
     {
       "id": "template-6",
-      "description": "Nature Green template",
-      "imageUrl": "https://picsum.photos/seed/template6/500/281",
-      "imageHint": "nature green"
+      "description": "Holographic Future",
+      "imageUrl": "https://picsum.photos/seed/holographic/500/281",
+      "imageHint": "holographic future"
     }
   ]
 }
