@@ -49,8 +49,8 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
 
         const SplitSection = (
             <div 
-                className={cn("flex flex-col items-center p-4", isVertical ? 'w-2/5' : 'h-2/5')}
-                style={{...splitSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : 'flex-start' }}
+                className={cn("flex flex-col p-4", isVertical ? 'w-2/5' : 'h-2/5')}
+                style={{...splitSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : 'flex-start', textAlign: layout.textAlign as any }}
             >
                 {logoElement && cardDetails.logoUrl && (
                     <Image src={cardDetails.logoUrl} alt="Company Logo" width={100} height={40} className="object-contain" />

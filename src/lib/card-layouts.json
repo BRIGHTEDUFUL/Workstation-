@@ -37,6 +37,19 @@
             ]
         },
         {
+            "id": "top-left",
+            "name": "Top Left",
+            "justifyContent": "flex-start",
+            "textAlign": "left",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic" },
+                { "id": "name", "component": "name", "fontSize": 2.5, "fontWeight": 700 },
+                { "id": "title", "component": "title", "fontSize": 1.5, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "logo", "component": "logo" }
+            ]
+        },
+        {
             "id": "top-center",
             "name": "Top Center",
             "justifyContent": "flex-start",
@@ -61,10 +74,34 @@
             ]
         },
         {
+            "id": "bottom-right",
+            "name": "Bottom Right",
+            "justifyContent": "flex-end",
+            "textAlign": "right",
+            "elements": [
+                { "id": "name", "component": "name", "fontSize": 2.8, "fontWeight": 600 },
+                { "id": "title", "component": "title", "fontSize": 1.4, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.1, "fontWeight": 400 }
+            ]
+        },
+        {
             "id": "split-vertical",
             "name": "Split Vertical",
             "justifyContent": "center",
             "textAlign": "left",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic" },
+                { "id": "logo", "component": "logo" },
+                { "id": "name", "component": "name", "fontSize": 2.0, "fontWeight": 700 },
+                { "id": "title", "component": "title", "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.0, "fontWeight": 400 }
+            ]
+        },
+        {
+            "id": "split-vertical-center",
+            "name": "Split Vertical - Center",
+            "justifyContent": "center",
+            "textAlign": "center",
             "elements": [
                 { "id": "profilePic", "component": "profilePic" },
                 { "id": "logo", "component": "logo" },
@@ -91,6 +128,19 @@
             "name": "Split Horizontal",
             "justifyContent": "center",
             "textAlign": "left",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic" },
+                { "id": "logo", "component": "logo" },
+                { "id": "name", "component": "name", "fontSize": 2.0, "fontWeight": 700 },
+                { "id": "title", "component": "title", "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.0, "fontWeight": 400 }
+            ]
+        },
+        {
+            "id": "split-horizontal-center",
+            "name": "Split Horizontal - Center",
+            "justifyContent": "center",
+            "textAlign": "center",
             "elements": [
                 { "id": "profilePic", "component": "profilePic" },
                 { "id": "logo", "component": "logo" },
