@@ -9,7 +9,6 @@
 
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
 import { DesignPlanSchema } from '@/ai/schema';
 
 const GenerateCardDesignFromPromptInputSchema = z.object({
@@ -74,7 +73,7 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     // Background image generation is removed to support free-tier keys.
     // In a real application with a billed account, you would re-enable this.
 
-    // Step 3: Combine and return the results
+    // Step 2: Combine and return the results
     return {
       designPlan,
       backgroundImageDataUri: '',
