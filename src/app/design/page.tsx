@@ -20,7 +20,8 @@ import DesignHeader from '@/components/design/design-header';
 function DesignPageContents() {
     const searchParams = useSearchParams();
     const [cardDetails, setCardDetails] = useState<CardDetails>(DEFAULT_CARD_DETAILS);
-    const cardPreviewRef = useRef<HTMLDivElement>(null);
+    const cardFrontRef = useRef<HTMLDivElement>(null);
+    const cardBackRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const getInitialCardDetails = (): CardDetails => {
@@ -88,7 +89,7 @@ function DesignPageContents() {
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">
-            <DesignHeader cardDetails={cardDetails} cardPreviewRef={cardPreviewRef} />
+            <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
             <ResizablePanelGroup direction="horizontal" className="flex-1">
                 <ResizablePanel defaultSize={30} minSize={25} maxSize={40}>
                     <ScrollArea className="h-full">
@@ -101,7 +102,7 @@ function DesignPageContents() {
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize={70}>
                     <div className="flex items-center justify-center h-full p-8 bg-muted/30">
-                       <CardPreview ref={cardPreviewRef} cardDetails={cardDetails} />
+                       <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
                     </div>
                 </ResizablePanel>
             </ResizablePanelGroup>

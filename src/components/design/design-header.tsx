@@ -10,28 +10,38 @@ import { useState } from 'react';
 
 interface DesignHeaderProps {
     cardDetails: CardDetails;
-    cardPreviewRef: React.RefObject<HTMLDivElement>;
+    cardFrontRef: React.RefObject<HTMLDivElement>;
+    cardBackRef: React.RefObject<HTMLDivElement>;
 }
 
-const DesignHeader = ({ cardDetails, cardPreviewRef }: DesignHeaderProps) => {
+const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderProps) => {
     const { toast } = useToast();
     const [isSaving, setIsSaving] = useState(false);
     
     const handleExport = async () => {
-        if (!cardPreviewRef.current) return;
+        if (!cardFrontRef.current || !cardBackRef.current) return;
 
         try {
-            const dataUrl = await toPng(cardPreviewRef.current, { cacheBust: true });
-            const link = document.createElement('a');
-            link.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card.png`;
-            link.href = dataUrl;
-            link.click();
+            // Export Front
+            const frontDataUrl = await toPng(cardFrontRef.current, { cacheBust: true, pixelRatio: 2 });
+            const frontLink = document.createElement('a');
+            frontLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-front.png`;
+            frontLink.href = frontDataUrl;
+            frontLink.click();
+
+            // Export Back
+            const backDataUrl = await toPng(cardBackRef.current, { cacheBust: true, pixelRatio: 2 });
+            const backLink = document.createElement('a');
+            backLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`;
+            backLink.href = backDataUrl;
+            backLink.click();
+
         } catch (err) {
             console.error(err);
             toast({
                 variant: 'destructive',
                 title: 'Export Failed',
-                description: 'Could not export the card image.',
+                description: 'Could not export the card images.',
             });
         }
     };

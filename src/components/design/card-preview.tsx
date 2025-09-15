@@ -10,34 +10,21 @@ import type { CardDetails } from './card-data';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
-interface CardPreviewProps {
+
+// CardFront Component
+interface CardFrontProps {
   cardDetails: CardDetails;
 }
-
-const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails }, ref) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [qrCodeUrl, setQrCodeUrl] = useState('');
-
-  useEffect(() => {
-    // The QR code is now generated from the qrUrl field, which is managed and saved in the design header.
-    setQrCodeUrl(cardDetails.qrUrl);
-  }, [cardDetails.qrUrl]);
-  
-  const frontStyle = {
-      backgroundColor: cardDetails.bgColor,
-      color: cardDetails.textColor,
-      fontFamily: cardDetails.font,
-      ...(cardDetails.backgroundImage && {
-          backgroundImage: `url(${cardDetails.backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-      })
-  };
-
-  const backStyle = {
-      backgroundColor: cardDetails.bgColor,
-      color: cardDetails.textColor,
-      fontFamily: cardDetails.font,
+const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, ref) => {
+  const style = {
+    backgroundColor: cardDetails.bgColor,
+    color: cardDetails.textColor,
+    fontFamily: cardDetails.font,
+    ...(cardDetails.backgroundImage && {
+      backgroundImage: `url(${cardDetails.backgroundImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }),
   };
 
   const hasPhoto = !['no-photo-centered', 'minimalist'].includes(cardDetails.layout);
@@ -93,11 +80,82 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
           </div>
         );
     }
-  }
+  };
+
+  return (
+    <div
+      ref={ref}
+      className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
+      style={style}
+    >
+      {cardDetails.logoUrl && cardDetails.layout !== 'minimalist' && (
+        <div className="absolute top-6 left-8">
+            <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
+        </div>
+      )}
+      {renderContent()}
+    </div>
+  );
+});
+CardFront.displayName = 'CardFront';
+
+
+// CardBack Component
+interface CardBackProps {
+  cardDetails: CardDetails;
+}
+const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref) => {
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
+
+  useEffect(() => {
+    setQrCodeUrl(cardDetails.qrUrl);
+  }, [cardDetails.qrUrl]);
+
+  const style = {
+    backgroundColor: cardDetails.bgColor,
+    color: cardDetails.textColor,
+    fontFamily: cardDetails.font,
+  };
+  
+  return (
+    <Card
+      ref={ref}
+      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rotate-y-180"
+      style={style}
+    >
+      <CardContent className="flex flex-col items-center justify-center p-0">
+        {qrCodeUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={qrCodeUrl}
+            alt="QR Code"
+            width={128}
+            height={128}
+            className="rounded-lg"
+          />
+        ) : (
+          <div className="w-32 h-32 bg-gray-200 rounded-lg animate-pulse" />
+        )}
+        <p className="mt-4 text-xs" style={{color: cardDetails.textColor}}>{cardDetails.slogan || 'Scan to connect'}</p>
+      </CardContent>
+    </Card>
+  );
+});
+CardBack.displayName = 'CardBack';
+
+// Main CardPreview Component
+interface CardPreviewProps {
+  cardDetails: CardDetails;
+  cardFrontRef: React.RefObject<HTMLDivElement>;
+  cardBackRef: React.RefObject<HTMLDivElement>;
+}
+
+const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProps) => {
+  const [isFlipped, setIsFlipped] = useState(false);
 
   return (
     <div className="w-full max-w-lg">
-      <div ref={ref} className="bg-transparent">
+      <div className="bg-transparent">
         <div className="perspective-1000">
           <div
             className={cn(
@@ -106,40 +164,8 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
             )}
             style={{ transformStyle: 'preserve-3d' }}
           >
-            {/* Card Front */}
-            <div
-              className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
-              style={frontStyle}
-            >
-              {cardDetails.logoUrl && cardDetails.layout !== 'minimalist' && (
-                  <div className="absolute top-6 left-8">
-                      <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
-                  </div>
-              )}
-              {renderContent()}
-            </div>
-
-            {/* Card Back */}
-            <Card
-              className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rotate-y-180"
-              style={backStyle}
-            >
-              <CardContent className="flex flex-col items-center justify-center p-0">
-                {qrCodeUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={qrCodeUrl}
-                    alt="QR Code"
-                    width={128}
-                    height={128}
-                    className="rounded-lg"
-                  />
-                ) : (
-                  <div className="w-32 h-32 bg-gray-200 rounded-lg animate-pulse" />
-                )}
-                <p className="mt-4 text-xs" style={{color: cardDetails.textColor}}>{cardDetails.slogan || 'Scan to connect'}</p>
-              </CardContent>
-            </Card>
+            <CardFront ref={cardFrontRef} cardDetails={cardDetails} />
+            <CardBack ref={cardBackRef} cardDetails={cardDetails} />
           </div>
         </div>
       </div>
@@ -154,8 +180,6 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
       </div>
     </div>
   );
-});
-
-CardPreview.displayName = 'CardPreview';
+};
 
 export default CardPreview;
