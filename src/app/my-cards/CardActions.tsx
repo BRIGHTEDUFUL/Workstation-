@@ -44,6 +44,7 @@ interface CardActionsProps {
 
 const CardPreview = ({ card }: { card: CardDetails }) => {
     const layout = cardLayouts.layouts.find(l => l.id === card.layoutId) || cardLayouts.layouts[0];
+    const elements = card.elements || [];
     
     const baseStyle = {
         backgroundColor: card.bgColor,
@@ -56,11 +57,11 @@ const CardPreview = ({ card }: { card: CardDetails }) => {
         }),
     };
 
-    const nameElement = card.elements.find(e => e.component === 'name') || { fontSize: 2.2, fontWeight: 700 };
-    const titleElement = card.elements.find(e => e.component === 'title') || { fontSize: 1.4, fontWeight: 400 };
-    const companyElement = card.elements.find(e => e.component === 'company') || { fontSize: 1.1, fontWeight: 400 };
-    const logoElement = card.elements.find(e => e.component === 'logo');
-    const profilePicElement = card.elements.find(e => e.component === 'profilePic');
+    const nameElement = elements.find(e => e.component === 'name') || { fontSize: 2.2, fontWeight: 700 };
+    const titleElement = elements.find(e => e.component === 'title') || { fontSize: 1.4, fontWeight: 400 };
+    const companyElement = elements.find(e => e.component === 'company') || { fontSize: 1.1, fontWeight: 400 };
+    const logoElement = elements.find(e => e.component === 'logo');
+    const profilePicElement = elements.find(e => e.component === 'profilePic');
 
 
     if (layout.id.startsWith('split-')) {
@@ -237,5 +238,3 @@ export default function CardActions({ cards, handleDelete, handleDuplicate, hand
         </div>
     )
 };
-
-    
