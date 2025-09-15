@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -84,18 +84,18 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const logoInputRef = useRef<HTMLInputElement>(null);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setCardDetails(prev => ({ ...prev, [name]: value }));
-    };
+    }, [setCardDetails]);
 
-    const handleColorChange = (name: string, value: string) => {
+    const handleColorChange = useCallback((name: string, value: string) => {
         setCardDetails(prev => ({ ...prev, [name]: value }));
-    };
+    }, [setCardDetails]);
 
-    const handleFontChange = (value: string) => {
+    const handleFontChange = useCallback((value: string) => {
         setCardDetails(prev => ({ ...prev, font: value }));
-    };
+    }, [setCardDetails]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'profilePicUrl' | 'logoUrl') => {
         const file = event.target.files?.[0];
