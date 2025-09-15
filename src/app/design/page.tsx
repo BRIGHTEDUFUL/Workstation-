@@ -31,23 +31,27 @@ function DesignPageContents() {
             const templateId = searchParams.get('template');
             const cardId = searchParams.get('id');
             // @ts-ignore
-            const defaultLayout = cardLayouts.layouts.find(l => l.id === 'center-aligned')!.elements;
+            const defaultLayout = cardLayouts.layouts.find(l => l.id === 'center-aligned')!;
     
             if (cardId) {
                 const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
                 const cardToEdit = savedCards.find(c => c.id === cardId);
                 if (cardToEdit) {
                     // Ensure older cards without a layout get the default one
-                    if (!cardToEdit.elements || cardToEdit.elements.length === 0) {
-                        // @ts-ignore
-                        cardToEdit.elements = defaultLayout;
+                    if (!cardToEdit.layoutId) {
+                        cardToEdit.layoutId = defaultLayout.id;
+                        cardToEdit.elements = defaultLayout.elements;
                     }
                     return cardToEdit;
                 }
             }
             
             // Start with default details and always apply the default layout.
-            let baseDetails = {...DEFAULT_CARD_DETAILS, elements: defaultLayout };
+            let baseDetails: CardDetails = {
+                ...DEFAULT_CARD_DETAILS, 
+                elements: defaultLayout.elements,
+                layoutId: defaultLayout.id,
+            };
             const newCardId = uuidv4();
             let id = newCardId;
 

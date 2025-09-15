@@ -45,6 +45,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                 ...prev,
                 // @ts-ignore
                 elements: selectedLayout.elements,
+                layoutId: selectedLayout.id
             }));
         }
     }, [setCardDetails]);
@@ -142,7 +143,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                             </div>
                              <div className="space-y-2">
                                 <Label htmlFor="layout">Layout</Label>
-                                <Select onValueChange={handleLayoutChange}>
+                                <Select onValueChange={handleLayoutChange} value={cardDetails.layoutId}>
                                     <SelectTrigger id="layout">
                                         <SelectValue placeholder="Select a layout" />
                                     </SelectTrigger>

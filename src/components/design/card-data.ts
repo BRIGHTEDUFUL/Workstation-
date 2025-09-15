@@ -3,8 +3,8 @@
 export type CardElement = {
     id: string;
     component: 'name' | 'title' | 'company' | 'logo' | 'profilePic' | 'slogan';
-    x: number; // percentage
-    y: number; // percentage
+    x?: number; // percentage
+    y?: number; // percentage
     text?: string;
     fontSize?: number; // vw
     fontWeight?: number;
@@ -26,6 +26,7 @@ export type CardDetails = {
     accentColor: string;
     font: string;
     elements: CardElement[];
+    layoutId: string;
     designDescription: string;
     logoUrl?: string;
     slogan?: string;
@@ -49,5 +50,6 @@ export const DEFAULT_CARD_DETAILS: CardDetails = {
     category: 'Business',
     designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
     profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100",
-    elements: []
+    elements: [],
+    layoutId: 'center-aligned'
 };

@@ -9,138 +9,83 @@ import { cn } from '@/lib/utils';
 import type { CardDetails, CardElement } from './card-data';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import cardLayouts from '@/lib/card-layouts.json';
 
 
 // CardFront Component
 interface CardFrontProps {
   cardDetails: CardDetails;
-  setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
-  onDragStart: () => void;
-  onDragEnd: () => void;
 }
-const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, setCardDetails, onDragStart, onDragEnd }, ref) => {
-  const [draggingElement, setDraggingElement] = useState<string | null>(null);
-  const [initialPos, setInitialPos] = useState({ x: 0, y: 0, mouseX: 0, mouseY: 0 });
-  const cardRef = ref as React.RefObject<HTMLDivElement>;
+const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, ref) => {
+  
+    const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
 
-  const handleMouseDown = (e: React.MouseEvent, elementId: string) => {
-    e.preventDefault();
-    onDragStart(); // Notify parent to disable tilt
-    const element = cardDetails.elements.find(el => el.id === elementId);
-    if (element && cardRef.current) {
-        const cardRect = cardRef.current.getBoundingClientRect();
-        setDraggingElement(elementId);
-        setInitialPos({ 
-            x: element.x, 
-            y: element.y, 
-            mouseX: (e.clientX - cardRect.left) / cardRect.width * 100,
-            mouseY: (e.clientY - cardRect.top) / cardRect.height * 100
-        });
-    }
-  };
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-        if (!draggingElement || !cardRef.current) return;
-
-        const cardRect = cardRef.current.getBoundingClientRect();
-        const mouseX = (e.clientX - cardRect.left) / cardRect.width * 100;
-        const mouseY = (e.clientY - cardRect.top) / cardRect.height * 100;
-        
-        const dx = mouseX - initialPos.mouseX;
-        const dy = mouseY - initialPos.mouseY;
-
-        setCardDetails(prev => ({
-            ...prev,
-            elements: prev.elements.map(el =>
-                el.id === draggingElement
-                    ? { ...el, x: initialPos.x + dx, y: initialPos.y + dy }
-                    : el
-            )
-        }));
+    const containerStyle = {
+        display: 'flex',
+        flexDirection: 'column' as 'column',
+        alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'),
+        justifyContent: layout.justifyContent as any,
+        textAlign: layout.textAlign as any,
+        height: '100%',
+        padding: '1rem',
     };
 
-    const handleMouseUp = () => {
-        setDraggingElement(null);
-        onDragEnd(); // Notify parent to re-enable tilt
-    };
-    
-    if (draggingElement) {
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup', handleMouseUp);
-    }
-
-    return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
-    };
-}, [draggingElement, initialPos, setCardDetails, cardRef, onDragStart, onDragEnd]);
-
-  const style = {
-    backgroundColor: cardDetails.bgColor,
-    color: cardDetails.textColor,
-    fontFamily: cardDetails.font,
-    ...(cardDetails.backgroundImage && {
-      backgroundImage: `url(${cardDetails.backgroundImage})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }),
-  };
-
-  const renderElement = (element: CardElement) => {
-    const elementStyle = {
-      left: `${element.x}%`,
-      top: `${element.y}%`,
-      transform: 'translate(-50%, -50%)',
-      position: 'absolute' as 'absolute',
-      width: element.width ? `${element.width}%` : 'auto',
-      cursor: draggingElement ? 'grabbing' : 'grab',
+    const style = {
+        backgroundColor: cardDetails.bgColor,
+        color: cardDetails.textColor,
+        fontFamily: cardDetails.font,
+        ...(cardDetails.backgroundImage && {
+        backgroundImage: `url(${cardDetails.backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        }),
     };
 
-    let content;
-    switch (element.component) {
-      case 'name':
-        content = <h2 className="font-bold" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.name}</h2>;
-        break;
-      case 'title':
-        content = <p className="text-lg" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.accentColor }}>{cardDetails.title}</p>;
-        break;
-      case 'company':
-        content = <p className="text-sm" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.company}</p>;
-        break;
-      case 'profilePic':
-        content = (
-            <Avatar className={cn("border-2 w-16 h-16")} style={{ borderColor: cardDetails.accentColor }}>
-              <AvatarImage src={cardDetails.profilePicUrl} />
-              <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-        );
-        break;
-      case 'logo':
-        content = cardDetails.logoUrl ? <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" /> : null;
-        break;
-      default:
-        content = null;
-    }
+    const nameElement = cardDetails.elements.find(e => e.component === 'name') || { fontSize: 2.2, fontWeight: 700 };
+    const titleElement = cardDetails.elements.find(e => e.component === 'title') || { fontSize: 1.4, fontWeight: 400 };
+    const companyElement = cardDetails.elements.find(e => e.component === 'company') || { fontSize: 1.1, fontWeight: 400 };
+    const logoElement = cardDetails.elements.find(e => e.component === 'logo');
+    const profilePicElement = cardDetails.elements.find(e => e.component === 'profilePic');
+
 
     return (
-        <div key={element.id} onMouseDown={(e) => handleMouseDown(e, element.id)} style={elementStyle}>
-            {content}
-        </div>
-    )
-  };
+        <div
+            ref={ref}
+            className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
+            style={style}
+        >
+            <div className="relative w-full h-full">
+                <div style={containerStyle}>
+                    {profilePicElement && (
+                        <div className="mb-4">
+                            <Avatar className={cn("border-2 w-20 h-20")} style={{ borderColor: cardDetails.accentColor }}>
+                              <AvatarImage src={cardDetails.profilePicUrl} />
+                              <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                        </div>
+                    )}
+                    
+                    <div className="flex flex-col">
+                        <h2 className="font-bold" style={{ fontSize: `${nameElement.fontSize}vw`, fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
+                            {cardDetails.name}
+                        </h2>
+                        <p className="text-lg" style={{ fontSize: `${titleElement.fontSize}vw`, fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
+                            {cardDetails.title}
+                        </p>
+                        <p className="text-sm mt-2" style={{ fontSize: `${companyElement.fontSize}vw`, fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
+                            {cardDetails.company}
+                        </p>
+                    </div>
 
-  return (
-    <div
-      ref={ref}
-      className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
-      style={style}
-    >
-      <div className="relative w-full h-full">
-        {cardDetails.elements.map(renderElement)}
-      </div>
-    </div>
-  );
+                     {logoElement && cardDetails.logoUrl && (
+                        <div className="mt-auto">
+                           <Image src={cardDetails.logoUrl} alt="Company Logo" width={100} height={25} className="object-contain h-6" />
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
 });
 CardFront.displayName = 'CardFront';
 
@@ -238,9 +183,6 @@ const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }:
             <CardFront 
               ref={cardFrontRef} 
               cardDetails={cardDetails} 
-              setCardDetails={setCardDetails}
-              onDragStart={() => setIsDragging(true)}
-              onDragEnd={() => setIsDragging(false)}
             />
             <CardBack ref={cardBackRef} cardDetails={cardDetails} />
           </div>
