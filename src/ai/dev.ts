@@ -4,3 +4,4 @@ config();
 
 import '@/ai/flows/import-card-design-from-image.ts';
 import '@/ai/flows/generate-card-background-from-prompt.ts';
+import '@/ai/flows/generate-card-design-from-prompt.ts';

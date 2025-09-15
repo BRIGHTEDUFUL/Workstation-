@@ -47,11 +47,8 @@ const generateCardBackgroundFromPromptFlow = ai.defineFlow(
   },
   async ({prompt}) => {
     const {media} = await ai.generate({
-      model: googleAI.model('gemini-2.5-flash-image-preview'),
+      model: 'googleai/imagen-4.0-fast-generate-001',
       prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${prompt}. The design should be suitable as a background, avoiding text or logos.`,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
     });
     const url = media?.url;
     if (!url) {

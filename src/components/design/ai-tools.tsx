@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { generateCardBackgroundFromPrompt, importCardDesignFromImage } from '@/ai/flows';
+import { generateCardDesignFromPrompt, importCardDesignFromImage } from '@/ai/flows';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -96,17 +96,28 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
         }
         setIsLoading(true);
         try {
-            const result = await generateCardBackgroundFromPrompt({ prompt, apiKey });
+            const result = await generateCardDesignFromPrompt({ 
+                prompt, 
+                apiKey,
+                name: cardDetails.name,
+                title: cardDetails.title,
+                company: cardDetails.company
+            });
 
             setCardDetails(prev => ({
                 ...prev,
+                designDescription: `AI-generated design: ${result.designPlan.styleDescription}`,
+                bgColor: result.designPlan.bgColor,
+                textColor: result.designPlan.textColor,
+                accentColor: result.designPlan.accentColor,
+                font: result.designPlan.font,
                 backgroundImage: result.backgroundImageDataUri,
-                designDescription: `AI-generated background: ${prompt}`,
+                category: result.designPlan.category,
             }));
 
             toast({
-              title: "Background Generated!",
-              description: "The AI has created a new background for your card.",
+              title: "Design Generated!",
+              description: "The AI has created a new design for your card.",
             });
         } catch (error) {
             console.error(error);
@@ -189,7 +200,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                     <TabsContent value="generate" className="mt-4">
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="prompt">Background Prompt</Label>
+                                <Label htmlFor="prompt">Design Prompt</Label>
                                 <Textarea
                                     id="prompt"
                                     placeholder="e.g., A minimalist card with a galaxy background"
