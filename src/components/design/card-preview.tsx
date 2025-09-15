@@ -93,7 +93,9 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
             <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
         </div>
       )}
-      {renderContent()}
+      <div className="relative w-full h-full">
+        {renderContent()}
+      </div>
     </div>
   );
 });

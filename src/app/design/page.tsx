@@ -1,3 +1,4 @@
+
 'use client'
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
@@ -78,6 +79,10 @@ function DesignPageContents() {
     useEffect(() => {
         // Debounced QR code regeneration
         const handler = setTimeout(() => {
+            if (!cardDetails.landingPageUrl) {
+                setCardDetails(prev => ({...prev, qrUrl: ''}));
+                return;
+            };
             const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardDetails.landingPageUrl || '')}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
             setCardDetails(prev => ({...prev, qrUrl}));
         }, 500);

@@ -1,4 +1,18 @@
 
+export type CardElement = {
+    id: string;
+    component: 'name' | 'title' | 'company' | 'logo' | 'profilePic' | 'slogan';
+    x: number; // percentage
+    y: number; // percentage
+    text?: string;
+    fontSize?: number; // vw
+    fontWeight?: number;
+    color?: string;
+    width?: number; // percentage
+    height?: number; // percentage
+    imageUrl?: string;
+};
+
 
 export type CardDetails = {
     id: string;
