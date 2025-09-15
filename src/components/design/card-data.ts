@@ -32,6 +32,7 @@ export type CardDetails = {
     slogan?: string;
     category: string;
     backgroundImage?: string;
+    pattern?: string;
     
     profilePicUrl?: string;
     website?: string;

@@ -10,6 +10,7 @@ import type { CardDetails } from './card-data';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import cardLayouts from '@/lib/card-layouts.json';
+import { getPatternStyle } from '@/lib/patterns';
 
 
 // CardFront Component
@@ -24,6 +25,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
         backgroundColor: cardDetails.bgColor,
         color: cardDetails.textColor,
         fontFamily: cardDetails.font,
+        ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
         ...(cardDetails.backgroundImage && {
         backgroundImage: `url(${cardDetails.backgroundImage})`,
         backgroundSize: 'cover',
@@ -262,5 +264,3 @@ const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }:
 };
 
 export default CardPreview;
-
-    

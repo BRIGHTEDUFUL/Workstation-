@@ -18,6 +18,7 @@ import type { CardDetails } from './card-data';
 import { Button } from '../ui/button';
 import { Upload, Globe } from 'lucide-react';
 import cardLayouts from '@/lib/card-layouts.json';
+import PatternSelector from './pattern-selector';
 
 
 interface LayoutEditorProps {
@@ -177,6 +178,10 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                     <Label htmlFor="accentColor">Accent</Label>
                                     <Input id="accentColor" name="accentColor" type="color" value={cardDetails.accentColor} onChange={handleInputChange} className="p-1 h-10" />
                                 </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Background Pattern</Label>
+                                <PatternSelector cardDetails={cardDetails} setCardDetails={setCardDetails} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="font">Font</Label>

@@ -60,7 +60,7 @@ function DesignPageContents() {
                 const template = placeholderImages.placeholderImages.find(t => t.id === templateId);
                 if (template && template.data) {
                     // @ts-ignore
-                    baseDetails = { ...baseDetails, ...template.data, category: template.category || baseDetails.category };
+                    baseDetails = { ...baseDetails, ...template.data, category: template.category || baseDetails.category, pattern: template.data.pattern || '' };
                 }
             }
             
