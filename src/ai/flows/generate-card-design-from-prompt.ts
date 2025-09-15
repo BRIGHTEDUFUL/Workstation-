@@ -50,7 +50,7 @@ export async function generateCardDesignAction(
    const dynamicAi = genkit({
     plugins: [googleAI({apiKey})],
   });
-  return generateCardDesignFromPromptFlow(input, dynamicAi);
+  return generateCardDesignFromPromptFlow(input, {ai: dynamicAi});
 }
 
 
@@ -78,11 +78,11 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     inputSchema: GenerateCardDesignFromPromptInputSchema,
     outputSchema: GenerateCardDesignFromPromptOutputSchema,
   },
-  async (input, flowAi) => {
-    const aiInstance = flowAi || ai;
+  async (input) => {
+    const aiInstance = ai();
     
     // Step 1: Generate the design plan (colors, fonts, etc.)
-    const { output: designPlan } = await designPlanPrompt(input, {ai: aiInstance});
+    const { output: designPlan } = await designPlanPrompt(input);
     if(!designPlan) {
         throw new Error('Failed to generate design plan.');
     }

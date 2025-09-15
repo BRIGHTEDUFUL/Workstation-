@@ -39,7 +39,7 @@ export async function generateCardBackgroundAction(
   const dynamicAi = genkit({
     plugins: [googleAI({ apiKey })],
   });
-  return generateCardBackgroundFromPromptFlow(input, dynamicAi);
+  return generateCardBackgroundFromPromptFlow(input, {ai: dynamicAi});
 }
 
 const generateCardBackgroundFromPromptFlow = ai.defineFlow(
@@ -48,9 +48,10 @@ const generateCardBackgroundFromPromptFlow = ai.defineFlow(
     inputSchema: GenerateCardBackgroundFromPromptInputSchema,
     outputSchema: GenerateCardBackgroundFromPromptOutputSchema,
   },
-  async (input, flowAi?) => {
-     const aiInstance = flowAi || ai;
-    const {media} = await aiInstance.generate({
+  async (input) => {
+    // This flow is designed to be called with a dynamic AI instance.
+    // The `ai()` call inside the flow will retrieve the instance provided at invocation time.
+    const {media} = await ai().generate({
       model: googleAI.model('imagen-4.0-fast-generate-001'),
       prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${input.prompt}. The design should be suitable as a background, avoiding text or logos.`,
     });

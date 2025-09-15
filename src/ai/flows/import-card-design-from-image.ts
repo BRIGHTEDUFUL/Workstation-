@@ -35,7 +35,7 @@ export async function importCardDesignAction(
   const dynamicAi = genkit({
     plugins: [googleAI({ apiKey })],
   });
-  return importCardDesignFromImageFlow(input, dynamicAi);
+  return importCardDesignFromImageFlow(input, {ai: dynamicAi});
 }
 
 const prompt = ai.definePrompt({
@@ -60,9 +60,8 @@ const importCardDesignFromImageFlow = ai.defineFlow(
     inputSchema: ImportCardDesignFromImageInputSchema,
     outputSchema: ImportCardDesignFromImageOutputSchema,
   },
-  async (input, flowAi) => {
-    const aiInstance = flowAi || ai;
-    const {output} = await prompt(input, {ai: aiInstance});
+  async (input) => {
+    const {output} = await prompt(input);
     return output!;
   }
 );
