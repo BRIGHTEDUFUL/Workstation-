@@ -7,7 +7,8 @@
  * - GenerateCardBackgroundFromPromptOutput - The return type for the generateCardBackgroundFromPrompt function.
  */
 
-import {ai, runWithApiKey} from '@/ai/genkit';
+import {runWithApiKey} from '@/ai/genkit';
+import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 
