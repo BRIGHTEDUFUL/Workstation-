@@ -1,4 +1,5 @@
 
+
 'use client';
 import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -9,14 +10,11 @@ import CardActions from './CardActions';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
-import { useRouter } from 'next/navigation';
-
 
 export default function MyCards() {
     const [cards, setCards] = useState<CardDetails[]>([]);
     const [isMounted, setIsMounted] = useState(false);
     const { toast } = useToast();
-    const router = useRouter();
 
      useEffect(() => {
         setIsMounted(true);
@@ -43,8 +41,10 @@ export default function MyCards() {
         name: `${cardToDuplicate.name} (Copy)`,
       };
       
-      const dataUri = newCard.website || `${window.location.origin}/share/${newCard.id}`;
-      newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(dataUri)}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
+      const dataUri = newCard.website || '';
+      if (dataUri) {
+        newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(dataUri)}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
+      }
 
 
       const updatedCards = [...cards, newCard];

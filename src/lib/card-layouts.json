@@ -1,0 +1,59 @@
+
+{
+    "layouts": [
+        {
+            "id": "center-aligned",
+            "name": "Center Aligned",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic", "x": 50, "y": 25 },
+                { "id": "name", "component": "name", "x": 50, "y": 45, "fontSize": 2.5, "fontWeight": 700 },
+                { "id": "title", "component": "title", "x": 50, "y": 58, "fontSize": 1.5, "fontWeight": 400 },
+                { "id": "company", "component": "company", "x": 50, "y": 70, "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "logo", "component": "logo", "x": 50, "y": 90 }
+            ]
+        },
+        {
+            "id": "left-aligned",
+            "name": "Left Aligned",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic", "x": 25, "y": 25 },
+                { "id": "name", "component": "name", "x": 25, "y": 50, "fontSize": 2.5, "fontWeight": 700 },
+                { "id": "title", "component": "title", "x": 25, "y": 63, "fontSize": 1.5, "fontWeight": 400 },
+                { "id": "company", "component": "company", "x": 25, "y": 75, "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "logo", "component": "logo", "x": 75, "y": 85 }
+            ]
+        },
+        {
+            "id": "right-aligned",
+            "name": "Right Aligned",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic", "x": 75, "y": 25 },
+                { "id": "name", "component": "name", "x": 75, "y": 50, "fontSize": 2.5, "fontWeight": 700 },
+                { "id": "title", "component": "title", "x": 75, "y": 63, "fontSize": 1.5, "fontWeight": 400 },
+                { "id": "company", "component": "company", "x": 75, "y": 75, "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "logo", "component": "logo", "x": 25, "y": 85 }
+            ]
+        },
+        {
+            "id": "top-bar",
+            "name": "Top Bar",
+            "elements": [
+                { "id": "logo", "component": "logo", "x": 15, "y": 15 },
+                { "id": "company", "component": "company", "x": 80, "y": 15, "fontSize": 1.2, "fontWeight": 700 },
+                { "id": "name", "component": "name", "x": 50, "y": 50, "fontSize": 2.8, "fontWeight": 700 },
+                { "id": "title", "component": "title", "x": 50, "y": 65, "fontSize": 1.8, "fontWeight": 400 }
+            ]
+        },
+        {
+            "id": "split-vertical",
+            "name": "Split Vertical",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic", "x": 25, "y": 50 },
+                { "id": "logo", "component": "logo", "x": 25, "y": 80 },
+                { "id": "name", "component": "name", "x": 65, "y": 40, "fontSize": 2.5, "fontWeight": 700 },
+                { "id": "title", "component": "title", "x": 65, "y": 55, "fontSize": 1.5, "fontWeight": 400 },
+                { "id": "company", "component": "company", "x": 65, "y": 70, "fontSize": 1.2, "fontWeight": 400 }
+            ]
+        }
+    ]
+}

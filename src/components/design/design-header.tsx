@@ -1,4 +1,5 @@
 
+
 'use client'
 
 import { Download, Share2, Save } from 'lucide-react';
@@ -7,7 +8,6 @@ import { toPng } from 'html-to-image';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 interface DesignHeaderProps {
     cardDetails: CardDetails;
@@ -18,7 +18,6 @@ interface DesignHeaderProps {
 const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderProps) => {
     const { toast } = useToast();
     const [isSaving, setIsSaving] = useState(false);
-    const router = useRouter();
     
     const handleExport = async () => {
         const frontNode = cardFrontRef.current;
@@ -75,13 +74,15 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
             const existingCardIndex = savedCards.findIndex(c => c.id === cardDetails.id);
 
-            const dataUri = cardDetails.website || `${window.location.origin}/share/${cardDetails.id}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(dataUri)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+            let cardToSave = { ...cardDetails };
 
-            const cardToSave = {
-                ...cardDetails,
-                qrUrl
-            };
+            if (cardToSave.website) {
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardToSave.website)}&bgcolor=${cardToSave.bgColor.substring(1)}&color=${cardToSave.textColor.substring(1)}&qzone=1`;
+                cardToSave.qrUrl = qrUrl;
+            } else {
+                cardToSave.qrUrl = ''; // Clear QR if no website
+            }
+
 
             if (existingCardIndex > -1) {
                 savedCards[existingCardIndex] = cardToSave;

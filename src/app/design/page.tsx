@@ -1,4 +1,5 @@
 
+
 'use client'
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
@@ -13,6 +14,7 @@ import CardPreview from '@/components/design/card-preview';
 import LayoutEditor from '@/components/design/layout-editor';
 import { useSearchParams } from 'next/navigation';
 import placeholderImages from '@/lib/placeholder-images.json';
+import cardLayouts from '@/lib/card-layouts.json';
 import { v4 as uuidv4 } from 'uuid';
 import { CardDetails, DEFAULT_CARD_DETAILS } from '@/components/design/card-data';
 import DesignHeader from '@/components/design/design-header';
@@ -35,13 +37,13 @@ function DesignPageContents() {
                 if (cardToEdit) {
                     if (!cardToEdit.elements || cardToEdit.elements.length === 0) {
                         // @ts-ignore
-                        cardToEdit.elements = DEFAULT_CARD_DETAILS.elements;
+                        cardToEdit.elements = cardLayouts.layouts.find(l => l.id === 'center-aligned')?.elements || DEFAULT_CARD_DETAILS.elements;
                     }
                     return cardToEdit;
                 }
             }
             
-            let baseDetails = {...DEFAULT_CARD_DETAILS};
+            let baseDetails = {...DEFAULT_CARD_DETAILS, elements: cardLayouts.layouts.find(l => l.id === 'center-aligned')?.elements || DEFAULT_CARD_DETAILS.elements };
             const newCardId = uuidv4();
             let id = newCardId;
 
@@ -82,15 +84,15 @@ function DesignPageContents() {
     useEffect(() => {
         // Debounced QR code regeneration
         const handler = setTimeout(() => {
-            if (!cardDetails.id) return;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(window.location.origin + '/share/' + cardDetails.id)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+            if (!cardDetails.id || !cardDetails.website) return;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardDetails.website)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
             setCardDetails(prev => ({...prev, qrUrl}));
         }, 500);
 
         return () => {
             clearTimeout(handler);
         };
-    }, [cardDetails.id, cardDetails.bgColor, cardDetails.textColor]);
+    }, [cardDetails.id, cardDetails.bgColor, cardDetails.textColor, cardDetails.website]);
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">

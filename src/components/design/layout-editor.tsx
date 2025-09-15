@@ -17,31 +17,36 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 import type { CardDetails } from './card-data';
 import { Button } from '../ui/button';
 import { Upload, Globe } from 'lucide-react';
-import { Textarea } from '../ui/textarea';
+import cardLayouts from '@/lib/card-layouts.json';
+
 
 interface LayoutEditorProps {
     cardDetails: CardDetails;
     setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
 }
 
-const SocialLinkInput = ({ name, placeholder, value, onChange, icon: Icon }: { name: string, placeholder: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, icon: React.ElementType }) => (
-    <div className="relative">
-        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input id={name} name={name} value={value} onChange={onChange} placeholder={placeholder} className="pl-10" />
-    </div>
-);
-
 const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const logoInputRef = useRef<HTMLInputElement>(null);
 
-    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setCardDetails(prev => ({ ...prev, [name]: value }));
     }, [setCardDetails]);
 
     const handleSelectChange = useCallback((name: string, value: string) => {
         setCardDetails(prev => ({ ...prev, [name]: value as any }));
+    }, [setCardDetails]);
+
+    const handleLayoutChange = useCallback((layoutId: string) => {
+        const selectedLayout = cardLayouts.layouts.find(l => l.id === layoutId);
+        if (selectedLayout) {
+            setCardDetails(prev => ({
+                ...prev,
+                // @ts-ignore
+                elements: selectedLayout.elements,
+            }));
+        }
     }, [setCardDetails]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'profilePicUrl' | 'logoUrl') => {
@@ -81,7 +86,10 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                             </div>
                              <div className="space-y-2">
                                 <Label htmlFor="website">Website</Label>
-                                <SocialLinkInput name="website" placeholder="your.website.com" value={cardDetails.website || ''} onChange={handleInputChange} icon={Globe} />
+                                <div className="relative">
+                                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Input id="website" name="website" value={cardDetails.website || ''} onChange={handleInputChange} placeholder="your.website.com" className="pl-10" />
+                                </div>
                             </div>
                             
                             <div className="space-y-2">
@@ -129,6 +137,19 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                         <SelectItem value="Event">Event</SelectItem>
                                         <SelectItem value="Membership">Membership</SelectItem>
                                         <SelectItem value="Student">Student</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="layout">Layout</Label>
+                                <Select onValueChange={handleLayoutChange}>
+                                    <SelectTrigger id="layout">
+                                        <SelectValue placeholder="Select a layout" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {cardLayouts.layouts.map(layout => (
+                                            <SelectItem key={layout.id} value={layout.id}>{layout.name}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>

@@ -34,15 +34,6 @@ export type CardDetails = {
     
     profilePicUrl?: string;
     website?: string;
-
-    // Category specific fields
-    policyNumber?: string;
-    planType?: string;
-    eventName?: string;
-    eventDate?: string;
-    accessLevel?: string;
-    memberId?: string;
-    studentId?: string;
 };
 
 export const DEFAULT_CARD_DETAILS: CardDetails = {
