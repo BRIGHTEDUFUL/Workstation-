@@ -8,7 +8,16 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // This is a mock. In a real app, you'd fetch this from a database.
-const MOCK_CARD_DATA: CardDetails = {
+const MOCK_CARD_DATA: Omit<CardDetails, 'landingPageUrl'> & {
+    landingPageBio?: string;
+    phone?: string;
+    email?: string;
+    website?: string;
+    linkedin?: string;
+    twitter?: string;
+    instagram?: string;
+    facebook?: string;
+} = {
     id: '1',
     name: 'Your Name',
     title: 'Your Title',
@@ -31,7 +40,7 @@ const MOCK_CARD_DATA: CardDetails = {
 
 
 export default function CardLandingPage({ params }: { params: { id: string } }) {
-    const [card, setCard] = useState<CardDetails | null>(null);
+    const [card, setCard] = useState<typeof MOCK_CARD_DATA | null>(null);
 
     useEffect(() => {
         // In a real app, you would fetch the card details based on params.id
@@ -116,7 +125,7 @@ END:VCARD`;
                         }}
                         className="transition-transform duration-200 hover:scale-105"
                     >
-                        <FileDown className="w-5 h-5 mr-2" />
+                        <FileDown className="w-4 h-5 mr-2" />
                         Save to Contacts
                     </Button>
                 </div>
@@ -144,4 +153,3 @@ const SocialIcon = ({ href, icon: Icon, label }: { href: string, icon: React.Ele
         </a>
     </Button>
 );
-

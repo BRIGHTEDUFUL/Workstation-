@@ -108,7 +108,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     };
 
     return (
-        <Accordion type="multiple" defaultValue={['card-content', 'landing-page']} className="w-full">
+        <Accordion type="multiple" defaultValue={['card-content']} className="w-full">
             <AccordionItem value="card-content">
                 <AccordionTrigger className='text-base font-semibold'>Card Content</AccordionTrigger>
                 <AccordionContent>
@@ -144,6 +144,14 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                     <Upload className="w-4 h-4 mr-2" />
                                     Upload Logo
                                 </Button>
+                            </div>
+
+                             <div className="space-y-2">
+                                <Label htmlFor="landingPageUrl">Landing Page URL</Label>
+                                <div className="relative">
+                                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Input id="landingPageUrl" name="landingPageUrl" value={cardDetails.landingPageUrl || ''} onChange={handleInputChange} placeholder="https://your.link.com" className="pl-10" />
+                                </div>
                             </div>
 
                             <div className="space-y-2">
@@ -182,65 +190,6 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                         </CardContent>
                     </Card>
                 </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="landing-page">
-                 <AccordionTrigger className='text-base font-semibold'>Landing Page</AccordionTrigger>
-                 <AccordionContent>
-                    <Card className="border-0 shadow-none">
-                        <CardContent className="space-y-6 pt-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="landingPageBio">Bio</Label>
-                                <Textarea id="landingPageBio" name="landingPageBio" value={cardDetails.landingPageBio || ''} onChange={handleInputChange} placeholder="A short bio to display on your landing page." />
-                            </div>
-                             <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                    <Input id="email" name="email" value={cardDetails.email || ''} onChange={handleInputChange} placeholder="your@email.com" className="pl-10" />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="phone">Phone</Label>
-                                <div className="relative">
-                                    <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                    <Input id="phone" name="phone" value={cardDetails.phone || ''} onChange={handleInputChange} placeholder="+1 123 456 7890" className="pl-10" />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="website">Website</Label>
-                                 <div className="relative">
-                                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                    <Input id="website" name="website" value={cardDetails.website || ''} onChange={handleInputChange} placeholder="your.website.com" className="pl-10" />
-                                </div>
-                            </div>
-                             <div className="space-y-2">
-                                <Label>Social Media Links</Label>
-                                <div className="space-y-4">
-                                     <div className="relative">
-                                        <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="linkedin" name="linkedin" value={cardDetails.linkedin || ''} onChange={handleInputChange} placeholder="linkedin.com/in/..." className="pl-10" />
-                                    </div>
-                                    <div className="relative">
-                                        <Twitter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="twitter" name="twitter" value={cardDetails.twitter || ''} onChange={handleInputChange} placeholder="x.com/..." className="pl-10" />
-                                    </div>
-                                     <div className="relative">
-                                        <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="instagram" name="instagram" value={cardDetails.instagram || ''} onChange={handleInputChange} placeholder="instagram.com/..." className="pl-10" />
-                                    </div>
-                                    <div className="relative">
-                                        <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="facebook" name="facebook" value={cardDetails.facebook || ''} onChange={handleInputChange} placeholder="facebook.com/..." className="pl-10" />
-                                    </div>
-                                     <div className="relative">
-                                        <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="tiktok" name="tiktok" value={cardDetails.tiktok || ''} onChange={handleInputChange} placeholder="tiktok.com/@..." className="pl-10" />
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                 </AccordionContent>
             </AccordionItem>
         </Accordion>
     );

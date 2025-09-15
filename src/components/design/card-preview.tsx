@@ -18,11 +18,10 @@ const CardPreview = ({ cardDetails }: CardPreviewProps) => {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
   React.useEffect(() => {
-    // We need to construct the URL on the client side to get access to window.location.origin
-    const landingPageUrl = `${window.location.origin}/card/${cardDetails.id}`;
-    const generatedQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(landingPageUrl)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+    const urlToEncode = cardDetails.landingPageUrl || `${window.location.origin}/card/${cardDetails.id}`;
+    const generatedQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(urlToEncode)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
     setQrCodeUrl(generatedQrCodeUrl);
-  }, [cardDetails.id, cardDetails.bgColor, cardDetails.textColor]);
+  }, [cardDetails.id, cardDetails.landingPageUrl, cardDetails.bgColor, cardDetails.textColor]);
   
   const frontStyle = {
       backgroundColor: cardDetails.bgColor,
