@@ -9,8 +9,6 @@
 
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
-import {genkit, Genkit} from 'genkit';
 
 const ImportCardDesignFromImageInputSchema = z.object({
   fileDataUri: z
@@ -44,14 +42,7 @@ export type ImportCardDesignFromImageOutput = z.infer<
 export async function importCardDesignAction(
   input: ImportCardDesignFromImageInput
 ): Promise<ImportCardDesignFromImageOutput> {
-  const apiKey = process.env.GOOGLE_API_KEY;
-  if (!apiKey) {
-    throw new Error('GOOGLE_API_KEY environment variable not set.');
-  }
-  const dynamicAi = genkit({
-    plugins: [googleAI({apiKey})],
-  });
-  return importCardDesignFromImageFlow(input, dynamicAi);
+  return importCardDesignFromImageFlow(input);
 }
 
 const prompt = ai.definePrompt({
@@ -73,17 +64,21 @@ Generate a design plan based on this information.
 `,
 });
 
-async function importCardDesignFromImageFlow(
-  input: ImportCardDesignFromImageInput,
-  aiInstance: Genkit
-): Promise<ImportCardDesignFromImageOutput> {
-  const {output: designPlan} = await aiInstance.run(prompt, input);
-  if (!designPlan) {
-    throw new Error('Failed to analyze the card image and generate a design plan.');
+const importCardDesignFromImageFlow = ai.defineFlow(
+  {
+    name: 'importCardDesignFromImageFlow',
+    inputSchema: ImportCardDesignFromImageInputSchema,
+    outputSchema: ImportCardDesignFromImageOutputSchema,
+  },
+  async (input) => {
+    const {output: designPlan} = await ai.run(prompt, input);
+    if (!designPlan) {
+      throw new Error('Failed to analyze the card image and generate a design plan.');
+    }
+    
+    return {
+      designPlan,
+      analysis: `AI successfully analyzed the card. Style detected: ${designPlan.styleDescription}.`
+    };
   }
-  
-  return {
-    designPlan,
-    analysis: `AI successfully analyzed the card. Style detected: ${designPlan.styleDescription}.`
-  };
-}
+);

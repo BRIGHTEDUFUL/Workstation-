@@ -10,7 +10,6 @@
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {genkit, Genkit} from 'genkit';
 
 const GenerateCardDesignFromPromptInputSchema = z.object({
   prompt: z.string().describe('A text prompt describing the desired card design.'),
@@ -46,14 +45,7 @@ export type GenerateCardDesignFromPromptOutput = z.infer<
 export async function generateCardDesignAction(
   input: GenerateCardDesignFromPromptInput,
 ): Promise<GenerateCardDesignFromPromptOutput> {
-  const apiKey = process.env.GOOGLE_API_KEY;
-  if (!apiKey) {
-    throw new Error('GOOGLE_API_KEY environment variable not set.');
-  }
-  const dynamicAi = genkit({
-    plugins: [googleAI({apiKey})],
-  });
-  return generateCardDesignFromPromptFlow(input, dynamicAi);
+  return generateCardDesignFromPromptFlow(input);
 }
 
 const designPlanPrompt = ai.definePrompt({
@@ -73,31 +65,35 @@ Card Details:
 Generate a design plan based on this information. Ensure the colors have good contrast and the font is appropriate for the described style.`,
 });
 
-async function generateCardDesignFromPromptFlow(
-  input: GenerateCardDesignFromPromptInput,
-  aiInstance: Genkit,
-): Promise<GenerateCardDesignFromPromptOutput> {
-  // Step 1: Generate the design plan (colors, fonts, etc.)
-  const {output: designPlan} = await aiInstance.run(designPlanPrompt, input);
+const generateCardDesignFromPromptFlow = ai.defineFlow(
+  {
+    name: 'generateCardDesignFromPromptFlow',
+    inputSchema: GenerateCardDesignFromPromptInputSchema,
+    outputSchema: GenerateCardDesignFromPromptOutputSchema,
+  },
+  async (input) => {
+    // Step 1: Generate the design plan (colors, fonts, etc.)
+    const {output: designPlan} = await ai.run(designPlanPrompt, input);
 
-  if (!designPlan) {
-    throw new Error('Failed to generate design plan.');
+    if (!designPlan) {
+      throw new Error('Failed to generate design plan.');
+    }
+
+    // Step 2: Generate the background image based on the plan
+    const {media} = await ai.generate({
+      model: googleAI.model('imagen-4.0-fast-generate-001'),
+      prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${designPlan.styleDescription}. The design should be suitable as a background, avoiding text or logos.`,
+    });
+
+    const url = media?.url;
+    if (!url) {
+      throw new Error('Image generation failed.');
+    }
+
+    // Step 3: Combine and return the results
+    return {
+      designPlan,
+      backgroundImageDataUri: url,
+    };
   }
-
-  // Step 2: Generate the background image based on the plan
-  const {media} = await aiInstance.generate({
-    model: googleAI.model('imagen-4.0-fast-generate-001'),
-    prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${designPlan.styleDescription}. The design should be suitable as a background, avoiding text or logos.`,
-  });
-
-  const url = media?.url;
-  if (!url) {
-    throw new Error('Image generation failed.');
-  }
-
-  // Step 3: Combine and return the results
-  return {
-    designPlan,
-    backgroundImageDataUri: url,
-  };
-}
+);
