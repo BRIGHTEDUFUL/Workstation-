@@ -8,6 +8,9 @@ import {
 import {
   importCardDesignAction,
 } from '@/ai/flows/import-card-design-from-image';
+import {
+    generateDesignSuggestionsAction
+} from '@/ai/flows/generate-design-suggestions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,49 +24,12 @@ import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { Badge } from '../ui/badge';
+import { Skeleton } from '../ui/skeleton';
 
 interface AiToolsProps {
   cardDetails: CardDetails;
   setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
 }
-
-const suggestedPrompts = [
-    {
-        category: 'Professional & Corporate',
-        prompts: [
-            'A photorealistic, dark carbon fiber weave background, 4k, professional',
-            'Brushed steel texture with a subtle gleam, clean and modern',
-        ],
-    },
-    {
-        category: 'Futuristic & Tech',
-        prompts: [
-            'A 3D render of a glowing blue futuristic circuit board pattern, depth of field',
-            'Abstract network of glowing nodes and connections on a dark background, high-tech',
-        ],
-    },
-    {
-        category: 'Luxury & Elegant',
-        prompts: [
-            'Photorealistic black marble with intricate gold veining, studio lighting',
-            'An art deco pattern with sharp geometric shapes in gold and deep navy blue',
-        ],
-    },
-     {
-        category: 'Abstract & Artistic',
-        prompts: [
-            'A vibrant, abstract explosion of watercolor paint in hues of teal and magenta',
-            'Thick, textured acrylic paint strokes in a calming seafoam and white palette',
-        ],
-    },
-    {
-        category: 'Nature & Organic',
-        prompts: [
-            'A macro photograph of a lush green mossy surface, ultra-detailed',
-            'A flat lay of serene, overlapping river stones, soft natural light',
-        ],
-    },
-];
 
 const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const { toast } = useToast();
@@ -72,6 +38,8 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const [activeTab, setActiveTab] = useState('generate');
     const [filename, setFilename] = useState('');
     const [isApiKeySet, setIsApiKeySet] = useState(false);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [suggestionsLoading, setSuggestionsLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -80,6 +48,24 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
         setIsApiKeySet(!!storedApiKey);
       }
     }, []);
+
+    useEffect(() => {
+        const fetchSuggestions = async () => {
+            if (!isApiKeySet || !cardDetails.category) return;
+            setSuggestionsLoading(true);
+            try {
+                const result = await generateDesignSuggestionsAction({ category: cardDetails.category });
+                setSuggestions(result.suggestions);
+            } catch (error) {
+                console.error("Failed to fetch suggestions:", error);
+                setSuggestions([]);
+            } finally {
+                setSuggestionsLoading(false);
+            }
+        };
+
+        fetchSuggestions();
+    }, [cardDetails.category, isApiKeySet]);
 
     const handleGenerate = async () => {
         if (!isApiKeySet) {
@@ -217,25 +203,28 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                     disabled={!isApiKeySet}
                                 />
                             </div>
-                            <div className="space-y-4">
-                                <Label className="text-sm text-muted-foreground">Suggestions</Label>
-                                {suggestedPrompts.map((category) => (
-                                    <div key={category.category}>
-                                        <h4 className="mb-2 text-sm font-semibold">{category.category}</h4>
-                                        <div className="flex flex-wrap gap-2">
-                                            {category.prompts.map((p) => (
-                                                <Badge
-                                                    key={p}
-                                                    variant="outline"
-                                                    className="cursor-pointer"
-                                                    onClick={() => setPrompt(p)}
-                                                >
-                                                    {p}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
+                            <div className="space-y-2">
+                                <Label className="text-sm text-muted-foreground">Suggestions for '{cardDetails.category}'</Label>
+                                <div className="flex flex-wrap gap-2">
+                                    {suggestionsLoading ? (
+                                        <>
+                                            <Skeleton className="h-6 w-48" />
+                                            <Skeleton className="h-6 w-40" />
+                                            <Skeleton className="h-6 w-52" />
+                                        </>
+                                    ) : (
+                                        suggestions.map((p) => (
+                                            <Badge
+                                                key={p}
+                                                variant="outline"
+                                                className="cursor-pointer"
+                                                onClick={() => setPrompt(p)}
+                                            >
+                                                {p}
+                                            </Badge>
+                                        ))
+                                    )}
+                                </div>
                             </div>
                             <Button onClick={handleGenerate} disabled={isLoadingGenerate || !prompt || !isApiKeySet} className="w-full">
                                 <Sparkles className="w-4 h-4 mr-2" />
@@ -272,5 +261,3 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
 };
 
 export default AiTools;
-
-    
