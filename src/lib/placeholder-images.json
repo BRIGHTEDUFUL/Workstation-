@@ -77,6 +77,24 @@
       "description": "Cyber Grid",
       "imageUrl": "https://picsum.photos/seed/cybergrid/500/281",
       "imageHint": "cyber grid"
+    },
+    {
+      "id": "template-10",
+      "description": "Teal Medical",
+      "imageUrl": "https://picsum.photos/seed/medicalcard/500/281",
+      "imageHint": "medical health"
+    },
+    {
+      "id": "template-11",
+      "description": "Neon Event Pass",
+      "imageUrl": "https://picsum.photos/seed/eventpass/500/281",
+      "imageHint": "event neon"
+    },
+    {
+      "id": "template-12",
+      "description": "University ID",
+      "imageUrl": "https://picsum.photos/seed/universityid/500/281",
+      "imageHint": "student id"
     }
   ]
 }
