@@ -115,12 +115,13 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
     fontFamily: cardDetails.font,
+    transform: 'rotateY(180deg)'
   };
   
   return (
-    <Card
+    <div
       ref={ref}
-      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rotate-y-180"
+      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden"
       style={style}
     >
       <CardContent className="flex flex-col items-center justify-center p-0">
@@ -138,7 +139,7 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
         )}
         <p className="mt-4 text-xs">{cardDetails.slogan || 'Scan to connect'}</p>
       </CardContent>
-    </Card>
+    </div>
   );
 });
 CardBack.displayName = 'CardBack';

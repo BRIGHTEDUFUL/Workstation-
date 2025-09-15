@@ -19,18 +19,35 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
     const [isSaving, setIsSaving] = useState(false);
     
     const handleExport = async () => {
-        if (!cardFrontRef.current || !cardBackRef.current) return;
+        const frontNode = cardFrontRef.current;
+        const backNode = cardBackRef.current;
+
+        if (!frontNode || !backNode) {
+            toast({
+                variant: 'destructive',
+                title: 'Export Failed',
+                description: 'Card elements not found.',
+            });
+            return;
+        }
 
         try {
             // Export Front
-            const frontDataUrl = await toPng(cardFrontRef.current, { cacheBust: true, pixelRatio: 2 });
+            const frontDataUrl = await toPng(frontNode, { cacheBust: true, pixelRatio: 2 });
             const frontLink = document.createElement('a');
             frontLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-front.png`;
             frontLink.href = frontDataUrl;
             frontLink.click();
 
-            // Export Back
-            const backDataUrl = await toPng(cardBackRef.current, { cacheBust: true, pixelRatio: 2 });
+            // Export Back: Temporarily remove transform to fix rendering
+            const originalTransform = backNode.style.transform;
+            backNode.style.transform = 'none';
+
+            const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
+            
+            // Restore transform after export
+            backNode.style.transform = originalTransform;
+
             const backLink = document.createElement('a');
             backLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`;
             backLink.href = backDataUrl;
@@ -43,6 +60,10 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                 title: 'Export Failed',
                 description: 'Could not export the card images.',
             });
+            // Ensure transform is restored even if export fails
+            if (backNode && backNode.style.transform === 'none') {
+                backNode.style.transform = 'rotateY(180deg)';
+            }
         }
     };
 
