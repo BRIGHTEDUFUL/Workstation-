@@ -90,19 +90,6 @@ function DesignPageContents() {
         };
     }, [cardDetails.id]);
 
-    useEffect(() => {
-        // Debounced QR code regeneration
-        const handler = setTimeout(() => {
-            if (!cardDetails.id || !cardDetails.website) return;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardDetails.website)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
-            setCardDetails(prev => ({...prev, qrUrl}));
-        }, 500);
-
-        return () => {
-            clearTimeout(handler);
-        };
-    }, [cardDetails.id, cardDetails.bgColor, cardDetails.textColor, cardDetails.website]);
-
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">
             <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />

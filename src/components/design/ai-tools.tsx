@@ -259,5 +259,3 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
 };
 
 export default AiTools;
-
-    
