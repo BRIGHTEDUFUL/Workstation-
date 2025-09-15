@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import type { CardDetails } from '../design/design-page';
+import type { CardDetails } from '../design/card-data';
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 

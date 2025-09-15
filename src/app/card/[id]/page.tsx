@@ -1,6 +1,6 @@
 
 'use client';
-import { CardDetails, DEFAULT_CARD_DETAILS } from "@/components/design/design-page";
+import { CardDetails, DEFAULT_CARD_DETAILS } from "@/components/design/card-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

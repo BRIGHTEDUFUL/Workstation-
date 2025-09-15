@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
-import type { CardDetails } from './design-page';
+import type { CardDetails } from './card-data';
 import { Button } from '../ui/button';
 import { Upload, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
