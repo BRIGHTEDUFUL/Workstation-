@@ -10,7 +10,7 @@
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import { DesignPlanSchema } from '@/ai/schemas/design-plan-schema';
+import { DesignPlanSchema } from '@/ai/schemas';
 
 const GenerateCardDesignFromPromptInputSchema = z.object({
   prompt: z.string().describe('A text prompt describing the desired card design.'),

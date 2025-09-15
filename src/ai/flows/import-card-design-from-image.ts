@@ -9,7 +9,7 @@
 
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
-import { DesignPlanSchema } from '@/ai/schemas/design-plan-schema';
+import { DesignPlanSchema } from '@/ai/schemas';
 
 const ImportCardDesignFromImageInputSchema = z.object({
   fileDataUri: z
