@@ -23,9 +23,38 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useEffect, useState } from 'react';
 
 const MainSidebar = () => {
   const pathname = usePathname();
+  const [userDetails, setUserDetails] = useState({
+    name: 'User Name',
+    email: 'user@cardhub.com',
+    profilePic: 'https://picsum.photos/seed/user-avatar/40/40'
+  });
+
+  useEffect(() => {
+    const updateDetails = () => {
+        const storedDetails = localStorage.getItem('userDetails');
+        if (storedDetails) {
+            const parsedDetails = JSON.parse(storedDetails);
+            setUserDetails({
+                name: parsedDetails.name || 'User Name',
+                email: parsedDetails.email || 'user@cardhub.com',
+                profilePic: parsedDetails.profilePic || 'https://picsum.photos/seed/user-avatar/40/40'
+            });
+        }
+    };
+    
+    updateDetails();
+
+    // Listen for changes from other tabs/windows
+    window.addEventListener('storage', updateDetails);
+
+    return () => {
+        window.removeEventListener('storage', updateDetails);
+    }
+  }, []);
 
   return (
     <>
@@ -80,12 +109,12 @@ const MainSidebar = () => {
           <DropdownMenuTrigger asChild>
              <div className="flex items-center gap-3 cursor-pointer">
                 <Avatar className="h-9 w-9">
-                    <AvatarImage src="https://picsum.photos/seed/user-avatar/40/40" data-ai-hint="user avatar"/>
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage src={userDetails.profilePic} data-ai-hint="user avatar"/>
+                    <AvatarFallback>{userDetails.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-col hidden group-data-[collapsible=icon]:hidden">
-                    <span className="font-semibold text-sm">User Name</span>
-                    <span className="text-xs text-muted-foreground">user@cardhub.com</span>
+                    <span className="font-semibold text-sm">{userDetails.name}</span>
+                    <span className="text-xs text-muted-foreground">{userDetails.email}</span>
                 </div>
             </div>
           </DropdownMenuTrigger>
