@@ -53,6 +53,7 @@ function DesignPageContents() {
                 ...baseDetails,
                 id: id,
                 qrUrl: qrUrl,
+                landingPageUrl: '', // Ensure landingPageUrl is blank for new cards
             };
         };
 
