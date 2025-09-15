@@ -148,6 +148,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                 textColor: result.designPlan.textColor,
                 accentColor: result.designPlan.accentColor,
                 font: result.designPlan.font,
+                layout: result.designPlan.layout,
                 backgroundImage: '', // Clear background image when importing design
             }));
             toast({

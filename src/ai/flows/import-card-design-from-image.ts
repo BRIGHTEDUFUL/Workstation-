@@ -48,6 +48,7 @@ Your task is to extract the key design elements and return them as a structured 
 
 - Analyze the main colors: identify the background color, the primary text color, and a key accent color. Ensure the text and background colors have good contrast.
 - Suggest a font: Pick the most appropriate font from the provided list that matches the style of the card.
+- Analyze the layout: Based on the position of text and any photo, choose the best layout. The options are 'classic' (photo centered above text), 'modern-left' (photo on left, text on right), 'modern-right' (text on left, photo on right), 'minimalist' (centered text, no photo), or 'no-photo-centered' (centered text, no photo).
 - Provide a style description: Briefly summarize the overall aesthetic.
 - Categorize the design: Determine the most fitting category for the card design.
 
@@ -71,7 +72,7 @@ const importCardDesignFromImageFlow = ai.defineFlow(
     
     return {
       designPlan,
-      analysis: `AI successfully analyzed the card. Style detected: ${designPlan.styleDescription}.`
+      analysis: `AI successfully analyzed the card. Layout detected: ${designPlan.layout}. Style detected: ${designPlan.styleDescription}.`
     };
   }
 );
