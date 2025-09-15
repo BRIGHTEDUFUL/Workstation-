@@ -1,0 +1,46 @@
+export const MOCK_ANALYTICS_DATA = {
+  totalViews: 4892,
+  viewsLast30Days: 1200,
+  totalSaves: 1245,
+  savesLast30Days: 350,
+  totalClicks: 2834,
+  engagementOverTime: [
+    { date: '2024-09-01', views: 150, saves: 40 },
+    { date: '2024-09-02', views: 180, saves: 55 },
+    { date: '2024-09-03', views: 220, saves: 60 },
+    { date: '2024-09-04', views: 190, saves: 50 },
+    { date: '2024-09-05', views: 250, saves: 75 },
+    { date: '2024-09-06', views: 230, saves: 65 },
+    { date: '2024-09-07', views: 280, saves: 85 },
+  ],
+  cardPerformance: [
+    {
+      id: '1',
+      cardName: 'Luxe Gold & Black',
+      views: 1843,
+      saves: 612,
+      ctr: 0.332,
+    },
+    {
+      id: '2',
+      cardName: 'Glassmorphism Wave (Copy)',
+      views: 977,
+      saves: 250,
+      ctr: 0.256,
+    },
+    {
+      id: '3',
+      cardName: 'Personal Blog Card',
+      views: 1230,
+      saves: 301,
+      ctr: 0.245,
+    },
+    {
+      id: '4',
+      cardName: 'Cyber Grid Event Pass',
+      views: 842,
+      saves: 82,
+      ctr: 0.097,
+    },
+  ],
+};
