@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -28,48 +29,48 @@ interface AiToolsProps {
 
 const suggestedPrompts = [
     {
-        category: 'Professional',
+        category: 'Professional & Corporate',
         prompts: [
-            'Minimalist geometric pattern',
-            'Elegant marble texture',
-            'Dark carbon fiber',
-            'Brushed metal texture',
+            'A photorealistic, dark carbon fiber weave background, 4k, professional',
+            'Brushed steel texture with a subtle gleam, clean and modern',
+            'Minimalist light gray background with a single, sharp geometric line in a contrasting color',
+            'A macro photo of high-quality dark blue linen texture, elegant',
         ],
     },
     {
-        category: 'Tech',
+        category: 'Futuristic & Tech',
         prompts: [
-            'Digital circuit board',
-            'Abstract connected nodes',
-            'Futuristic holographic grid',
-            'Blueprint schematic',
+            'A 3D render of a glowing blue futuristic circuit board pattern, depth of field',
+            'Abstract network of glowing nodes and connections on a dark background, high-tech',
+            'Holographic data grid with a slight glitch effect, vibrant neon on black',
+            'Polygonal geometric mesh in shimmering silver and cobalt blue, 3D abstract',
         ],
     },
     {
-        category: 'Creative',
+        category: 'Luxury & Elegant',
         prompts: [
-            'Vibrant watercolor splash',
-            'Playful pop-art pattern',
-            'Abstract paint strokes',
-            'Deep space nebula',
+            'Photorealistic black marble with intricate gold veining, studio lighting',
+            'An art deco pattern with sharp geometric shapes in gold and deep navy blue',
+            'A subtle, seamless pattern of rose gold foil on a soft blush background',
+            'Deep emerald green silk texture with a soft, luxurious sheen',
+        ],
+    },
+     {
+        category: 'Abstract & Artistic',
+        prompts: [
+            'A vibrant, abstract explosion of watercolor paint in hues of teal and magenta',
+            'Thick, textured acrylic paint strokes in a calming seafoam and white palette',
+            'A flowing, generative art pattern of organic, smoke-like wisps in monochrome',
+            'Japanese kintsugi style with gold filling cracks in a dark ceramic texture',
         ],
     },
     {
-        category: 'Health & Wellness',
+        category: 'Nature & Organic',
         prompts: [
-            'Serene zen garden',
-            'Abstract DNA helix',
-            'Soft nature background',
-            'Light blue medical pattern',
-        ],
-    },
-    {
-        category: 'Personal',
-        prompts: [
-            'Warm wood grain',
-            'Linen or fabric texture',
-            'Subtle floral pattern',
-            'Hand-drawn sketch lines',
+            'A macro photograph of a lush green mossy surface, ultra-detailed',
+            'A flat lay of serene, overlapping river stones, soft natural light',
+            'Cross-section of a rich, dark wood grain with detailed rings',
+            'A subtle background of pressed ferns and botanicals on textured paper',
         ],
     },
 ];
@@ -281,3 +282,5 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
 };
 
 export default AiTools;
+
+    
