@@ -166,7 +166,7 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
   return (
     <div
       ref={ref}
-      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden"
+      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rounded-lg"
       style={style}
     >
       <CardContent className="flex flex-col items-center justify-center p-0">
