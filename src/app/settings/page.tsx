@@ -49,9 +49,11 @@ export default function Settings() {
         <div className="max-w-2xl mx-auto">
             <Alert variant='default' className='mb-6'>
                 <FileCode className='w-4 h-4' />
-                <AlertTitle>Server-Side API Key</AlertTitle>
+                <AlertTitle>Server-Side API Key Required</AlertTitle>
                 <AlertDescription>
-                    For this application to work, your Google AI API key must be set as an environment variable named <code>GOOGLE_API_KEY</code> on the server. Storing the key here only helps the UI know when to enable AI-powered features.
+                    For this application's AI features to work, your Google AI API key must be set as an environment variable named <code>GOOGLE_API_KEY</code> on the server where this application is hosted.
+                    <br/><br/>
+                    Storing the key here only enables the AI feature UI in the browser. The actual key is used on the server and is not sent from the browser.
                 </AlertDescription>
             </Alert>
             <Card>
@@ -59,7 +61,7 @@ export default function Settings() {
                     <CardTitle>AI Model Configuration</CardTitle>
                     <CardDescription>
                         Enter your Google AI API key here to enable the AI tools in the design studio.
-                        Your key is stored securely in your browser's local storage and is never sent to our servers directly from the client.
+                        Your key is stored securely in your browser's local storage to remember that you've configured the application.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -77,7 +79,7 @@ export default function Settings() {
                         </Select>
                     </div>
                      <div className="space-y-2">
-                        <Label htmlFor="api-key">Google AI API Key</Label>
+                        <Label htmlFor="api-key">Google AI API Key (for Browser)</Label>
                         <Input
                             id="api-key"
                             type="password"

@@ -67,6 +67,6 @@ async function importCardDesignFromImageFlow(
   input: ImportCardDesignFromImageInput,
   aiInstance: Genkit,
 ): Promise<ImportCardDesignFromImageOutput> {
-  const {output} = await prompt(input, {ai: aiInstance});
+  const {output} = await aiInstance.run(prompt, input);
   return output!;
 }

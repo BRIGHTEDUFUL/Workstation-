@@ -78,7 +78,7 @@ async function generateCardDesignFromPromptFlow(
   aiInstance: Genkit,
 ): Promise<GenerateCardDesignFromPromptOutput> {
   // Step 1: Generate the design plan (colors, fonts, etc.)
-  const {output: designPlan} = await designPlanPrompt(input, {ai: aiInstance});
+  const {output: designPlan} = await aiInstance.run(designPlanPrompt, input);
 
   if (!designPlan) {
     throw new Error('Failed to generate design plan.');

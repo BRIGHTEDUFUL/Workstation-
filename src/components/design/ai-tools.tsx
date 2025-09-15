@@ -83,7 +83,9 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-      // Ensure this only runs on the client
+      // This check is now just for the UI to know if the user has *likely*
+      // configured the app, to avoid showing an error on every action.
+      // The actual key is handled on the server.
       if (typeof window !== 'undefined') {
         const storedApiKey = localStorage.getItem('googleApiKey');
         setIsApiKeySet(!!storedApiKey);
@@ -128,7 +130,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             toast({
                 variant: 'destructive',
                 title: 'Generation Failed',
-                description: 'Could not generate design. Check your API key and prompt.',
+                description: 'Could not generate design. Check your server-side API key and prompt.',
             });
         } finally {
             setIsLoading(false);
@@ -172,7 +174,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             toast({
                 variant: 'destructive',
                 title: 'Import Failed',
-                description: 'Could not import design from file.',
+                description: 'Could not import design from file. Check your server-side API key.',
             });
         } finally {
             setIsLoading(false);
