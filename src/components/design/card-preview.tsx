@@ -39,6 +39,54 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
       fontFamily: cardDetails.font,
   };
 
+  const hasPhoto = cardDetails.layout !== 'no-photo-centered';
+
+  const renderContent = () => {
+    const textContent = (
+      <div className={cn("text-center", cardDetails.layout === 'modern-left' && 'text-left')}>
+        <h2 className="text-3xl font-bold" style={{ color: cardDetails.textColor }}>{cardDetails.name}</h2>
+        <p className="text-lg" style={{ color: cardDetails.accentColor }}>{cardDetails.title}</p>
+        <p className="text-sm mt-1">{cardDetails.company}</p>
+      </div>
+    );
+
+    const avatar = hasPhoto && (
+      <Avatar className={cn(
+          "border-2",
+          cardDetails.layout === 'classic' && "w-16 h-16 mb-4",
+          cardDetails.layout === 'modern-left' && "w-20 h-20",
+          cardDetails.layout === 'no-photo-centered' && 'hidden'
+        )} style={{borderColor: cardDetails.accentColor}}>
+        <AvatarImage src={cardDetails.profilePicUrl} />
+        <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
+      </Avatar>
+    );
+
+    switch (cardDetails.layout) {
+      case 'modern-left':
+        return (
+          <div className='p-0 flex items-center justify-start h-full gap-6'>
+            {avatar}
+            {textContent}
+          </div>
+        );
+      case 'no-photo-centered':
+         return (
+          <div className='p-0 flex flex-col items-center justify-center h-full'>
+            {textContent}
+          </div>
+        );
+      case 'classic':
+      default:
+        return (
+          <div className='p-0 flex flex-col items-center justify-center h-full'>
+            {avatar}
+            {textContent}
+          </div>
+        );
+    }
+  }
+
   return (
     <div className="w-full max-w-lg">
       <div ref={ref} className="bg-transparent">
@@ -60,15 +108,7 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
                       <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
                   </div>
               )}
-              <div className='p-0 flex flex-col items-center justify-center h-full'>
-                <Avatar className="w-16 h-16 mb-4 border-2" style={{borderColor: cardDetails.accentColor}}>
-                  <AvatarImage src={cardDetails.profilePicUrl} />
-                  <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <h2 className="text-3xl font-bold" style={{ color: cardDetails.textColor }}>{cardDetails.name}</h2>
-                <p className="text-lg" style={{ color: cardDetails.accentColor }}>{cardDetails.title}</p>
-                <p className="text-sm mt-1">{cardDetails.company}</p>
-              </div>
+              {renderContent()}
             </div>
 
             {/* Card Back */}

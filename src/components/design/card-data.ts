@@ -8,6 +8,7 @@ export type CardDetails = {
     textColor: string;
     accentColor: string;
     font: string;
+    layout: 'classic' | 'modern-left' | 'no-photo-centered';
     designDescription: string;
     logoUrl?: string;
     slogan?: string;
@@ -47,6 +48,7 @@ export const DEFAULT_CARD_DETAILS: CardDetails = {
     textColor: '#111827',
     accentColor: '#3b82f6',
     font: 'var(--font-inter)',
+    layout: 'classic',
     category: 'Business',
     designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
     profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100",

@@ -89,12 +89,8 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
         setCardDetails(prev => ({ ...prev, [name]: value }));
     }, [setCardDetails]);
 
-    const handleColorChange = useCallback((name: string, value: string) => {
+    const handleSelectChange = useCallback((name: string, value: string) => {
         setCardDetails(prev => ({ ...prev, [name]: value }));
-    }, [setCardDetails]);
-
-    const handleFontChange = useCallback((value: string) => {
-        setCardDetails(prev => ({ ...prev, font: value }));
     }, [setCardDetails]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'profilePicUrl' | 'logoUrl') => {
@@ -165,23 +161,53 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                  <AccordionContent>
                     <Card className="border-0 shadow-none">
                         <CardContent className="space-y-6 pt-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="category">Category</Label>
+                                <Select value={cardDetails.category} onValueChange={(value) => handleSelectChange('category', value)}>
+                                    <SelectTrigger id="category">
+                                        <SelectValue placeholder="Select a category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Business">Business</SelectItem>
+                                        <SelectItem value="Creative">Creative</SelectItem>
+                                        <SelectItem value="Personal">Personal</SelectItem>
+                                        <SelectItem value="Medical">Medical</SelectItem>
+                                        <SelectItem value="Event">Event</SelectItem>
+                                        <SelectItem value="Membership">Membership</SelectItem>
+                                        <SelectItem value="Student">Student</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="layout">Card Layout</Label>
+                                <Select value={cardDetails.layout} onValueChange={(value) => handleSelectChange('layout', value)}>
+                                    <SelectTrigger id="layout">
+                                        <SelectValue placeholder="Select a layout" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="classic">Classic</SelectItem>
+                                        <SelectItem value="modern-left">Modern Left</SelectItem>
+                                        <SelectItem value="no-photo-centered">No Photo, Centered</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="bgColor">Background</Label>
-                                    <Input id="bgColor" type="color" value={cardDetails.bgColor} onChange={(e) => handleColorChange('bgColor', e.target.value)} className="p-1 h-10" />
+                                    <Input id="bgColor" type="color" value={cardDetails.bgColor} onChange={(e) => handleSelectChange('bgColor', e.target.value)} className="p-1 h-10" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="textColor">Text</Label>
-                                    <Input id="textColor" type="color" value={cardDetails.textColor} onChange={(e) => handleColorChange('textColor', e.target.value)} className="p-1 h-10" />
+                                    <Input id="textColor" type="color" value={cardDetails.textColor} onChange={(e) => handleSelectChange('textColor', e.target.value)} className="p-1 h-10" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="accentColor">Accent</Label>
-                                    <Input id="accentColor" type="color" value={cardDetails.accentColor} onChange={(e) => handleColorChange('accentColor', e.target.value)} className="p-1 h-10" />
+                                    <Input id="accentColor" type="color" value={cardDetails.accentColor} onChange={(e) => handleSelectChange('accentColor', e.target.value)} className="p-1 h-10" />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="font">Font</Label>
-                                <Select value={cardDetails.font} onValueChange={handleFontChange}>
+                                <Select value={cardDetails.font} onValueChange={(value) => handleSelectChange('font', value)}>
                                     <SelectTrigger id="font">
                                         <SelectValue placeholder="Select a font" />
                                     </SelectTrigger>
