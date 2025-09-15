@@ -2,12 +2,14 @@
 
 'use client'
 
-import { Download, Share2, Save } from 'lucide-react';
+import { Download, Share2, Save, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toPng } from 'html-to-image';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
 import { useState } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 interface DesignHeaderProps {
     cardDetails: CardDetails;
@@ -18,6 +20,7 @@ interface DesignHeaderProps {
 const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderProps) => {
     const { toast } = useToast();
     const [isSaving, setIsSaving] = useState(false);
+    const isMobile = useIsMobile();
     
     const handleExport = async () => {
         const frontNode = cardFrontRef.current;
@@ -39,16 +42,12 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             frontLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-front.png`;
             frontLink.href = frontDataUrl;
             frontLink.click();
-
-            // Export Back: Temporarily remove transform to fix rendering
-            const originalTransform = backNode.style.transform;
-            backNode.style.transform = 'none';
-
-            const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
             
-            // Restore transform after export
-            backNode.style.transform = originalTransform;
+            // Wait a moment before starting the next download
+            await new Promise(resolve => setTimeout(resolve, 200));
 
+            // Export Back
+            const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
             const backLink = document.createElement('a');
             backLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`;
             backLink.href = backDataUrl;
@@ -61,10 +60,6 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                 title: 'Export Failed',
                 description: 'Could not export the card images.',
             });
-            // Ensure transform is restored even if export fails
-            if (backNode && backNode.style.transform === 'none') {
-                backNode.style.transform = 'rotateY(180deg)';
-            }
         }
     };
 
@@ -76,18 +71,10 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
 
             let cardToSave = { ...cardDetails };
 
-            if (cardToSave.website && !cardToSave.qrUrl.startsWith('data:image')) {
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardToSave.website)}&bgcolor=${cardToSave.bgColor.substring(1)}&color=${cardToSave.textColor.substring(1)}&qzone=1`;
-                cardToSave.qrUrl = qrUrl;
-            } else if (!cardToSave.website) {
-                cardToSave.qrUrl = ''; // Clear QR if no website
-            }
-
-
             if (existingCardIndex > -1) {
                 savedCards[existingCardIndex] = cardToSave;
             } else {
-                savedCards.push(cardToSave);
+                savedCards.unshift(cardToSave);
             }
 
             localStorage.setItem('savedCards', JSON.stringify(savedCards));
@@ -127,21 +114,49 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
         }
     };
 
+    const ActionButtons = () => (
+        <>
+            <Button onClick={() => handleSave(false)} disabled={isSaving}>
+                <Save className="w-4 h-4 mr-2" />
+                {isSaving ? 'Saving...' : 'Save Card'}
+            </Button>
+            <Button variant="outline" onClick={() => handleSave(true)} disabled={!cardDetails.website}>
+                <Share2 className="w-4 h-4 mr-2" /> Share
+            </Button>
+            <Button onClick={handleExport}>
+                <Download className="w-4 h-4 mr-2" /> Export
+            </Button>
+        </>
+    )
+
     return (
         <header className="flex items-center justify-between p-4 border-b shrink-0">
-            <h1 className="text-xl font-bold">Design Studio</h1>
-            <div className="flex items-center gap-2">
-                <Button onClick={() => handleSave(false)} disabled={isSaving}>
-                    <Save className="w-4 h-4 mr-2" />
-                    {isSaving ? 'Saving...' : 'Save Card'}
-                </Button>
-                <Button variant="outline" onClick={() => handleSave(true)} disabled={!cardDetails.website}>
-                    <Share2 className="w-4 h-4 mr-2" /> Share
-                </Button>
-                <Button onClick={handleExport}>
-                    <Download className="w-4 h-4 mr-2" /> Export
-                </Button>
-            </div>
+            <h1 className="text-lg font-bold sm:text-xl">Design Studio</h1>
+            {isMobile ? (
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <MoreVertical className="w-5 h-5" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align='end'>
+                         <DropdownMenuItem onClick={() => handleSave(false)} disabled={isSaving}>
+                            <Save className="w-4 h-4 mr-2" />
+                            {isSaving ? 'Saving...' : 'Save Card'}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleSave(true)} disabled={!cardDetails.website}>
+                            <Share2 className="w-4 h-4 mr-2" /> Share
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleExport}>
+                            <Download className="w-4 h-4 mr-2" /> Export
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ) : (
+                <div className="flex items-center gap-2">
+                   <ActionButtons />
+                </div>
+            )}
         </header>
     );
 };

@@ -41,7 +41,7 @@ export default function MyCards() {
         name: `${cardToDuplicate.name} (Copy)`,
       };
 
-      const updatedCards = [...cards, newCard];
+      const updatedCards = [newCard, ...cards];
       localStorage.setItem('savedCards', JSON.stringify(updatedCards));
       setCards(updatedCards);
       toast({
@@ -63,7 +63,7 @@ export default function MyCards() {
     if (!isMounted) {
         return (
           <div className="flex flex-col h-screen">
-            <header className="flex items-center justify-between p-6 border-b shrink-0 border-border">
+            <header className="flex flex-col items-start justify-between gap-4 p-6 border-b sm:flex-row sm:items-center shrink-0 border-border">
               <div>
                 <h1 className="text-2xl font-bold tracking-tight">My Cards</h1>
                 <p className="text-muted-foreground">Manage your saved card designs.</p>
@@ -84,7 +84,7 @@ export default function MyCards() {
 
   return (
     <div className="flex flex-col h-screen">
-      <header className="flex items-center justify-between p-6 border-b shrink-0 border-border">
+      <header className="flex flex-col items-start justify-between gap-4 p-6 border-b sm:flex-row sm:items-center shrink-0 border-border">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">My Cards</h1>
           <p className="text-muted-foreground">

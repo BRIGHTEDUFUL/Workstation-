@@ -18,6 +18,8 @@ import cardLayouts from '@/lib/card-layouts.json';
 import { v4 as uuidv4 } from 'uuid';
 import { CardDetails, DEFAULT_CARD_DETAILS } from '@/components/design/card-data';
 import DesignHeader from '@/components/design/design-header';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 function DesignPageContents() {
@@ -25,6 +27,7 @@ function DesignPageContents() {
     const [cardDetails, setCardDetails] = useState<CardDetails>(DEFAULT_CARD_DETAILS);
     const cardFrontRef = useRef<HTMLDivElement>(null);
     const cardBackRef = useRef<HTMLDivElement>(null);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const getInitialCardDetails = (): CardDetails => {
@@ -41,10 +44,6 @@ function DesignPageContents() {
                     if (!cardToEdit.layoutId) {
                         cardToEdit.layoutId = defaultLayout.id;
                         cardToEdit.elements = defaultLayout.elements;
-                    }
-                     // Ensure QR URL is correctly formed if it's not a data URI
-                    if (cardToEdit.website && !cardToEdit.qrUrl?.startsWith('data:image')) {
-                        cardToEdit.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardToEdit.website)}&bgcolor=${cardToEdit.bgColor.substring(1)}&color=${cardToEdit.textColor.substring(1)}&qzone=1`;
                     }
                     return cardToEdit;
                 }
@@ -69,7 +68,7 @@ function DesignPageContents() {
             }
             
             const website = baseDetails.website || '';
-            const qrUrl = website ? `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(website)}&bgcolor=${baseDetails.bgColor.substring(1)}&color=${baseDetails.textColor.substring(1)}&qzone=1` : '';
+            const qrUrl = '';
 
             return {
                 ...baseDetails,
@@ -96,11 +95,36 @@ function DesignPageContents() {
         };
     }, [cardDetails.id]);
 
+    if (isMobile) {
+        return (
+            <div className="flex flex-col h-screen overflow-hidden bg-background">
+                 <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
+                 <Tabs defaultValue="editor" className="flex flex-col flex-1 min-h-0">
+                    <TabsList className="mx-auto mt-4">
+                        <TabsTrigger value="editor">Editor</TabsTrigger>
+                        <TabsTrigger value="preview">Preview</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="editor" className="flex-1 overflow-auto">
+                         <div className="p-6 space-y-8">
+                            <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                            <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="preview" className="flex-1 overflow-auto">
+                        <div className="flex items-center justify-center h-full p-8 bg-muted/30">
+                            <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                        </div>
+                    </TabsContent>
+                </Tabs>
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">
             <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
             <ResizablePanelGroup direction="horizontal" className="flex-1">
-                <ResizablePanel defaultSize={40} minSize={35} maxSize={50}>
+                <ResizablePanel defaultSize={45} minSize={35}>
                     <ScrollArea className="h-full">
                         <div className="p-6 space-y-8">
                             <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
@@ -109,7 +133,7 @@ function DesignPageContents() {
                     </ScrollArea>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={60}>
+                <ResizablePanel defaultSize={55}>
                     <div className="flex items-center justify-center h-full p-8 bg-muted/30">
                        <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} setCardDetails={setCardDetails} />
                     </div>

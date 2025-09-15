@@ -8,6 +8,7 @@ import type { CardDetails } from '@/components/design/card-data';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import placeholderImages from '@/lib/placeholder-images.json';
+import { cn } from '@/lib/utils';
 
 function RecentCards() {
   const [recentCards, setRecentCards] = useState<CardDetails[]>([]);
@@ -18,7 +19,7 @@ function RecentCards() {
       localStorage.getItem('savedCards') || '[]'
     );
     // Get the 3 most recently added cards
-    const sortedCards = savedCards.reverse().slice(0, 3);
+    const sortedCards = savedCards.slice().reverse().slice(0, 3);
     setRecentCards(sortedCards);
   }, []);
 
@@ -31,7 +32,7 @@ function RecentCards() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {recentCards.map(card => (
         <Link key={card.id} href={`/design?id=${card.id}`}>
           <div
@@ -77,7 +78,7 @@ function TemplateSuggestions() {
     .slice(0, 3);
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {templates.map(template => (
         <Card
           key={template.id}
@@ -107,21 +108,21 @@ function TemplateSuggestions() {
 export default function Dashboard() {
   return (
     <div className="flex flex-col h-screen">
-      <header className="flex items-center justify-between p-6 border-b shrink-0 border-border">
+      <header className="flex flex-col items-start justify-between gap-4 p-6 border-b sm:flex-row sm:items-center shrink-0 border-border">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground">
             Welcome back! Here's a quick overview.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline">
+        <div className="flex flex-col w-full gap-2 sm:w-auto sm:flex-row sm:items-center">
+          <Button asChild variant="outline" className='w-full sm:w-auto'>
             <Link href="/templates">
               <Library className="w-4 h-4 mr-2" />
               Browse Templates
             </Link>
           </Button>
-          <Button asChild>
+          <Button asChild className='w-full sm:w-auto'>
             <Link href="/design">
               <PlusCircle className="w-4 h-4 mr-2" />
               New Card

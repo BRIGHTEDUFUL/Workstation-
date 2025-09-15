@@ -74,13 +74,13 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, isF
                         </Avatar>
                     </div>
                 )}
-                <h2 className="font-bold" style={{ fontSize: `${nameElement.fontSize}vw`, fontWeight: nameElement.fontWeight }}>
+                <h2 className="font-bold" style={{ fontSize: `clamp(1rem, ${nameElement.fontSize}vw, 2.5rem)`, fontWeight: nameElement.fontWeight }}>
                     {cardDetails.name}
                 </h2>
-                <p className="text-lg" style={{ fontSize: `${titleElement.fontSize}vw`, fontWeight: titleElement.fontWeight }}>
+                <p className="text-lg" style={{ fontSize: `clamp(0.8rem, ${titleElement.fontSize}vw, 1.5rem)`, fontWeight: titleElement.fontWeight }}>
                     {cardDetails.title}
                 </p>
-                <p className="text-sm mt-2" style={{ fontSize: `${companyElement.fontSize}vw`, fontWeight: companyElement.fontWeight }}>
+                <p className="text-sm mt-2" style={{ fontSize: `clamp(0.7rem, ${companyElement.fontSize}vw, 1.2rem)`, fontWeight: companyElement.fontWeight }}>
                     {cardDetails.company}
                 </p>
             </div>
@@ -91,10 +91,9 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, isF
             <div
                 ref={ref}
                 className={cn("absolute flex w-full h-full shadow-lg backface-hidden rounded-lg overflow-hidden", 
-                    isVertical ? 'flex-row' : 'flex-col',
-                    { 'rotate-y-180': isFlipped }
+                    isVertical ? 'flex-row' : 'flex-col'
                 )}
-                style={baseStyle}
+                style={{...baseStyle, transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}}
             >
                 {layout.id.endsWith('-reverse') ? 
                     <>{TextSection}{SplitSection}</> : 
@@ -117,8 +116,8 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, isF
     return (
         <div
             ref={ref}
-            className={cn("absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg", { 'rotate-y-180': isFlipped })}
-            style={baseStyle}
+            className={cn("absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg")}
+            style={{...baseStyle, transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}}
         >
             <div className="relative w-full h-full">
                 <div style={containerStyle}>
@@ -132,13 +131,13 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, isF
                     )}
                     
                     <div className="flex flex-col">
-                        <h2 className="font-bold" style={{ fontSize: `${nameElement.fontSize}vw`, fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
+                        <h2 className="font-bold" style={{ fontSize: `clamp(1rem, ${nameElement.fontSize}vw, 2.5rem)`, fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
                             {cardDetails.name}
                         </h2>
-                        <p className="text-lg" style={{ fontSize: `${titleElement.fontSize}vw`, fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
+                        <p className="text-lg" style={{ fontSize: `clamp(0.8rem, ${titleElement.fontSize}vw, 1.5rem)`, fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
                             {cardDetails.title}
                         </p>
-                        <p className="text-sm mt-2" style={{ fontSize: `${companyElement.fontSize}vw`, fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
+                        <p className="text-sm mt-2" style={{ fontSize: `clamp(0.7rem, ${companyElement.fontSize}vw, 1.2rem)`, fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
                             {cardDetails.company}
                         </p>
                     </div>
@@ -159,8 +158,9 @@ CardFront.displayName = 'CardFront';
 // CardBack Component
 interface CardBackProps {
   cardDetails: CardDetails;
+  isFlipped: boolean;
 }
-const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref) => {
+const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails, isFlipped }, ref) => {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
   useEffect(() => {
@@ -176,8 +176,8 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
   return (
     <div
       ref={ref}
-      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rounded-lg rotate-y-180"
-      style={style}
+      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rounded-lg"
+      style={{...style, transform: isFlipped ? 'rotateY(0deg)' : 'rotateY(-180deg)' }}
     >
       <CardContent className="flex flex-col items-center justify-center p-0">
         {qrCodeUrl ? (
@@ -243,14 +243,14 @@ const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }:
               'relative w-full aspect-[1.7/1] transition-transform duration-300 preserve-3d',
               { 'rotate-y-180': isFlipped }
             )}
-            style={{ transformStyle: 'preserve-3d', transition: 'transform 0.6s' }}
+            style={{ transformStyle: 'preserve-3d', transition: 'transform 0.8s ease-in-out' }}
           >
             <CardFront 
               ref={cardFrontRef} 
               cardDetails={cardDetails} 
               isFlipped={isFlipped}
             />
-            <CardBack ref={cardBackRef} cardDetails={cardDetails} />
+            <CardBack ref={cardBackRef} cardDetails={cardDetails} isFlipped={isFlipped} />
           </div>
         </div>
       </div>

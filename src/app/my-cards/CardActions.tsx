@@ -182,7 +182,7 @@ export default function CardActions({ cards, handleDelete, handleDuplicate, hand
     }
 
     return (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {cards.map((card) => (
               <AlertDialog key={card.id}>
                 <Card className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
@@ -210,7 +210,6 @@ export default function CardActions({ cards, handleDelete, handleDuplicate, hand
                             <AlertDialogTrigger asChild>
                                 <DropdownMenuItem
                                     variant="destructive"
-                                    className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
                                 >
                                     <Trash className="w-4 h-4 mr-2"/>Delete
                                 </DropdownMenuItem>

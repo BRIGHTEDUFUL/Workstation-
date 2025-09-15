@@ -56,7 +56,7 @@ export default async function Templates() {
               <h2 className="mb-6 text-xl font-semibold tracking-tight">
                 {category} Cards
               </h2>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {templatesByCategory[category].map(template => (
                   <Card
                     key={template.id}
@@ -71,9 +71,9 @@ export default async function Templates() {
                         data-ai-hint={template.imageHint}
                       />
                     </CardContent>
-                    <CardFooter className="p-4 bg-card">
+                    <CardFooter className="flex-wrap items-center justify-between p-4 bg-card">
                       <p className="font-semibold">{template.description}</p>
-                      <Button asChild size="sm" className="ml-auto">
+                      <Button asChild size="sm" className="mt-2 ml-auto sm:mt-0">
                         <Link href={`/design?template=${template.id}`}>Use Template</Link>
                       </Button>
                     </CardFooter>
