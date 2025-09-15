@@ -34,7 +34,7 @@ interface CardActionsProps {
     cards: CardDetails[];
     handleDelete: (cardId: string) => void;
     handleDuplicate: (card: CardDetails) => void;
-    handleShare: (cardId: string) => void;
+    handleShare: (card: CardDetails) => void;
 }
 
 export default function CardActions({ cards, handleDelete, handleDuplicate, handleShare }: CardActionsProps) {
@@ -106,7 +106,7 @@ export default function CardActions({ cards, handleDelete, handleDuplicate, hand
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                             <DropdownMenuItem onClick={() => handleShare(card.id)}><Share2 className="w-4 h-4 mr-2"/>Share</DropdownMenuItem>
+                             <DropdownMenuItem onClick={() => handleShare(card)} disabled={!card.website}><Share2 className="w-4 h-4 mr-2"/>Share</DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <Link href={`/design?id=${card.id}`}><Pencil className="w-4 h-4 mr-2"/>Edit</Link>
                             </DropdownMenuItem>

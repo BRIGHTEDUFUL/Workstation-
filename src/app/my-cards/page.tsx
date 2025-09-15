@@ -42,9 +42,9 @@ export default function MyCards() {
         id: newId,
         name: `${cardToDuplicate.name} (Copy)`,
       };
-
-      // Update QR code URL for the new card
-      newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(window.location.origin + '/share/' + newCard.id)}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
+      
+      const dataUri = newCard.website || `${window.location.origin}/share/${newCard.id}`;
+      newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(dataUri)}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
 
 
       const updatedCards = [...cards, newCard];
@@ -56,14 +56,14 @@ export default function MyCards() {
       });
     };
 
-    const handleShare = (cardId: string) => {
-        const url = `/share/${cardId}`;
-        navigator.clipboard.writeText(`${window.location.origin}${url}`);
-        toast({
-            title: 'Link Copied!',
-            description: 'The shareable link has been copied to your clipboard.',
-        });
-        router.push(url);
+    const handleShare = (card: CardDetails) => {
+        if (card.website) {
+            navigator.clipboard.writeText(card.website);
+            toast({
+                title: 'Link Copied!',
+                description: 'The website link has been copied to your clipboard.',
+            });
+        }
     };
 
     if (!isMounted) {

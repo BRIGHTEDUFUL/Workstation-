@@ -69,13 +69,14 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
         }
     };
 
-    const handleSave = (redirect: boolean = false) => {
+    const handleSave = (share: boolean = false) => {
         setIsSaving(true);
         try {
             const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
             const existingCardIndex = savedCards.findIndex(c => c.id === cardDetails.id);
 
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(window.location.origin + '/share/' + cardDetails.id)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+            const dataUri = cardDetails.website || `${window.location.origin}/share/${cardDetails.id}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(dataUri)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
 
             const cardToSave = {
                 ...cardDetails,
@@ -92,8 +93,20 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             
             window.dispatchEvent(new CustomEvent('card-saved', { detail: cardToSave }));
 
-            if (redirect) {
-                router.push(`/share/${cardDetails.id}`);
+            if (share) {
+                if (cardDetails.website) {
+                    navigator.clipboard.writeText(cardDetails.website);
+                    toast({
+                        title: 'Link Copied!',
+                        description: 'The website link has been copied to your clipboard.',
+                    });
+                } else {
+                    toast({
+                        variant: 'destructive',
+                        title: 'No Website URL',
+                        description: 'Please add a website URL in the editor to share.',
+                    });
+                }
             } else {
                  toast({
                     title: 'Card Saved!',
@@ -121,7 +134,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                     <Save className="w-4 h-4 mr-2" />
                     {isSaving ? 'Saving...' : 'Save Card'}
                 </Button>
-                <Button variant="outline" onClick={() => handleSave(true)}>
+                <Button variant="outline" onClick={() => handleSave(true)} disabled={!cardDetails.website}>
                     <Share2 className="w-4 h-4 mr-2" /> Share
                 </Button>
                 <Button onClick={handleExport}>

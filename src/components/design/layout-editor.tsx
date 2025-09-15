@@ -16,7 +16,7 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import type { CardDetails } from './card-data';
 import { Button } from '../ui/button';
-import { Upload, Globe, Linkedin, Twitter, Instagram, Facebook, Music } from 'lucide-react';
+import { Upload, Globe } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 
 interface LayoutEditorProps {
@@ -78,6 +78,10 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                             <div className="space-y-2">
                                 <Label htmlFor="company">Company / Organization</Label>
                                 <Input id="company" name="company" value={cardDetails.company} onChange={handleInputChange} placeholder="e.g. Acme Inc." />
+                            </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="website">Website / Landing Page</Label>
+                                <SocialLinkInput name="website" placeholder="your.website.com" value={cardDetails.website || ''} onChange={handleInputChange} icon={Globe} />
                             </div>
                             
                             <div className="space-y-2">
@@ -160,48 +164,6 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                         </CardContent>
                     </Card>
                  </AccordionContent>
-            </AccordionItem>
-             <AccordionItem value="landing-page-content">
-                <AccordionTrigger className='text-base font-semibold'>Landing Page Content</AccordionTrigger>
-                <AccordionContent>
-                    <Card className="border-0 shadow-none">
-                         <CardHeader>
-                            <CardDescription>
-                                This information will be displayed on your public shareable page.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                             <div className="space-y-2">
-                                <Label htmlFor="landingPageBio">Bio</Label>
-                                <Textarea id="landingPageBio" name="landingPageBio" value={cardDetails.landingPageBio || ''} onChange={handleInputChange} placeholder="Tell your visitors a little about yourself." />
-                            </div>
-                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" name="email" value={cardDetails.email || ''} onChange={handleInputChange} placeholder="your.email@example.com" />
-                                </div>
-                                 <div className="space-y-2">
-                                    <Label htmlFor="phone">Phone</Label>
-                                    <Input id="phone" name="phone" value={cardDetails.phone || ''} onChange={handleInputChange} placeholder="+1 123 456 7890" />
-                                </div>
-                             </div>
-                             <div className="space-y-2">
-                                <Label htmlFor="website">Website</Label>
-                                <SocialLinkInput name="website" placeholder="your.website.com" value={cardDetails.website || ''} onChange={handleInputChange} icon={Globe} />
-                            </div>
-                             <div className="space-y-4">
-                                <Label>Social Links</Label>
-                                <div className="space-y-3">
-                                    <SocialLinkInput name="linkedin" placeholder="linkedin.com/in/..." value={cardDetails.linkedin || ''} onChange={handleInputChange} icon={Linkedin} />
-                                    <SocialLinkInput name="twitter" placeholder="x.com/..." value={cardDetails.twitter || ''} onChange={handleInputChange} icon={Twitter} />
-                                    <SocialLinkInput name="instagram" placeholder="instagram.com/..." value={cardDetails.instagram || ''} onChange={handleInputChange} icon={Instagram} />
-                                    <SocialLinkInput name="facebook" placeholder="facebook.com/..." value={cardDetails.facebook || ''} onChange={handleInputChange} icon={Facebook} />
-                                     <SocialLinkInput name="tiktok" placeholder="tiktok.com/@..." value={cardDetails.tiktok || ''} onChange={handleInputChange} icon={Music} />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </AccordionContent>
             </AccordionItem>
         </Accordion>
     );
