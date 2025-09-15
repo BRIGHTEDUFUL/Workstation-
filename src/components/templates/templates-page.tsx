@@ -25,7 +25,7 @@ import Link from 'next/link';
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {templates.map((template) => (
               <Card key={template.id} className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1">
-                <CardContent className="relative p-0 aspect-[16/9]">
+                <CardContent className="relative p-0 aspect-video">
                   <Image
                     src={template.imageUrl}
                     alt={template.description}
