@@ -38,7 +38,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
     const profilePicElement = cardDetails.elements.find(e => e.component === 'profilePic');
 
     if (layout.id.startsWith('split-')) {
-        const isVertical = layout.id === 'split-vertical';
+        const isVertical = layout.id.includes('vertical');
         const splitSectionStyle = {
             backgroundColor: cardDetails.accentColor,
             color: cardDetails.bgColor, // Invert color for contrast
@@ -90,7 +90,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
                 className={cn("absolute flex w-full h-full shadow-lg backface-hidden rounded-lg overflow-hidden", isVertical ? 'flex-row' : 'flex-col')}
                 style={baseStyle}
             >
-                {layout.id === 'split-vertical-reverse' ? 
+                {layout.id.endsWith('-reverse') ? 
                     <>{TextSection}{SplitSection}</> : 
                     <>{SplitSection}{TextSection}</>
                 }
