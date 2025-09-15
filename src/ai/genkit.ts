@@ -2,7 +2,6 @@
 import {genkit, Flow} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'zod';
-import {ai as globalAi} from './config';
 
 // A wrapper to dynamically initialize Google AI with a user-provided key
 export async function runWithApiKey<I extends z.ZodType, O extends z.ZodType>(
@@ -24,5 +23,3 @@ export async function runWithApiKey<I extends z.ZodType, O extends z.ZodType>(
   );
   return await dynamicFlow(input);
 }
-
-export {globalAi as ai};
