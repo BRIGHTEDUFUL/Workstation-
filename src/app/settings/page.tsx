@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { FileCode, Palette } from 'lucide-react';
+import { FileCode, Palette, Terminal } from 'lucide-react';
 import { useTheme } from '@/components/theme/theme-provider';
 
 const themes = [
@@ -90,24 +90,15 @@ export default function Settings() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                      <Alert variant='default'>
-                        <FileCode className='w-4 h-4' />
-                        <AlertTitle>Server-Side API Key</AlertTitle>
+                        <Terminal className='w-4 h-4' />
+                        <AlertTitle>Server-Side API Key Required</AlertTitle>
                         <AlertDescription>
-                            For AI features to work, your Google AI API key must be set as an environment variable named <code>GOOGLE_API_KEY</code> on the server. Storing the key here only enables the AI feature UI in the browser.
+                            For AI features to function, you must set the <code>GOOGLE_API_KEY</code> environment variable on the server. The setting below only enables the AI feature UI in your browser.
                         </AlertDescription>
                     </Alert>
                     <div className="space-y-2">
                         <Label htmlFor="ai-provider">AI Provider</Label>
-                        <Select defaultValue='google'>
-                            <SelectTrigger id="ai-provider">
-                                <SelectValue placeholder="Select a provider" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="google">Google AI</SelectItem>
-                                <SelectItem value="openai" disabled>OpenAI (Coming Soon)</SelectItem>
-                                <SelectItem value="anthropic" disabled>Anthropic (Coming Soon)</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <Input id="ai-provider" value="Google AI" readOnly disabled />
                     </div>
                      <div className="space-y-2">
                         <Label htmlFor="api-key">Google AI API Key (for Browser)</Label>
@@ -127,5 +118,3 @@ export default function Settings() {
     </div>
   );
 };
-
-    
