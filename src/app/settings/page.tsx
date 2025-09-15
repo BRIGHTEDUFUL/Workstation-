@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { FileCode } from 'lucide-react';
 
 export default function Settings() {
     const { toast } = useToast();
@@ -25,9 +27,9 @@ export default function Settings() {
         localStorage.setItem('googleApiKey', apiKey);
         toast({
             title: 'Settings Saved',
-            description: 'Your API key has been updated.',
+            description: 'Your API key has been stored in your browser.',
         });
-        // Force a reload to make sure all components get the new key
+        // Force a reload to make sure all components check for the key again
         window.location.reload();
     };
 
@@ -45,12 +47,19 @@ export default function Settings() {
       </header>
       <main className="flex-1 p-6 overflow-auto">
         <div className="max-w-2xl mx-auto">
+            <Alert variant='default' className='mb-6'>
+                <FileCode className='w-4 h-4' />
+                <AlertTitle>Server-Side API Key</AlertTitle>
+                <AlertDescription>
+                    For this application to work, your Google AI API key must be set as an environment variable named <code>GOOGLE_API_KEY</code> on the server. Storing the key here only helps the UI know when to enable AI-powered features.
+                </AlertDescription>
+            </Alert>
             <Card>
                 <CardHeader>
                     <CardTitle>AI Model Configuration</CardTitle>
                     <CardDescription>
-                        Select your preferred AI provider and enter your API key to enable AI features.
-                        Your key is stored securely in your browser's local storage and is never sent to our servers.
+                        Enter your Google AI API key here to enable the AI tools in the design studio.
+                        Your key is stored securely in your browser's local storage and is never sent to our servers directly from the client.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -77,7 +86,7 @@ export default function Settings() {
                             placeholder="Enter your Google AI API key"
                         />
                     </div>
-                    <Button onClick={handleSave} disabled={!apiKey}>Save Settings</Button>
+                    <Button onClick={handleSave} disabled={!apiKey}>Save Key to Browser</Button>
                 </CardContent>
             </Card>
         </div>

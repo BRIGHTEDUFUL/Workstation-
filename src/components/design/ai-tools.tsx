@@ -79,19 +79,19 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const [prompt, setPrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [filename, setFilename] = useState('');
-    const [apiKey, setApiKey] = useState<string | null>(null);
+    const [isApiKeySet, setIsApiKeySet] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
       // Ensure this only runs on the client
       if (typeof window !== 'undefined') {
         const storedApiKey = localStorage.getItem('googleApiKey');
-        setApiKey(storedApiKey);
+        setIsApiKeySet(!!storedApiKey);
       }
     }, []);
 
     const handleGenerate = async () => {
-        if (!apiKey) {
+        if (!isApiKeySet) {
             toast({
                 variant: 'destructive',
                 title: 'API Key Missing',
@@ -106,7 +106,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                 name: cardDetails.name,
                 title: cardDetails.title,
                 company: cardDetails.company
-            }, apiKey);
+            });
 
             setCardDetails(prev => ({
                 ...prev,
@@ -151,7 +151,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     };
 
     const handleImport = async (fileDataUri: string) => {
-        if (!apiKey) {
+        if (!isApiKeySet) {
             toast({
                 variant: 'destructive',
                 title: 'API Key Missing',
@@ -161,7 +161,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
         }
         setIsLoading(true);
         try {
-            const result = await importCardDesignAction({ fileDataUri }, apiKey);
+            const result = await importCardDesignAction({ fileDataUri });
             setCardDetails(prev => ({...prev, designDescription: result.designDescription }));
             toast({
               title: "Import Successful!",
@@ -187,7 +187,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                 <CardDescription>Use AI to generate or import designs.</CardDescription>
             </CardHeader>
             <CardContent>
-                {!apiKey && (
+                {!isApiKeySet && (
                     <Alert className="mb-4">
                         <Terminal className="h-4 w-4" />
                         <AlertTitle>API Key Not Set</AlertTitle>
@@ -198,8 +198,8 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                 )}
                 <Tabs defaultValue="generate">
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="generate" disabled={!apiKey}>Generate</TabsTrigger>
-                        <TabsTrigger value="import" disabled={!apiKey}>Import</TabsTrigger>
+                        <TabsTrigger value="generate" disabled={!isApiKeySet}>Generate</TabsTrigger>
+                        <TabsTrigger value="import" disabled={!isApiKeySet}>Import</TabsTrigger>
                     </TabsList>
                     <TabsContent value="generate" className="mt-4">
                         <div className="space-y-4">
@@ -210,7 +210,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                     placeholder="e.g., A minimalist card with a galaxy background"
                                     value={prompt}
                                     onChange={(e) => setPrompt(e.target.value)}
-                                    disabled={!apiKey}
+                                    disabled={!isApiKeySet}
                                 />
                             </div>
                             <div className="space-y-4">
@@ -233,7 +233,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                     </div>
                                 ))}
                             </div>
-                            <Button onClick={handleGenerate} disabled={isLoading || !prompt || !apiKey} className="w-full">
+                            <Button onClick={handleGenerate} disabled={isLoading || !prompt || !isApiKeySet} className="w-full">
                                 <Sparkles className="w-4 h-4 mr-2" />
                                 {isLoading ? 'Generating...' : 'Generate with AI'}
                             </Button>
@@ -243,8 +243,8 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="import-file">Upload Image or PDF</Label>
-                                <Input id="import-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" disabled={!apiKey} />
-                                <Button variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()} disabled={isLoading || !apiKey}>
+                                <Input id="import-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" disabled={!isApiKeySet} />
+                                <Button variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()} disabled={isLoading || !isApiKeySet}>
                                     <Upload className="w-4 h-4 mr-2" />
                                     {isLoading ? 'Importing...' : (filename || 'Choose a file')}
                                 </Button>

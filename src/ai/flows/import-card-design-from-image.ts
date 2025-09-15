@@ -10,7 +10,7 @@
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {Genkit, genkit} from 'genkit';
+import {genkit, Genkit} from 'genkit';
 
 const ImportCardDesignFromImageInputSchema = z.object({
   fileDataUri: z
@@ -35,9 +35,12 @@ export type ImportCardDesignFromImageOutput = z.infer<
 >;
 
 export async function importCardDesignAction(
-  input: ImportCardDesignFromImageInput,
-  apiKey: string,
+  input: ImportCardDesignFromImageInput
 ): Promise<ImportCardDesignFromImageOutput> {
+  const apiKey = process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    throw new Error('GOOGLE_API_KEY environment variable not set.');
+  }
   const dynamicAi = genkit({
     plugins: [googleAI({apiKey})],
   });

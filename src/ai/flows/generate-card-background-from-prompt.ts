@@ -9,7 +9,7 @@
 
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {Genkit, genkit} from 'genkit';
+import {genkit, Genkit} from 'genkit';
 
 const GenerateCardBackgroundFromPromptInputSchema = z.object({
   prompt: z
@@ -32,9 +32,12 @@ export type GenerateCardBackgroundFromPromptOutput = z.infer<
 >;
 
 export async function generateCardBackgroundAction(
-  input: GenerateCardBackgroundFromPromptInput,
-  apiKey: string
+  input: GenerateCardBackgroundFromPromptInput
 ): Promise<GenerateCardBackgroundFromPromptOutput> {
+  const apiKey = process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    throw new Error('GOOGLE_API_KEY environment variable not set.');
+  }
   const dynamicAi = genkit({
     plugins: [googleAI({apiKey})],
   });
