@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import MainLayout from '@/components/layout/main-layout';
 import { Inter, Source_Code_Pro } from 'next/font/google'
+import { ThemeProvider } from '@/components/theme/theme-provider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
 const sourceCodePro = Source_Code_Pro({ subsets: ['latin'], variable: '--font-source-code-pro', display: 'swap' })
@@ -21,14 +22,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(
-        "min-h-screen bg-background font-body antialiased dark",
+        "min-h-screen bg-background font-body antialiased",
         inter.variable,
         sourceCodePro.variable
         )}>
-          <MainLayout>
-            {children}
-          </MainLayout>
-          <Toaster />
+          <ThemeProvider>
+            <MainLayout>
+              {children}
+            </MainLayout>
+            <Toaster />
+          </ThemeProvider>
       </body>
     </html>
   );
