@@ -15,7 +15,7 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import type { CardDetails } from './design-page';
 import { Button } from '../ui/button';
-import { Upload, Link as LinkIcon } from 'lucide-react';
+import { Upload, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 
 interface LayoutEditorProps {
@@ -206,6 +206,41 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                         </CardContent>
                     </Card>
                  </AccordionContent>
+            </AccordionItem>
+             <AccordionItem value="landing-page-content">
+                <AccordionTrigger className='text-base font-semibold'>Landing Page</AccordionTrigger>
+                <AccordionContent>
+                    <Card className="border-0 shadow-none">
+                        <CardContent className="space-y-6 pt-6">
+                             <div className="space-y-2">
+                                <Label htmlFor="landingPageBio">Bio</Label>
+                                <Textarea id="landingPageBio" name="landingPageBio" value={cardDetails.landingPageBio || ''} onChange={handleInputChange} placeholder="Tell your visitors a little about yourself." />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email</Label>
+                                <Input id="email" name="email" value={cardDetails.email || ''} onChange={handleInputChange} placeholder="your.email@example.com" />
+                            </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="phone">Phone</Label>
+                                <Input id="phone" name="phone" value={cardDetails.phone || ''} onChange={handleInputChange} placeholder="+1 123 456 7890" />
+                            </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="website">Website</Label>
+                                <Input id="website" name="website" value={cardDetails.website || ''} onChange={handleInputChange} placeholder="https://your.website.com" />
+                            </div>
+                             <div className="space-y-4">
+                                <Label>Social Links</Label>
+                                <div className="space-y-3">
+                                    <SocialLinkInput name="linkedin" placeholder="https://linkedin.com/in/..." value={cardDetails.linkedin || ''} onChange={handleInputChange} icon={Linkedin} />
+                                    <SocialLinkInput name="twitter" placeholder="https://x.com/..." value={cardDetails.twitter || ''} onChange={handleInputChange} icon={Twitter} />
+                                    <SocialLinkInput name="instagram" placeholder="https://instagram.com/..." value={cardDetails.instagram || ''} onChange={handleInputChange} icon={Instagram} />
+                                    <SocialLinkInput name="facebook" placeholder="https://facebook.com/..." value={cardDetails.facebook || ''} onChange={handleInputChange} icon={Facebook} />
+                                     <SocialLinkInput name="tiktok" placeholder="https://tiktok.com/@..." value={cardDetails.tiktok || ''} onChange={handleInputChange} icon={LinkIcon} />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </AccordionContent>
             </AccordionItem>
         </Accordion>
     );
