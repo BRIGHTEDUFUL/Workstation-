@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Brush, Library, LogOut, Settings, BarChart, User } from 'lucide-react';
+import { LayoutDashboard, Brush, Library, LogOut, Settings, BarChart, User, CreditCard } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -21,13 +21,13 @@ const MainSidebar = () => {
 
   const menuItems = [
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/my-cards', label: 'My Cards', icon: CreditCard },
     { href: '/design', label: 'Design Studio', icon: Brush },
     { href: '/templates', label: 'Templates', icon: Library },
     { href: '/analytics', label: 'Analytics', icon: BarChart },
   ];
 
   const bottomMenuItems = [
-    { href: '/account', label: 'Account', icon: User },
     { href: '/settings', label: 'Settings', icon: Settings },
   ]
 
@@ -36,7 +36,7 @@ const MainSidebar = () => {
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
             <CardHubLogo className="w-8 h-8" />
-            <span className="text-lg font-semibold text-foreground group-data-[collapsible=icon]:hidden">CardHub</span>
+            <span className="text-lg font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">CardHub</span>
         </Link>
       </SidebarHeader>
       <SidebarContent className="flex-grow p-2">
