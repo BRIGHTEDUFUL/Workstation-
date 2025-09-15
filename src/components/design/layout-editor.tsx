@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useRef, useCallback } from 'react';
@@ -194,15 +195,15 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="bgColor">Background</Label>
-                                    <Input id="bgColor" type="color" value={cardDetails.bgColor} onChange={(e) => handleInputChange(e)} className="p-1 h-10" />
+                                    <Input id="bgColor" name="bgColor" type="color" value={cardDetails.bgColor} onChange={handleInputChange} className="p-1 h-10" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="textColor">Text</Label>
-                                    <Input id="textColor" type="color" value={cardDetails.textColor} onChange={(e) => handleInputChange(e)} className="p-1 h-10" />
+                                    <Input id="textColor" name="textColor" type="color" value={cardDetails.textColor} onChange={handleInputChange} className="p-1 h-10" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="accentColor">Accent</Label>
-                                    <Input id="accentColor" type="color" value={cardDetails.accentColor} onChange={(e) => handleInputChange(e)} className="p-1 h-10" />
+                                    <Input id="accentColor" name="accentColor" type="color" value={cardDetails.accentColor} onChange={handleInputChange} className="p-1 h-10" />
                                 </div>
                             </div>
                             <div className="space-y-2">

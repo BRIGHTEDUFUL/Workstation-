@@ -1,3 +1,4 @@
+
 export type CardDetails = {
     id: string;
     name: string;
