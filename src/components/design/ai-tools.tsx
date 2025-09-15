@@ -247,19 +247,17 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                         </div>
                     </TabsContent>
                 </Tabs>
-                <Card className="mt-6 bg-muted/50">
-                    <CardHeader>
-                        <CardTitle className="text-base">AI Analysis</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-sm text-muted-foreground">
-                            {cardDetails.designDescription}
-                        </p>
-                    </CardContent>
-                </Card>
+                <div className='mt-6'>
+                    <Label className="text-sm font-semibold">AI Analysis</Label>
+                    <p className="text-sm text-muted-foreground mt-2">
+                        {cardDetails.designDescription}
+                    </p>
+                </div>
             </CardContent>
         </Card>
     );
 };
 
 export default AiTools;
+
+    

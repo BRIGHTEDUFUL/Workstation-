@@ -40,12 +40,6 @@ export default function MyCards() {
         id: newId,
         name: `${cardToDuplicate.name} (Copy)`,
       };
-      
-      const dataUri = newCard.website || '';
-      if (dataUri) {
-        newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(dataUri)}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
-      }
-
 
       const updatedCards = [...cards, newCard];
       localStorage.setItem('savedCards', JSON.stringify(updatedCards));
@@ -111,3 +105,5 @@ export default function MyCards() {
     </div>
   );
 };
+
+    
