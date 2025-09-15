@@ -122,6 +122,30 @@
     --ring: 35 100% 58%;
     --radius: 0.5rem;
   }
+  
+  /* Rose Gold Theme */
+  .theme-rose-gold {
+    --background: 343 100% 8%;
+    --foreground: 343 100% 93%;
+    --card: 343 73% 23%;
+    --card-foreground: 343 100% 93%;
+    --popover: 343 100% 8%;
+    --popover-foreground: 343 100% 93%;
+    --primary: 354 87% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 343 73% 23%;
+    --secondary-foreground: 343 100% 93%;
+    --muted: 343 73% 23%;
+    --muted-foreground: 343 20% 75%;
+    --accent: 343 100% 79%;
+    --accent-foreground: 343 100% 8%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 343 73% 23%;
+    --input: 343 73% 23%;
+    --ring: 354 87% 60%;
+    --radius: 0.5rem;
+  }
 
   .light {
     --background: 0 0% 98%;

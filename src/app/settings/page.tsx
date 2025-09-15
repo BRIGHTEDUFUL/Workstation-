@@ -17,6 +17,7 @@ const themes = [
     { name: 'Crimson Glow', value: 'theme-crimson-glow' },
     { name: 'Forest Mist', value: 'theme-forest-mist' },
     { name: 'Sunset Flare', value: 'theme-sunset-flare' },
+    { name: 'Rose Gold', value: 'theme-rose-gold' },
     { name: 'Light', value: 'light' },
 ];
 

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'theme-default-dark' | 'theme-midnight-slate' | 'theme-crimson-glow' | 'theme-forest-mist' | 'theme-sunset-flare' | 'light';
+type Theme = 'theme-default-dark' | 'theme-midnight-slate' | 'theme-crimson-glow' | 'theme-forest-mist' | 'theme-sunset-flare' | 'theme-rose-gold' | 'light';
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -42,7 +42,8 @@ export function ThemeProvider({
             'theme-midnight-slate',
             'theme-crimson-glow',
             'theme-forest-mist',
-            'theme-sunset-flare'
+            'theme-sunset-flare',
+            'theme-rose-gold'
         );
 
         if (theme === 'light') {
