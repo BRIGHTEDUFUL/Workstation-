@@ -25,7 +25,7 @@ export type GenerateCardDesignFromPromptInput = z.infer<
 const GenerateCardDesignFromPromptOutputSchema = z.object({
   designPlan: DesignPlanSchema,
   backgroundImageDataUri: z
-    .string()
+    .string().optional()
     .describe(
       "The generated card background image as a data URI. It must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
@@ -70,22 +70,14 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     if (!designPlan) {
       throw new Error('Failed to generate design plan.');
     }
-
-    // Step 2: Generate the background image based on the plan
-    const {media} = await ai.generate({
-      model: googleAI.model('imagen-4.0-fast-generate-001'),
-      prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${designPlan.styleDescription}. The design should be suitable as a background, avoiding text or logos.`,
-    });
-
-    const url = media?.url;
-    if (!url) {
-      throw new Error('Image generation failed.');
-    }
+    
+    // Background image generation is removed to support free-tier keys.
+    // In a real application with a billed account, you would re-enable this.
 
     // Step 3: Combine and return the results
     return {
       designPlan,
-      backgroundImageDataUri: url,
+      backgroundImageDataUri: '',
     };
   }
 );
