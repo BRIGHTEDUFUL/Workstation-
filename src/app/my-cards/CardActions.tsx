@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from 'next/image';
 import type { CardDetails } from '@/components/design/card-data';
+import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
 interface CardActionsProps {
     cards: CardDetails[];
@@ -56,7 +57,8 @@ export default function CardActions({ cards, handleDelete, handleDuplicate }: Ca
     return (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {cards.map((card) => (
-                <Card key={card.id} className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
+              <AlertDialog key={card.id}>
+                <Card className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
                 <Link href={`/design?id=${card.id}`}>
                     <div
                         className="relative w-full overflow-hidden border-b aspect-video"
@@ -106,32 +108,34 @@ export default function CardActions({ cards, handleDelete, handleDuplicate }: Ca
                                 <Link href={`/design?id=${card.id}`}><Pencil className="w-4 h-4 mr-2"/>Edit</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleDuplicate(card)}><Copy className="w-4 h-4 mr-2"/>Duplicate</DropdownMenuItem>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button variant="ghost" className="w-full justify-start px-2 py-1.5 text-sm font-normal text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                                        <Trash className="w-4 h-4 mr-2"/>Delete
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently delete your card design.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleDelete(card.id)} className="bg-destructive hover:bg-destructive/90">
-                                            Delete
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-
+                            <DropdownMenuSeparator />
+                            <AlertDialogTrigger asChild>
+                                <DropdownMenuItem
+                                    variant="destructive"
+                                    className="text-destructive focus:bg-destructive focus:text-destructive-foreground"
+                                >
+                                    <Trash className="w-4 h-4 mr-2"/>Delete
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardHeader>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete your card design.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete(card.id)} className="bg-destructive hover:bg-destructive/90">
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
                 </Card>
+            </AlertDialog>
             ))}
         </div>
     )
