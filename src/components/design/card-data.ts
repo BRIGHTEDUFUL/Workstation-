@@ -32,7 +32,6 @@ export type CardDetails = {
     category: string;
     backgroundImage?: string;
     
-    // Landing page fields
     profilePicUrl?: string;
     website?: string;
 

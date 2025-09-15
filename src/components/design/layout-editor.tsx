@@ -80,7 +80,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                 <Input id="company" name="company" value={cardDetails.company} onChange={handleInputChange} placeholder="e.g. Acme Inc." />
                             </div>
                              <div className="space-y-2">
-                                <Label htmlFor="website">Website / Landing Page</Label>
+                                <Label htmlFor="website">Website</Label>
                                 <SocialLinkInput name="website" placeholder="your.website.com" value={cardDetails.website || ''} onChange={handleInputChange} icon={Globe} />
                             </div>
                             
