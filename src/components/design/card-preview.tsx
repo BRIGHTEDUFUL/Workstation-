@@ -16,9 +16,8 @@ import { getPatternStyle } from '@/lib/patterns';
 // CardFront Component
 interface CardFrontProps {
   cardDetails: CardDetails;
-  isFlipped: boolean;
 }
-const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, isFlipped }, ref) => {
+const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, ref) => {
   
     const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
 
@@ -93,7 +92,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, isF
                 className={cn("absolute flex w-full h-full shadow-lg backface-hidden rounded-lg overflow-hidden", 
                     isVertical ? 'flex-row' : 'flex-col'
                 )}
-                style={{...baseStyle, transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}}
+                style={{...baseStyle}}
             >
                 {layout.id.endsWith('-reverse') ? 
                     <>{TextSection}{SplitSection}</> : 
@@ -117,7 +116,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, isF
         <div
             ref={ref}
             className={cn("absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg")}
-            style={{...baseStyle, transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}}
+            style={{...baseStyle}}
         >
             <div className="relative w-full h-full">
                 <div style={containerStyle}>
@@ -158,9 +157,8 @@ CardFront.displayName = 'CardFront';
 // CardBack Component
 interface CardBackProps {
   cardDetails: CardDetails;
-  isFlipped: boolean;
 }
-const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails, isFlipped }, ref) => {
+const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref) => {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
   useEffect(() => {
@@ -176,8 +174,8 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails, isFli
   return (
     <div
       ref={ref}
-      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rounded-lg"
-      style={{...style, transform: isFlipped ? 'rotateY(0deg)' : 'rotateY(-180deg)' }}
+      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rounded-lg rotate-y-180"
+      style={{...style}}
     >
       <CardContent className="flex flex-col items-center justify-center p-0">
         {qrCodeUrl ? (
@@ -248,9 +246,8 @@ const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }:
             <CardFront 
               ref={cardFrontRef} 
               cardDetails={cardDetails} 
-              isFlipped={isFlipped}
             />
-            <CardBack ref={cardBackRef} cardDetails={cardDetails} isFlipped={isFlipped} />
+            <CardBack ref={cardBackRef} cardDetails={cardDetails} />
           </div>
         </div>
       </div>
