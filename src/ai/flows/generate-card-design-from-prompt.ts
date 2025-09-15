@@ -56,8 +56,8 @@ export async function generateCardDesignAction(
 
 const designPlanPrompt = ai.definePrompt({
     name: 'designPlanPrompt',
-    inputSchema: GenerateCardDesignFromPromptInputSchema,
-    outputSchema: DesignPlanSchema,
+    input: { schema: GenerateCardDesignFromPromptInputSchema },
+    output: { schema: DesignPlanSchema },
     prompt: `You are a professional business card designer. Your task is to create a design plan based on the user's request.
 
 Analyze the user's prompt and details to create a cohesive and professional design plan. The plan should include a category, a style description for an image generator, appropriate colors, and a font.
@@ -78,11 +78,11 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     inputSchema: GenerateCardDesignFromPromptInputSchema,
     outputSchema: GenerateCardDesignFromPromptOutputSchema,
   },
-  async (input, dynamicAi) => {
-    const aiInstance = dynamicAi || ai;
+  async (input, flowAi) => {
+    const aiInstance = flowAi || ai;
     
     // Step 1: Generate the design plan (colors, fonts, etc.)
-    const { output: designPlan } = await aiInstance.run('designPlanPrompt', input);
+    const { output: designPlan } = await designPlanPrompt(input, {ai: aiInstance});
     if(!designPlan) {
         throw new Error('Failed to generate design plan.');
     }

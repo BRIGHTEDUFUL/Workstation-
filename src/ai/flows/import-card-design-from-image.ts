@@ -60,9 +60,9 @@ const importCardDesignFromImageFlow = ai.defineFlow(
     inputSchema: ImportCardDesignFromImageInputSchema,
     outputSchema: ImportCardDesignFromImageOutputSchema,
   },
-  async (input, dynamicAi) => {
-    const aiInstance = dynamicAi || ai;
-    const {output} = await aiInstance.run(prompt, input);
+  async (input, flowAi) => {
+    const aiInstance = flowAi || ai;
+    const {output} = await prompt(input, {ai: aiInstance});
     return output!;
   }
 );

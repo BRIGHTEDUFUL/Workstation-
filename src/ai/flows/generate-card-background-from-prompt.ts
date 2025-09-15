@@ -48,11 +48,11 @@ const generateCardBackgroundFromPromptFlow = ai.defineFlow(
     inputSchema: GenerateCardBackgroundFromPromptInputSchema,
     outputSchema: GenerateCardBackgroundFromPromptOutputSchema,
   },
-  async ({prompt}, dynamicAi) => {
-     const aiInstance = dynamicAi || ai;
+  async (input, flowAi?) => {
+     const aiInstance = flowAi || ai;
     const {media} = await aiInstance.generate({
       model: googleAI.model('imagen-4.0-fast-generate-001'),
-      prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${prompt}. The design should be suitable as a background, avoiding text or logos.`,
+      prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${input.prompt}. The design should be suitable as a background, avoiding text or logos.`,
     });
     const url = media?.url;
     if (!url) {
