@@ -27,53 +27,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import type { CardDetails } from '@/components/design/card-data';
-import { useToast } from '@/hooks/use-toast';
-import { v4 as uuidv4 } from 'uuid';
 
-export default function CardActions({ initialCards }: { initialCards: CardDetails[] }) {
-    const [cards, setCards] = useState<CardDetails[]>(initialCards);
-    const [isMounted, setIsMounted] = useState(false);
-    const { toast } = useToast();
+interface CardActionsProps {
+    cards: CardDetails[];
+    handleDelete: (cardId: string) => void;
+    handleDuplicate: (card: CardDetails) => void;
+}
 
-    useEffect(() => {
-        setIsMounted(true);
-        // On client mount, read from localStorage to hydrate the state
-        const savedCards = JSON.parse(localStorage.getItem('savedCards') || '[]');
-        setCards(savedCards);
-    }, []);
-
-    const handleDelete = (cardId: string) => {
-        const updatedCards = cards.filter(card => card.id !== cardId);
-        localStorage.setItem('savedCards', JSON.stringify(updatedCards));
-        setCards(updatedCards);
-        toast({
-            title: "Card Deleted",
-            description: "The card has been removed from your collection.",
-        });
-    };
-    
-    const handleDuplicate = (cardToDuplicate: CardDetails) => {
-      const newCard = {
-        ...cardToDuplicate,
-        id: uuidv4(), // Assign a new unique ID
-        name: `${cardToDuplicate.name} (Copy)`,
-      };
-
-      const updatedCards = [...cards, newCard];
-      localStorage.setItem('savedCards', JSON.stringify(updatedCards));
-      setCards(updatedCards);
-      toast({
-        title: 'Card Duplicated',
-        description: 'A copy of the card has been added to your collection.',
-      });
-    };
-
-    if (!isMounted) {
-        // You can return a loading spinner or skeleton here
-        return <p>Loading cards...</p>
-    }
+export default function CardActions({ cards, handleDelete, handleDuplicate }: CardActionsProps) {
 
     if (cards.length === 0) {
         return (
