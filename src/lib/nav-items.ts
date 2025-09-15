@@ -1,3 +1,4 @@
+'use client';
 import { LayoutDashboard, Brush, Library, CreditCard, Settings } from 'lucide-react';
 
 export const navItems = [
