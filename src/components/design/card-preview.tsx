@@ -207,5 +207,3 @@ const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProp
 };
 
 export default CardPreview;
-
-    
