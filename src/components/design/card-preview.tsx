@@ -100,7 +100,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, set
     let content;
     switch (element.component) {
       case 'name':
-        content = <h2 className="font-bold text-3xl" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.name}</h2>;
+        content = <h2 className="font-bold" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.name}</h2>;
         break;
       case 'title':
         content = <p className="text-lg" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.accentColor }}>{cardDetails.title}</p>;
