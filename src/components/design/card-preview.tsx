@@ -23,6 +23,23 @@ const CardPreview = ({ cardDetails }: CardPreviewProps) => {
     const generatedQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(landingPageUrl)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
     setQrCodeUrl(generatedQrCodeUrl);
   }, [cardDetails.id, cardDetails.bgColor, cardDetails.textColor]);
+  
+  const frontStyle = {
+      backgroundColor: cardDetails.bgColor,
+      color: cardDetails.textColor,
+      fontFamily: cardDetails.font,
+      ...(cardDetails.backgroundImage && {
+          backgroundImage: `url(${cardDetails.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+      })
+  };
+
+  const backStyle = {
+      backgroundColor: cardDetails.bgColor,
+      color: cardDetails.textColor,
+      fontFamily: cardDetails.font,
+  };
 
   return (
     <div className="w-full max-w-lg">
@@ -35,15 +52,11 @@ const CardPreview = ({ cardDetails }: CardPreviewProps) => {
           style={{ transformStyle: 'preserve-3d' }}
         >
           {/* Card Front */}
-          <Card
-            className="absolute flex flex-col w-full h-full p-8 text-center shadow-lg backface-hidden"
-            style={{ 
-              backgroundColor: cardDetails.bgColor, 
-              color: cardDetails.textColor,
-              fontFamily: cardDetails.font,
-            }}
+          <div
+            className="absolute flex flex-col w-full h-full p-8 text-center shadow-lg backface-hidden rounded-lg"
+            style={frontStyle}
           >
-            <CardContent className='p-0 flex flex-col items-center justify-center h-full'>
+            <div className='p-0 flex flex-col items-center justify-center h-full'>
               <Avatar className="w-16 h-16 mb-4 border-2" style={{borderColor: cardDetails.accentColor}}>
                 <AvatarImage src={cardDetails.profilePicUrl} />
                 <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
@@ -51,13 +64,13 @@ const CardPreview = ({ cardDetails }: CardPreviewProps) => {
               <h2 className="text-3xl font-bold" style={{ color: cardDetails.textColor }}>{cardDetails.name}</h2>
               <p className="text-lg" style={{ color: cardDetails.accentColor }}>{cardDetails.title}</p>
               <p className="text-sm mt-1">{cardDetails.company}</p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Card Back */}
           <Card
             className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rotate-y-180"
-            style={{ backgroundColor: cardDetails.bgColor }}
+            style={backStyle}
           >
             <CardContent className="flex flex-col items-center justify-center p-0">
               {qrCodeUrl ? (

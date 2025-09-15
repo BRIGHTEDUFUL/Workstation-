@@ -1,2 +1,2 @@
-export * from './generate-card-design-from-text-prompt';
+export * from './generate-card-background-from-prompt';
 export * from './import-card-design-from-image';

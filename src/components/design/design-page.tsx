@@ -30,6 +30,7 @@ export type CardDetails = {
     logoUrl?: string;
     slogan?: string;
     category?: string;
+    backgroundImage?: string;
     
     // Landing page fields
     landingPageBio?: string;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { generateCardDesignFromTextPrompt, ImportCardDesignFromImageInput, importCardDesignFromImage } from '@/ai/flows';
+import { generateCardBackgroundFromPrompt, importCardDesignFromImage } from '@/ai/flows';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,21 +27,17 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const handleGenerate = async () => {
         setIsLoading(true);
         try {
-            // This is a mocked response as Genkit flow for image generation is not implemented
-            // In a real scenario, the result would be a data URI of an image/animation
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            const aiDescription = `An AI-generated 3D animated card based on the prompt: "${prompt}". It features dynamic elements and a futuristic aesthetic.`;
+            const result = await generateCardBackgroundFromPrompt({ prompt });
+
             setCardDetails(prev => ({
                 ...prev,
-                designDescription: aiDescription,
-                bgColor: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
-                textColor: '#111827',
-                accentColor: `#${Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')}`,
+                backgroundImage: result.backgroundImageDataUri,
+                designDescription: `AI-generated background: ${prompt}`,
             }));
 
             toast({
-              title: "Design Generated!",
-              description: "The AI has created a new design concept.",
+              title: "Background Generated!",
+              description: "The AI has created a new background for your card.",
             });
         } catch (error) {
             console.error(error);
@@ -107,7 +103,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                     <TabsContent value="generate" className="mt-4">
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="prompt">Text Prompt</Label>
+                                <Label htmlFor="prompt">Background Prompt</Label>
                                 <Textarea
                                     id="prompt"
                                     placeholder="e.g., A minimalist card with a galaxy background and glowing text"
