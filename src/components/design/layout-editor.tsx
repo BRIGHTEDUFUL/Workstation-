@@ -108,7 +108,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     };
 
     return (
-        <Accordion type="multiple" defaultValue={['card-content', 'landing-page']} className="w-full">
+        <Accordion type="multiple" defaultValue={['card-content']} className="w-full">
             <AccordionItem value="card-content">
                 <AccordionTrigger className='text-base font-semibold'>Card Content</AccordionTrigger>
                 <AccordionContent>
@@ -161,7 +161,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="accentColor">Accent</Label>
-                                    <Input id="accentColor" type="color" value={cardDetails.accentColor} onChange={(e) => handleColorChange('accentColor', e.target.value)} className="p-1 h-10" />
+                                    <Input id="accentColor" type="color" value={cardDetails.accentColor} onChange={(e) => handleColorchange('accentColor', e.target.value)} className="p-1 h-10" />
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -178,43 +178,6 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                         <SelectItem value="'Times New Roman', serif">Times New Roman</SelectItem>
                                     </SelectContent>
                                 </Select>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="landing-page">
-                <AccordionTrigger className='text-base font-semibold'>Landing Page Content</AccordionTrigger>
-                <AccordionContent>
-                    <Card className="border-0 shadow-none">
-                         <CardContent className="space-y-6 pt-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="landingPageBio">About Me / Bio</Label>
-                                <Textarea id="landingPageBio" name="landingPageBio" value={cardDetails.landingPageBio || ''} onChange={handleInputChange} placeholder="Tell us a bit about yourself..." />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input id="email" name="email" type="email" value={cardDetails.email || ''} onChange={handleInputChange} placeholder="your@email.com" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="phone">Phone Number</Label>
-                                <Input id="phone" name="phone" type="tel" value={cardDetails.phone || ''} onChange={handleInputChange} placeholder="+1 234 567 890" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="website">Website</Label>
-                                <Input id="website" name="website" type="url" value={cardDetails.website || ''} onChange={handleInputChange} placeholder="https://your-website.com" />
-                            </div>
-                             <div className="space-y-2">
-                                <Label htmlFor="linkedin">LinkedIn Profile URL</Label>
-                                <Input id="linkedin" name="linkedin" value={cardDetails.linkedin || ''} onChange={handleInputChange} placeholder="https://linkedin.com/in/..." />
-                            </div>
-                             <div className="space-y-2">
-                                <Label htmlFor="twitter">X/Twitter Profile URL</Label>
-                                <Input id="twitter" name="twitter" value={cardDetails.twitter || ''} onChange={handleInputChange} placeholder="https://x.com/..." />
-                            </div>
-                             <div className="space-y-2">
-                                <Label htmlFor="instagram">Instagram Profile URL</Label>
-                                <Input id="instagram" name="instagram" value={cardDetails.instagram || ''} onChange={handleInputChange} placeholder="https://instagram.com/..." />
                             </div>
                         </CardContent>
                     </Card>
