@@ -174,10 +174,10 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
   return (
     <div
       ref={ref}
-      className="absolute flex flex-col items-center justify-center w-full h-full p-6 shadow-lg backface-hidden rounded-lg rotate-y-180"
+      className="absolute w-full h-full p-6 shadow-lg backface-hidden rounded-lg rotate-y-180"
       style={{...style}}
     >
-      <CardContent className="flex flex-col items-center justify-center p-0">
+      <CardContent className="flex flex-col items-center justify-center p-0 w-full h-full">
         {qrCodeUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
