@@ -23,7 +23,7 @@ function DesignPageContents() {
     const cardPreviewRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const getInitialCardDetails = () => {
+        const getInitialCardDetails = (): CardDetails => {
             const templateId = searchParams.get('template');
             const cardId = searchParams.get('id');
     
@@ -76,6 +76,19 @@ function DesignPageContents() {
             window.removeEventListener('card-saved', handleCardSaved);
         };
     }, [cardDetails.id]);
+
+    useEffect(() => {
+        // Debounced QR code regeneration
+        const handler = setTimeout(() => {
+            const landingPageUrl = `${window.location.origin}/card/${cardDetails.id}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(landingPageUrl)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+            setCardDetails(prev => ({...prev, qrUrl}));
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [cardDetails.bgColor, cardDetails.textColor, cardDetails.id]);
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">
