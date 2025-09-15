@@ -1,5 +1,5 @@
 'use client'
-import { PlusCircle, Trash, Copy, MoreVertical } from 'lucide-react';
+import { PlusCircle, Trash, Copy, MoreVertical, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import {
   AlertDialog,
