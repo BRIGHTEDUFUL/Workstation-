@@ -27,74 +27,107 @@
     {
       "id": "template-1",
       "description": "Luxe Gold & Black",
+      "category": "Business",
       "imageUrl": "https://picsum.photos/seed/luxegold/500/281",
       "imageHint": "luxury gold black"
     },
     {
       "id": "template-2",
       "description": "Glassmorphism Wave",
+      "category": "Business",
       "imageUrl": "https://picsum.photos/seed/glasswave/500/281",
       "imageHint": "glassmorphism blue"
     },
     {
       "id": "template-3",
       "description": "Emerald Geometric",
+      "category": "Business",
       "imageUrl": "https://picsum.photos/seed/emeraldgeo/500/281",
       "imageHint": "emerald geometric"
     },
     {
       "id": "template-4",
-      "description": "Carbon Fiber Tech",
-      "imageUrl": "https://picsum.photos/seed/carbontech/500/281",
-      "imageHint": "carbon tech"
+      "description": "Holographic Future",
+      "category": "Creative",
+      "imageUrl": "https://picsum.photos/seed/holographic/500/281",
+      "imageHint": "holographic future"
     },
     {
       "id": "template-5",
       "description": "Crimson Executive",
+      "category": "Business",
       "imageUrl": "https://picsum.photos/seed/crimsonexec/500/281",
       "imageHint": "crimson red"
     },
     {
       "id": "template-6",
-      "description": "Holographic Future",
-      "imageUrl": "https://picsum.photos/seed/holographic/500/281",
-      "imageHint": "holographic future"
-    },
-    {
-      "id": "template-7",
       "description": "Aurora Gradient",
+      "category": "Personal",
       "imageUrl": "https://picsum.photos/seed/auroragradient/500/281",
       "imageHint": "aurora gradient"
     },
     {
-      "id": "template-8",
+      "id": "template-7",
       "description": "Midnight Marble",
+      "category": "Personal",
       "imageUrl": "https://picsum.photos/seed/midnightmarble/500/281",
       "imageHint": "marble luxury"
     },
     {
-      "id": "template-9",
+      "id": "template-8",
       "description": "Cyber Grid",
+      "category": "Creative",
       "imageUrl": "https://picsum.photos/seed/cybergrid/500/281",
       "imageHint": "cyber grid"
     },
     {
-      "id": "template-10",
+      "id": "template-9",
       "description": "Teal Medical",
+      "category": "Medical",
       "imageUrl": "https://picsum.photos/seed/medicalcard/500/281",
       "imageHint": "medical health"
     },
     {
-      "id": "template-11",
+      "id": "template-10",
       "description": "Neon Event Pass",
+      "category": "Event",
       "imageUrl": "https://picsum.photos/seed/eventpass/500/281",
       "imageHint": "event neon"
     },
     {
-      "id": "template-12",
+      "id": "template-11",
       "description": "University ID",
+      "category": "Student",
       "imageUrl": "https://picsum.photos/seed/universityid/500/281",
       "imageHint": "student id"
+    },
+    {
+      "id": "template-12",
+      "description": "Carbon Fiber Tech",
+      "category": "Business",
+      "imageUrl": "https://picsum.photos/seed/carbontech/500/281",
+      "imageHint": "carbon tech"
+    },
+    {
+        "id": "template-13",
+        "description": "Platinum Membership",
+        "category": "Membership",
+        "imageUrl": "https://picsum.photos/seed/membership/500/281",
+        "imageHint": "platinum member"
+    },
+    {
+        "id": "template-14",
+        "description": "Vibrant Portfolio",
+        "category": "Creative",
+        "imageUrl": "https://picsum.photos/seed/creativefolio/500/281",
+        "imageHint": "vibrant portfolio"
+    },
+    {
+        "id": "template-15",
+        "description": "Clean Personal Branding",
+        "category": "Personal",
+        "imageUrl": "https://picsum.photos/seed/personalbrand/500/281",
+        "imageHint": "clean personal"
     }
   ]
 }
