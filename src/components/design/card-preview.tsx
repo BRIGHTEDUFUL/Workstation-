@@ -137,7 +137,7 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
         ) : (
           <div className="w-32 h-32 bg-gray-200 rounded-lg animate-pulse" />
         )}
-        <p className="mt-4 text-xs">{cardDetails.slogan || 'Scan to connect'}</p>
+        <p className="mt-4 text-xs text-center whitespace-nowrap">{cardDetails.slogan || 'Scan to connect'}</p>
       </CardContent>
     </div>
   );
