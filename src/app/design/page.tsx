@@ -33,6 +33,11 @@ function DesignPageContents() {
                 const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
                 const cardToEdit = savedCards.find(c => c.id === cardId);
                 if (cardToEdit) {
+                    // Ensure old cards saved with `layout` are converted to `elements`
+                    if (!cardToEdit.elements || cardToEdit.elements.length === 0) {
+                        // @ts-ignore
+                        cardToEdit.elements = DEFAULT_CARD_DETAILS.elements;
+                    }
                     return cardToEdit;
                 }
             }
@@ -107,7 +112,7 @@ function DesignPageContents() {
                 <ResizableHandle withHandle />
                 <ResizablePanel defaultSize={70}>
                     <div className="flex items-center justify-center h-full p-8 bg-muted/30">
-                       <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
+                       <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} setCardDetails={setCardDetails} />
                     </div>
                 </ResizablePanel>
             </ResizablePanelGroup>

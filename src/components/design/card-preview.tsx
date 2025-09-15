@@ -6,7 +6,7 @@ import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import type { CardDetails } from './card-data';
+import type { CardDetails, CardElement } from './card-data';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
@@ -14,8 +14,68 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 // CardFront Component
 interface CardFrontProps {
   cardDetails: CardDetails;
+  setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
+  onDragStart: () => void;
+  onDragEnd: () => void;
 }
-const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, ref) => {
+const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, setCardDetails, onDragStart, onDragEnd }, ref) => {
+  const [draggingElement, setDraggingElement] = useState<string | null>(null);
+  const [initialPos, setInitialPos] = useState({ x: 0, y: 0, mouseX: 0, mouseY: 0 });
+  const cardRef = ref as React.RefObject<HTMLDivElement>;
+
+  const handleMouseDown = (e: React.MouseEvent, elementId: string) => {
+    e.preventDefault();
+    onDragStart(); // Notify parent to disable tilt
+    const element = cardDetails.elements.find(el => el.id === elementId);
+    if (element && cardRef.current) {
+        const cardRect = cardRef.current.getBoundingClientRect();
+        setDraggingElement(elementId);
+        setInitialPos({ 
+            x: element.x, 
+            y: element.y, 
+            mouseX: (e.clientX - cardRect.left) / cardRect.width * 100,
+            mouseY: (e.clientY - cardRect.top) / cardRect.height * 100
+        });
+    }
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+        if (!draggingElement || !cardRef.current) return;
+
+        const cardRect = cardRef.current.getBoundingClientRect();
+        const mouseX = (e.clientX - cardRect.left) / cardRect.width * 100;
+        const mouseY = (e.clientY - cardRect.top) / cardRect.height * 100;
+        
+        const dx = mouseX - initialPos.mouseX;
+        const dy = mouseY - initialPos.mouseY;
+
+        setCardDetails(prev => ({
+            ...prev,
+            elements: prev.elements.map(el =>
+                el.id === draggingElement
+                    ? { ...el, x: initialPos.x + dx, y: initialPos.y + dy }
+                    : el
+            )
+        }));
+    };
+
+    const handleMouseUp = () => {
+        setDraggingElement(null);
+        onDragEnd(); // Notify parent to re-enable tilt
+    };
+    
+    if (draggingElement) {
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+    };
+}, [draggingElement, initialPos, setCardDetails, cardRef, onDragStart, onDragEnd]);
+
   const style = {
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
@@ -27,58 +87,36 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
     }),
   };
 
-  const hasPhoto = !['no-photo-centered', 'minimalist'].includes(cardDetails.layout);
+  const renderElement = (element: CardElement) => {
+    const elementStyle = {
+      left: `${element.x}%`,
+      top: `${element.y}%`,
+      transform: 'translate(-50%, -50%)',
+      position: 'absolute' as 'absolute',
+      width: element.width ? `${element.width}%` : 'auto',
+      cursor: draggingElement ? 'grabbing' : 'grab',
+    };
 
-  const renderContent = () => {
-    const textContent = (
-      <div className={cn("text-center", ['modern-left', 'modern-right'].includes(cardDetails.layout) && 'text-left')}>
-        <h2 className={cn("font-bold", cardDetails.layout === 'minimalist' ? 'text-4xl' : 'text-3xl')} style={{ color: cardDetails.textColor }}>{cardDetails.name}</h2>
-        <p className={cn(cardDetails.layout === 'minimalist' ? 'text-xl' : 'text-lg')} style={{ color: cardDetails.accentColor }}>{cardDetails.title}</p>
-        { cardDetails.layout !== 'minimalist' && <p className="text-sm mt-1">{cardDetails.company}</p> }
-      </div>
-    );
-
-    const avatar = hasPhoto && (
-      <Avatar className={cn(
-          "border-2",
-          cardDetails.layout === 'classic' && "w-16 h-16 mb-4",
-          (cardDetails.layout === 'modern-left' || cardDetails.layout === 'modern-right') && "w-20 h-20",
-        )} style={{borderColor: cardDetails.accentColor}}>
-        <AvatarImage src={cardDetails.profilePicUrl} />
-        <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
-      </Avatar>
-    );
-
-    switch (cardDetails.layout) {
-      case 'modern-left':
+    switch (element.component) {
+      case 'name':
+        return <h2 className="font-bold text-3xl" onMouseDown={(e) => handleMouseDown(e, element.id)} style={{ ...elementStyle, fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.name}</h2>;
+      case 'title':
+        return <p className="text-lg" onMouseDown={(e) => handleMouseDown(e, element.id)} style={{ ...elementStyle, fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.accentColor }}>{cardDetails.title}</p>;
+      case 'company':
+        return <p className="text-sm" onMouseDown={(e) => handleMouseDown(e, element.id)} style={{ ...elementStyle, fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.company}</p>;
+      case 'profilePic':
         return (
-          <div className='p-0 flex items-center justify-start h-full gap-6'>
-            {avatar}
-            {textContent}
+          <div onMouseDown={(e) => handleMouseDown(e, element.id)} style={elementStyle}>
+            <Avatar className={cn("border-2 w-16 h-16")} style={{ borderColor: cardDetails.accentColor }}>
+              <AvatarImage src={cardDetails.profilePicUrl} />
+              <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
+            </Avatar>
           </div>
         );
-      case 'modern-right':
-        return (
-          <div className='p-0 flex items-center justify-end h-full gap-6'>
-            {textContent}
-            {avatar}
-          </div>
-        );
-      case 'no-photo-centered':
-      case 'minimalist':
-         return (
-          <div className='p-0 flex flex-col items-center justify-center h-full'>
-            {textContent}
-          </div>
-        );
-      case 'classic':
+      case 'logo':
+        return cardDetails.logoUrl ? <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" onMouseDown={(e) => handleMouseDown(e, element.id)} style={elementStyle} /> : null;
       default:
-        return (
-          <div className='p-0 flex flex-col items-center justify-center h-full'>
-            {avatar}
-            {textContent}
-          </div>
-        );
+        return null;
     }
   };
 
@@ -88,13 +126,8 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
       className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
       style={style}
     >
-      {cardDetails.logoUrl && cardDetails.layout !== 'minimalist' && (
-        <div className="absolute top-6 left-8">
-            <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
-        </div>
-      )}
       <div className="relative w-full h-full">
-        {renderContent()}
+        {cardDetails.elements.map(renderElement)}
       </div>
     </div>
   );
@@ -149,16 +182,18 @@ CardBack.displayName = 'CardBack';
 // Main CardPreview Component
 interface CardPreviewProps {
   cardDetails: CardDetails;
+  setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
   cardFrontRef: React.RefObject<HTMLDivElement>;
   cardBackRef: React.RefObject<HTMLDivElement>;
 }
 
-const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProps) => {
+const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const cardContainerRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardContainerRef.current || isFlipped) return;
+    if (!cardContainerRef.current || isFlipped || isDragging) return;
 
     const { left, top, width, height } = cardContainerRef.current.getBoundingClientRect();
     const x = e.clientX - left;
@@ -171,7 +206,7 @@ const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProp
   };
 
   const handleMouseLeave = () => {
-    if (cardContainerRef.current) {
+    if (cardContainerRef.current && !isDragging) {
       cardContainerRef.current.style.transform = 'rotateX(0deg) rotateY(0deg)';
     }
   };
@@ -190,7 +225,13 @@ const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProp
             )}
             style={{ transformStyle: 'preserve-3d', transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}
           >
-            <CardFront ref={cardFrontRef} cardDetails={cardDetails} />
+            <CardFront 
+              ref={cardFrontRef} 
+              cardDetails={cardDetails} 
+              setCardDetails={setCardDetails}
+              onDragStart={() => setIsDragging(true)}
+              onDragEnd={() => setIsDragging(false)}
+            />
             <CardBack ref={cardBackRef} cardDetails={cardDetails} />
           </div>
         </div>
