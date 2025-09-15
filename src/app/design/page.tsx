@@ -30,6 +30,7 @@ function DesignPageContents() {
         const getInitialCardDetails = (): CardDetails => {
             const templateId = searchParams.get('template');
             const cardId = searchParams.get('id');
+            const defaultLayout = cardLayouts.layouts.find(l => l.id === 'center-aligned')!.elements;
     
             if (cardId) {
                 const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
@@ -37,21 +38,21 @@ function DesignPageContents() {
                 if (cardToEdit) {
                     if (!cardToEdit.elements || cardToEdit.elements.length === 0) {
                         // @ts-ignore
-                        cardToEdit.elements = cardLayouts.layouts.find(l => l.id === 'center-aligned')?.elements || DEFAULT_CARD_DETAILS.elements;
+                        cardToEdit.elements = defaultLayout;
                     }
                     return cardToEdit;
                 }
             }
             
-            let baseDetails = {...DEFAULT_CARD_DETAILS, elements: cardLayouts.layouts.find(l => l.id === 'center-aligned')?.elements || DEFAULT_CARD_DETAILS.elements };
+            let baseDetails = {...DEFAULT_CARD_DETAILS, elements: defaultLayout };
             const newCardId = uuidv4();
             let id = newCardId;
 
             if (templateId) {
                 const template = placeholderImages.placeholderImages.find(t => t.id === templateId);
-                if (template) {
+                if (template && template.data) {
                     // @ts-ignore
-                    baseDetails = { ...baseDetails, ...template.data, category: template.category };
+                    baseDetails = { ...baseDetails, ...template.data, category: template.category || baseDetails.category };
                 }
             }
             
