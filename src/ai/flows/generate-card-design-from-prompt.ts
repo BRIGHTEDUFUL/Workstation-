@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Orchestrates the AI-powered generation of a complete card design from a text prompt.
@@ -70,10 +71,8 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
       throw new Error('Failed to generate design plan.');
     }
     
-    // Background image generation is removed to support free-tier keys.
-    // In a real application with a billed account, you would re-enable this.
-
-    // Step 2: Combine and return the results
+    // Step 2: Return the design plan.
+    // Background image generation is disabled for free-tier key compatibility.
     return {
       designPlan,
       backgroundImageDataUri: '',
