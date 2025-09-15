@@ -68,6 +68,13 @@ const DEFAULT_CARD_DETAILS: CardDetails = {
     designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
     profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100",
     logoUrl: "https://picsum.photos/seed/logo-avatar/100/40",
+    landingPageBio: "Welcome to my digital hub! Let's connect and build something amazing together.",
+    email: "user@example.com",
+    phone: "+11234567890",
+    website: "https://example.com",
+    linkedin: "https://linkedin.com/in/example",
+    twitter: "https://x.com/example",
+    instagram: "https://instagram.com/example",
 };
 
 const DesignPage = () => {
