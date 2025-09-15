@@ -14,9 +14,19 @@ import { CardHubLogo } from '@/components/icons';
 
 const SocialLink = ({ href, icon: Icon, label }: { href?: string, icon: React.ElementType, label: string }) => {
     if (!href) return null;
+    const isEmail = href.startsWith('mailto:');
+    const isTel = href.startsWith('tel:');
+
+    // Add https:// if it's a regular link and doesn't have a protocol
+    let finalHref = href;
+    if (!isEmail && !isTel && !finalHref.startsWith('http://') && !finalHref.startsWith('https://')) {
+        finalHref = 'https://' + finalHref;
+    }
+
+
     return (
         <Button variant="outline" asChild>
-            <a href={href} target="_blank" rel="noopener noreferrer">
+            <a href={finalHref} target="_blank" rel="noopener noreferrer">
                 <Icon className="w-4 h-4 mr-2" /> {label}
             </a>
         </Button>
@@ -98,8 +108,8 @@ export default function SharePage() {
                                 
                                 <div className="flex flex-wrap justify-center gap-2">
                                     <SocialLink href={cardDetails.website} icon={Globe} label="Website" />
-                                    <SocialLink href={`mailto:${cardDetails.email}`} icon={Mail} label="Email" />
-                                    <SocialLink href={`tel:${cardDetails.phone}`} icon={Phone} label="Call" />
+                                    <SocialLink href={cardDetails.email ? `mailto:${cardDetails.email}` : undefined} icon={Mail} label="Email" />
+                                    <SocialLink href={cardDetails.phone ? `tel:${cardDetails.phone}`: undefined} icon={Phone} label="Call" />
                                 </div>
                                 <div className="flex flex-wrap justify-center gap-2">
                                     <SocialLink href={cardDetails.linkedin} icon={Linkedin} label="LinkedIn" />
@@ -127,4 +137,3 @@ export default function SharePage() {
         </div>
     );
 }
-

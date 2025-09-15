@@ -162,41 +162,41 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                  </AccordionContent>
             </AccordionItem>
              <AccordionItem value="landing-page-content">
-                <AccordionTrigger className='text-base font-semibold'>Landing Page</AccordionTrigger>
+                <AccordionTrigger className='text-base font-semibold'>Landing Page Content</AccordionTrigger>
                 <AccordionContent>
                     <Card className="border-0 shadow-none">
-                        <CardContent className="space-y-6 pt-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="landingPageUrl">Landing Page URL</Label>
-                                <div className="relative">
-                                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                    <Input id="landingPageUrl" name="landingPageUrl" value={cardDetails.landingPageUrl || ''} onChange={handleInputChange} placeholder="https://your.link.com" className="pl-10" />
-                                </div>
-                            </div>
+                         <CardHeader>
+                            <CardDescription>
+                                This information will be displayed on your public shareable page.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
                              <div className="space-y-2">
                                 <Label htmlFor="landingPageBio">Bio</Label>
                                 <Textarea id="landingPageBio" name="landingPageBio" value={cardDetails.landingPageBio || ''} onChange={handleInputChange} placeholder="Tell your visitors a little about yourself." />
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input id="email" name="email" value={cardDetails.email || ''} onChange={handleInputChange} placeholder="your.email@example.com" />
-                            </div>
-                             <div className="space-y-2">
-                                <Label htmlFor="phone">Phone</Label>
-                                <Input id="phone" name="phone" value={cardDetails.phone || ''} onChange={handleInputChange} placeholder="+1 123 456 7890" />
-                            </div>
+                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input id="email" name="email" value={cardDetails.email || ''} onChange={handleInputChange} placeholder="your.email@example.com" />
+                                </div>
+                                 <div className="space-y-2">
+                                    <Label htmlFor="phone">Phone</Label>
+                                    <Input id="phone" name="phone" value={cardDetails.phone || ''} onChange={handleInputChange} placeholder="+1 123 456 7890" />
+                                </div>
+                             </div>
                              <div className="space-y-2">
                                 <Label htmlFor="website">Website</Label>
-                                <Input id="website" name="website" value={cardDetails.website || ''} onChange={handleInputChange} placeholder="https://your.website.com" />
+                                <SocialLinkInput name="website" placeholder="your.website.com" value={cardDetails.website || ''} onChange={handleInputChange} icon={Globe} />
                             </div>
                              <div className="space-y-4">
                                 <Label>Social Links</Label>
                                 <div className="space-y-3">
-                                    <SocialLinkInput name="linkedin" placeholder="https://linkedin.com/in/..." value={cardDetails.linkedin || ''} onChange={handleInputChange} icon={Linkedin} />
-                                    <SocialLinkInput name="twitter" placeholder="https://x.com/..." value={cardDetails.twitter || ''} onChange={handleInputChange} icon={Twitter} />
-                                    <SocialLinkInput name="instagram" placeholder="https://instagram.com/..." value={cardDetails.instagram || ''} onChange={handleInputChange} icon={Instagram} />
-                                    <SocialLinkInput name="facebook" placeholder="https://facebook.com/..." value={cardDetails.facebook || ''} onChange={handleInputChange} icon={Facebook} />
-                                     <SocialLinkInput name="tiktok" placeholder="https://tiktok.com/@..." value={cardDetails.tiktok || ''} onChange={handleInputChange} icon={Music} />
+                                    <SocialLinkInput name="linkedin" placeholder="linkedin.com/in/..." value={cardDetails.linkedin || ''} onChange={handleInputChange} icon={Linkedin} />
+                                    <SocialLinkInput name="twitter" placeholder="x.com/..." value={cardDetails.twitter || ''} onChange={handleInputChange} icon={Twitter} />
+                                    <SocialLinkInput name="instagram" placeholder="instagram.com/..." value={cardDetails.instagram || ''} onChange={handleInputChange} icon={Instagram} />
+                                    <SocialLinkInput name="facebook" placeholder="facebook.com/..." value={cardDetails.facebook || ''} onChange={handleInputChange} icon={Facebook} />
+                                     <SocialLinkInput name="tiktok" placeholder="tiktok.com/@..." value={cardDetails.tiktok || ''} onChange={handleInputChange} icon={Music} />
                                 </div>
                             </div>
                         </CardContent>
