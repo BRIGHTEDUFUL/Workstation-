@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useRef } from 'react';
@@ -195,8 +194,8 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                         <SelectValue placeholder="Select a font" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="'Inter', sans-serif">Inter</SelectItem>
-                                        <SelectItem value="'Source Code Pro', monospace">Source Code Pro</SelectItem>
+                                        <SelectItem value="var(--font-inter)">Inter</SelectItem>
+                                        <SelectItem value="var(--font-source-code-pro)">Source Code Pro</SelectItem>
                                         <SelectItem value="Arial, sans-serif">Arial</SelectItem>
                                         <SelectItem value="Georgia, serif">Georgia</SelectItem>
                                         <SelectItem value="'Times New Roman', serif">Times New Roman</SelectItem>
