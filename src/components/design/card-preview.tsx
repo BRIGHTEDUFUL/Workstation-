@@ -115,7 +115,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
     return (
         <div
             ref={ref}
-            className={cn("absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg")}
+            className={cn("absolute w-full h-full p-8 shadow-lg backface-hidden rounded-lg")}
             style={{...baseStyle}}
         >
             <div className="relative w-full h-full">
