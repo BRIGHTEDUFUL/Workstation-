@@ -1,5 +1,5 @@
 'use client'
-import { PlusCircle, Trash, Copy, Pencil, MoreVertical } from 'lucide-react';
+import { PlusCircle, Trash, Copy, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
 import {
   AlertDialog,
@@ -59,26 +59,42 @@ export default function CardActions({ cards, handleDelete, handleDuplicate }: Ca
             {cards.map((card) => (
                 <Card key={card.id} className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
                 <Link href={`/design?id=${card.id}`}>
-                    <CardContent className="p-0" style={{backgroundColor: card.bgColor}}>
-                        <div className="relative w-full aspect-video" style={{
-                            backgroundColor: card.bgColor,
-                            color: card.textColor,
-                            fontFamily: card.font,
-                            backgroundImage: card.backgroundImage ? `url(${card.backgroundImage})` : 'none',
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                        }}>
-                                <div className='absolute inset-0 flex flex-col items-center justify-center p-4 text-center'>
-                                {card.profilePicUrl && <Image src={card.profilePicUrl} alt={card.name} width={48} height={48} className="mb-2 rounded-full" />}
-                                <h3 className="font-bold" style={{color: card.textColor}}>{card.name}</h3>
-                                <p className="text-sm" style={{color: card.accentColor}}>{card.title}</p>
-                            </div>
+                    <div
+                        className="relative w-full overflow-hidden border-b aspect-video"
+                        style={{
+                        backgroundColor: card.bgColor,
+                        color: card.textColor,
+                        fontFamily: card.font,
+                        backgroundImage: card.backgroundImage
+                            ? `url(${card.backgroundImage})`
+                            : 'none',
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        }}
+                    >
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-black/20">
+                        {card.profilePicUrl && (
+                            <Image
+                            src={card.profilePicUrl}
+                            alt={card.name}
+                            width={40}
+                            height={40}
+                            className="mb-2 rounded-full"
+                            />
+                        )}
+                        <h3 className="font-bold" style={{ color: card.textColor }}>
+                            {card.name}
+                        </h3>
+                        <p className="text-sm" style={{ color: card.accentColor }}>
+                            {card.title}
+                        </p>
                         </div>
-                    </CardContent>
+                    </div>
                 </Link>
-                <CardHeader className="flex-row items-center justify-between">
+                <CardHeader className="flex-row items-center justify-between p-4">
                     <div>
-                        <CardTitle className="text-lg">{card.name}</CardTitle>
+                        <CardTitle className="text-base">{card.name}</CardTitle>
+                         <p className="text-sm text-muted-foreground">{card.title}</p>
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
