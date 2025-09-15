@@ -270,6 +270,54 @@
           "accentColor": "#bdbdbd",
           "font": "'Inter', sans-serif"
         }
+    },
+    {
+        "id": "template-16",
+        "description": "Earthy & Organic",
+        "category": "Personal",
+        "imageUrl": "https://picsum.photos/seed/earthyorganic/500/281",
+        "imageHint": "earthy organic",
+        "data": {
+          "name": "Liam Gallagher",
+          "title": "Herbalist",
+          "company": "The Rooted Path",
+          "bgColor": "#f5f5dc",
+          "textColor": "#556b2f",
+          "accentColor": "#8fbc8f",
+          "font": "Georgia, serif"
+        }
+    },
+    {
+        "id": "template-17",
+        "description": "Deep Ocean",
+        "category": "Business",
+        "imageUrl": "https://picsum.photos/seed/deepocean/500/281",
+        "imageHint": "deep ocean",
+        "data": {
+          "name": "Dr. Aris Thorne",
+          "title": "Marine Biologist",
+          "company": "Oceanic Institute",
+          "bgColor": "#000080",
+          "textColor": "#ffffff",
+          "accentColor": "#add8e6",
+          "font": "'Inter', sans-serif"
+        }
+    },
+    {
+        "id": "template-18",
+        "description": "Playful Pop Art",
+        "category": "Creative",
+        "imageUrl": "https://picsum.photos/seed/popart/500/281",
+        "imageHint": "popart playful",
+        "data": {
+          "name": "Mika",
+          "title": "Graphic Artist",
+          "company": "Super Pxl",
+          "bgColor": "#ffde59",
+          "textColor": "#000000",
+          "accentColor": "#ff007f",
+          "font": "'Source Code Pro', monospace"
+        }
     }
   ]
 }
