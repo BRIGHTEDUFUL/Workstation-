@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Brush, Library, LogOut } from 'lucide-react';
+import { LayoutDashboard, Brush, Library, LogOut, Settings, BarChart, User } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,13 @@ const MainSidebar = () => {
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/design', label: 'Design Studio', icon: Brush },
     { href: '/templates', label: 'Templates', icon: Library },
+    { href: '/analytics', label: 'Analytics', icon: BarChart },
   ];
+
+  const bottomMenuItems = [
+    { href: '/account', label: 'Account', icon: User },
+    { href: '/settings', label: 'Settings', icon: Settings },
+  ]
 
   return (
     <>
@@ -36,6 +42,26 @@ const MainSidebar = () => {
       <SidebarContent className="flex-grow p-2">
         <SidebarMenu>
           {menuItems.map((item) => (
+            <SidebarMenuItem key={item.href}>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === item.href}
+                className="w-full justify-start"
+                tooltip={{children: item.label, side: "right"}}
+              >
+                <Link href={item.href}>
+                  <item.icon className="h-4 w-4" />
+                  <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarContent>
+      <Separator className='my-2' />
+      <SidebarContent className="p-2">
+        <SidebarMenu>
+           {bottomMenuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
