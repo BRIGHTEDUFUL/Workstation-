@@ -1,12 +1,13 @@
+
 'use client'
 
 import { Download, Share2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import { toPng } from 'html-to-image';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface DesignHeaderProps {
     cardDetails: CardDetails;
@@ -17,6 +18,7 @@ interface DesignHeaderProps {
 const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderProps) => {
     const { toast } = useToast();
     const [isSaving, setIsSaving] = useState(false);
+    const router = useRouter();
     
     const handleExport = async () => {
         const frontNode = cardFrontRef.current;
@@ -67,13 +69,13 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
         }
     };
 
-    const handleSave = () => {
+    const handleSave = (redirect: boolean = false) => {
         setIsSaving(true);
         try {
             const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
             const existingCardIndex = savedCards.findIndex(c => c.id === cardDetails.id);
 
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardDetails.landingPageUrl || '')}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(window.location.origin + '/share/' + cardDetails.id)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
 
             const cardToSave = {
                 ...cardDetails,
@@ -81,21 +83,23 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             };
 
             if (existingCardIndex > -1) {
-                // Update existing card
                 savedCards[existingCardIndex] = cardToSave;
             } else {
-                // Add new card
                 savedCards.push(cardToSave);
             }
 
             localStorage.setItem('savedCards', JSON.stringify(savedCards));
-
-            toast({
-                title: 'Card Saved!',
-                description: 'Your design has been saved to "My Cards".',
-            });
-             // Dispatch a custom event to notify other components that a card has been saved
+            
             window.dispatchEvent(new CustomEvent('card-saved', { detail: cardToSave }));
+
+            if (redirect) {
+                router.push(`/share/${cardDetails.id}`);
+            } else {
+                 toast({
+                    title: 'Card Saved!',
+                    description: 'Your design has been saved to "My Cards".',
+                });
+            }
 
         } catch (error) {
             console.error(error);
@@ -113,17 +117,13 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
         <header className="flex items-center justify-between p-4 border-b shrink-0">
             <h1 className="text-xl font-bold">Design Studio</h1>
             <div className="flex items-center gap-2">
-                <Button onClick={handleSave} disabled={isSaving}>
+                <Button onClick={() => handleSave(false)} disabled={isSaving}>
                     <Save className="w-4 h-4 mr-2" />
                     {isSaving ? 'Saving...' : 'Save Card'}
                 </Button>
-                {cardDetails.landingPageUrl && (
-                    <Button variant="outline" asChild>
-                        <a href={cardDetails.landingPageUrl} target="_blank" rel="noopener noreferrer">
-                            <Share2 className="w-4 h-4 mr-2" /> Share
-                        </a>
-                    </Button>
-                )}
+                <Button variant="outline" onClick={() => handleSave(true)}>
+                    <Share2 className="w-4 h-4 mr-2" /> Share
+                </Button>
                 <Button onClick={handleExport}>
                     <Download className="w-4 h-4 mr-2" /> Export
                 </Button>

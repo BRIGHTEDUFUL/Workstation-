@@ -1,5 +1,6 @@
+
 'use client'
-import { PlusCircle, Trash, Copy, MoreVertical, Pencil } from 'lucide-react';
+import { PlusCircle, Trash, Copy, MoreVertical, Pencil, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import {
   AlertDialog,
@@ -33,9 +34,10 @@ interface CardActionsProps {
     cards: CardDetails[];
     handleDelete: (cardId: string) => void;
     handleDuplicate: (card: CardDetails) => void;
+    handleShare: (cardId: string) => void;
 }
 
-export default function CardActions({ cards, handleDelete, handleDuplicate }: CardActionsProps) {
+export default function CardActions({ cards, handleDelete, handleDuplicate, handleShare }: CardActionsProps) {
 
     if (cards.length === 0) {
         return (
@@ -104,6 +106,7 @@ export default function CardActions({ cards, handleDelete, handleDuplicate }: Ca
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                             <DropdownMenuItem onClick={() => handleShare(card.id)}><Share2 className="w-4 h-4 mr-2"/>Share</DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <Link href={`/design?id=${card.id}`}><Pencil className="w-4 h-4 mr-2"/>Edit</Link>
                             </DropdownMenuItem>

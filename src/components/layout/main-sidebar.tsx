@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -8,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { LogOut } from 'lucide-react';
+import { LogOut, Share2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { CardHubLogo } from '@/components/icons';
@@ -56,6 +57,9 @@ const MainSidebar = () => {
     }
   }, []);
 
+  // Special handling for dynamic share route
+  const isSharePage = pathname.startsWith('/share/');
+
   return (
     <>
       <SidebarHeader className="p-4">
@@ -81,6 +85,21 @@ const MainSidebar = () => {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
+            {isSharePage && (
+                 <SidebarMenuItem>
+                    <SidebarMenuButton
+                        asChild
+                        isActive={true}
+                        className="w-full justify-start"
+                        tooltip={{children: "Shared Card", side: "right"}}
+                    >
+                        <Link href={pathname}>
+                            <Share2 className="h-4 w-4" />
+                            <span className="group-data-[collapsible=icon]:hidden">Shared Card</span>
+                        </Link>
+                    </SidebarMenuButton>
+                 </SidebarMenuItem>
+            )}
         </SidebarMenu>
       </SidebarContent>
       <Separator className='my-2' />

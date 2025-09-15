@@ -1,3 +1,4 @@
+
 'use client';
 import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -8,11 +9,14 @@ import CardActions from './CardActions';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
+
 
 export default function MyCards() {
     const [cards, setCards] = useState<CardDetails[]>([]);
     const [isMounted, setIsMounted] = useState(false);
     const { toast } = useToast();
+    const router = useRouter();
 
      useEffect(() => {
         setIsMounted(true);
@@ -37,11 +41,10 @@ export default function MyCards() {
         ...cardToDuplicate,
         id: newId,
         name: `${cardToDuplicate.name} (Copy)`,
-        landingPageUrl: cardToDuplicate.landingPageUrl, // Keep the same landing page url or clear it
       };
 
       // Update QR code URL for the new card
-      newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(newCard.landingPageUrl || '')}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
+      newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(window.location.origin + '/share/' + newCard.id)}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
 
 
       const updatedCards = [...cards, newCard];
@@ -51,6 +54,16 @@ export default function MyCards() {
         title: 'Card Duplicated',
         description: 'A copy of the card has been added to your collection.',
       });
+    };
+
+    const handleShare = (cardId: string) => {
+        const url = `/share/${cardId}`;
+        navigator.clipboard.writeText(`${window.location.origin}${url}`);
+        toast({
+            title: 'Link Copied!',
+            description: 'The shareable link has been copied to your clipboard.',
+        });
+        router.push(url);
     };
 
     if (!isMounted) {
@@ -93,7 +106,7 @@ export default function MyCards() {
       </header>
 
       <main className="flex-1 p-6 overflow-auto">
-        <CardActions cards={cards} handleDelete={handleDelete} handleDuplicate={handleDuplicate} />
+        <CardActions cards={cards} handleDelete={handleDelete} handleDuplicate={handleDuplicate} handleShare={handleShare} />
       </main>
     </div>
   );
