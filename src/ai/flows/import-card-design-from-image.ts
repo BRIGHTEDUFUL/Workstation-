@@ -9,8 +9,8 @@
 
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
-import { googleAI } from '@genkit-ai/googleai';
-import { genkit } from 'genkit';
+import {googleAI} from '@genkit-ai/googleai';
+import {Genkit, genkit} from 'genkit';
 
 const ImportCardDesignFromImageInputSchema = z.object({
   fileDataUri: z
@@ -19,23 +19,29 @@ const ImportCardDesignFromImageInputSchema = z.object({
       "The card design image or PDF file, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
 });
-export type ImportCardDesignFromImageInput = z.infer<typeof ImportCardDesignFromImageInputSchema>;
+export type ImportCardDesignFromImageInput = z.infer<
+  typeof ImportCardDesignFromImageInputSchema
+>;
 
 const ImportCardDesignFromImageOutputSchema = z.object({
   designDescription: z
     .string()
-    .describe('A detailed description of the imported card design, suitable for recreating it as an editable design.'),
+    .describe(
+      'A detailed description of the imported card design, suitable for recreating it as an editable design.'
+    ),
 });
-export type ImportCardDesignFromImageOutput = z.infer<typeof ImportCardDesignFromImageOutputSchema>;
+export type ImportCardDesignFromImageOutput = z.infer<
+  typeof ImportCardDesignFromImageOutputSchema
+>;
 
 export async function importCardDesignAction(
   input: ImportCardDesignFromImageInput,
   apiKey: string,
 ): Promise<ImportCardDesignFromImageOutput> {
   const dynamicAi = genkit({
-    plugins: [googleAI({ apiKey })],
+    plugins: [googleAI({apiKey})],
   });
-  return importCardDesignFromImageFlow(input, {ai: dynamicAi});
+  return importCardDesignFromImageFlow(input, dynamicAi);
 }
 
 const prompt = ai.definePrompt({
@@ -60,8 +66,8 @@ const importCardDesignFromImageFlow = ai.defineFlow(
     inputSchema: ImportCardDesignFromImageInputSchema,
     outputSchema: ImportCardDesignFromImageOutputSchema,
   },
-  async (input) => {
-    const {output} = await prompt(input);
+  async (input, aiInstance: Genkit) => {
+    const {output} = await aiInstance.run(prompt, input);
     return output!;
   }
 );

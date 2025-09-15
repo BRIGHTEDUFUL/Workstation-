@@ -2,7 +2,7 @@
 /**
  * @fileOverview Generates a card background design from a text prompt.
  *
- * - generateCardBackgroundFromPrompt - A function that generates a card background based on a text prompt.
+ * - generateCardBackgroundAction - A function that generates a card background based on a text prompt.
  * - GenerateCardBackgroundFromPromptInput - The input type for the generateCardBackgroundFromPrompt function.
  * - GenerateCardBackgroundFromPromptOutput - The return type for the generateCardBackgroundFromPrompt function.
  */
@@ -10,7 +10,7 @@
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {genkit} from 'genkit';
+import {Genkit, genkit} from 'genkit';
 
 const GenerateCardBackgroundFromPromptInputSchema = z.object({
   prompt: z
@@ -37,9 +37,9 @@ export async function generateCardBackgroundAction(
   apiKey: string,
 ): Promise<GenerateCardBackgroundFromPromptOutput> {
   const dynamicAi = genkit({
-    plugins: [googleAI({ apiKey })],
+    plugins: [googleAI({apiKey})],
   });
-  return generateCardBackgroundFromPromptFlow(input, {ai: dynamicAi});
+  return generateCardBackgroundFromPromptFlow(input, dynamicAi);
 }
 
 const generateCardBackgroundFromPromptFlow = ai.defineFlow(
@@ -48,10 +48,8 @@ const generateCardBackgroundFromPromptFlow = ai.defineFlow(
     inputSchema: GenerateCardBackgroundFromPromptInputSchema,
     outputSchema: GenerateCardBackgroundFromPromptOutputSchema,
   },
-  async (input) => {
-    // This flow is designed to be called with a dynamic AI instance.
-    // The `ai()` call inside the flow will retrieve the instance provided at invocation time.
-    const {media} = await ai().generate({
+  async (input, aiInstance: Genkit) => {
+    const {media} = await aiInstance.generate({
       model: googleAI.model('imagen-4.0-fast-generate-001'),
       prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${input.prompt}. The design should be suitable as a background, avoiding text or logos.`,
     });

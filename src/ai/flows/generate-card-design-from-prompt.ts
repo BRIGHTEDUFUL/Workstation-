@@ -10,7 +10,7 @@
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {genkit} from 'genkit';
+import {Genkit, genkit} from 'genkit';
 
 const GenerateCardDesignFromPromptInputSchema = z.object({
   prompt: z.string().describe('A text prompt describing the desired card design.'),
@@ -47,18 +47,17 @@ export async function generateCardDesignAction(
   input: GenerateCardDesignFromPromptInput,
   apiKey: string,
 ): Promise<GenerateCardDesignFromPromptOutput> {
-   const dynamicAi = genkit({
+  const dynamicAi = genkit({
     plugins: [googleAI({apiKey})],
   });
-  return generateCardDesignFromPromptFlow(input, {ai: dynamicAi});
+  return generateCardDesignFromPromptFlow(input, dynamicAi);
 }
 
-
 const designPlanPrompt = ai.definePrompt({
-    name: 'designPlanPrompt',
-    input: { schema: GenerateCardDesignFromPromptInputSchema },
-    output: { schema: DesignPlanSchema },
-    prompt: `You are a professional business card designer. Your task is to create a design plan based on the user's request.
+  name: 'designPlanPrompt',
+  input: {schema: GenerateCardDesignFromPromptInputSchema},
+  output: {schema: DesignPlanSchema},
+  prompt: `You are a professional business card designer. Your task is to create a design plan based on the user's request.
 
 Analyze the user's prompt and details to create a cohesive and professional design plan. The plan should include a category, a style description for an image generator, appropriate colors, and a font.
 
@@ -68,9 +67,8 @@ Card Details:
 - Title: {{title}}
 - Company: {{company}}
 
-Generate a design plan based on this information. Ensure the colors have good contrast and the font is appropriate for the described style.`
+Generate a design plan based on this information. Ensure the colors have good contrast and the font is appropriate for the described style.`,
 });
-
 
 const generateCardDesignFromPromptFlow = ai.defineFlow(
   {
@@ -78,13 +76,12 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     inputSchema: GenerateCardDesignFromPromptInputSchema,
     outputSchema: GenerateCardDesignFromPromptOutputSchema,
   },
-  async (input) => {
-    const aiInstance = ai();
-    
+  async (input, aiInstance: Genkit) => {
     // Step 1: Generate the design plan (colors, fonts, etc.)
-    const { output: designPlan } = await designPlanPrompt(input);
-    if(!designPlan) {
-        throw new Error('Failed to generate design plan.');
+    const {output: designPlan} = await aiInstance.run(designPlanPrompt, input);
+
+    if (!designPlan) {
+      throw new Error('Failed to generate design plan.');
     }
 
     // Step 2: Generate the background image based on the plan
