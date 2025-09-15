@@ -1,5 +1,3 @@
-'use client';
-
 import { SidebarProvider, Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import MainSidebar from '@/components/layout/main-sidebar';
 
