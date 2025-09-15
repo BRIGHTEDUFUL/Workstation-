@@ -1,4 +1,4 @@
-'use client';
+'use server';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import placeholderImages from '@/lib/placeholder-images.json';
 import Image from 'next/image';

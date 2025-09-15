@@ -7,41 +7,49 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Mail, Phone, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook, FileDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
-// This is a mock. In a real app, you'd fetch this from a database.
-const MOCK_CARD_DATA: Omit<CardDetails, 'landingPageUrl'> & {
-    landingPageBio?: string;
-    phone?: string;
-    email?: string;
-    website?: string;
-    linkedin?: string;
-    twitter?: string;
-    instagram?: string;
-    facebook?: string;
-} = {
-    ...DEFAULT_CARD_DETAILS,
-    id: '1',
-    qrUrl: '',
-    landingPageBio: "Welcome to my digital hub! I'm a passionate creator and innovator, always looking for the next challenge. Let's connect and build something amazing together.",
-    email: "user@example.com",
-    phone: "+11234567890",
-    website: "https://example.com",
-    linkedin: "https://linkedin.com/in/example",
-    twitter: "https://x.com/example",
-    instagram: "https://instagram.com/example"
-};
-
-
-export default function CardLandingPage({ params }: { params: { id: string } }) {
-    const [card, setCard] = useState<typeof MOCK_CARD_DATA | null>(null);
-
-    useEffect(() => {
-        // In a real app, you would fetch the card details based on params.id
-        // For now, we use mock data that is synced with the design studio's default.
-        if (params.id === MOCK_CARD_DATA.id) {
-            setCard(MOCK_CARD_DATA);
+// In a real app, this function would fetch data from a database.
+// For now, we simulate an async fetch and find the card from localStorage on the client.
+async function getCardDetails(id: string): Promise<CardDetails | null> {
+    if (typeof window === 'undefined') {
+        // On the server, we can't access localStorage. We return a default structure.
+        // The client-side effect will then hydrate with the correct data.
+        if (id === DEFAULT_CARD_DETAILS.id) {
+            return DEFAULT_CARD_DETAILS;
         }
-    }, [params.id]);
+        return null;
+    }
 
+    const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
+    const card = savedCards.find(c => c.id === id);
+    
+    if (card) return card;
+
+    if (id === DEFAULT_CARD_DETAILS.id) {
+        // Fallback to default card if no specific card is found
+        return DEFAULT_CARD_DETAILS;
+    }
+    
+    return null;
+}
+
+const ContactLink = ({ href, icon: Icon, text }: { href: string, icon: React.ElementType, text: string }) => (
+    <Button asChild variant="ghost" className="justify-start h-auto p-3 text-left">
+        <a href={href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4">
+            <Icon className="w-6 h-6 shrink-0" />
+            <span className="flex-1 break-all">{text}</span>
+        </a>
+    </Button>
+);
+
+const SocialIcon = ({ href, icon: Icon, label }: { href: string, icon: React.ElementType, label: string }) => (
+    <Button asChild variant="ghost" size="icon" className="w-12 h-12 rounded-full transition-transform duration-200 hover:scale-110">
+        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+            <Icon className="w-6 h-6" />
+        </a>
+    </Button>
+);
+
+const SaveToContactsButton = ({ card }: { card: CardDetails }) => {
     const createVCard = () => {
         if (!card) return;
 
@@ -50,25 +58,65 @@ VERSION:3.0
 FN:${card.name}
 ORG:${card.company}
 TITLE:${card.title}
-TEL;TYPE=WORK,VOICE:${card.phone}
-EMAIL:${card.email}
-URL:${card.website}
+TEL;TYPE=WORK,VOICE:${card.phone || ''}
+EMAIL:${card.email || ''}
+URL:${card.website || ''}
 END:VCARD`;
 
         const blob = new Blob([vCard], { type: "text/vcard;charset=utf-8" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `${card.name.replace(' ', '_')}.vcf`;
+        link.download = `${card.name.replace(/\s+/g, '_')}.vcf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
 
+    return (
+        <div className="flex justify-center mt-8">
+            <Button
+                onClick={createVCard}
+                style={{
+                    backgroundColor: card.accentColor,
+                    color: card.bgColor,
+                }}
+                className="transition-transform duration-200 hover:scale-105"
+            >
+                <FileDown className="w-4 h-5 mr-2" />
+                Save to Contacts
+            </Button>
+        </div>
+    );
+};
+
+
+export default function CardLandingPage({ params }: { params: { id: string } }) {
+    const [card, setCard] = useState<CardDetails | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCard = async () => {
+            setIsLoading(true);
+            const cardData = await getCardDetails(params.id);
+            setCard(cardData);
+            setIsLoading(false);
+        };
+
+        fetchCard();
+    }, [params.id]);
+
+    if (isLoading) {
+         return (
+            <div className="flex items-center justify-center min-h-screen bg-muted">
+                <p>Loading card...</p>
+            </div>
+        );
+    }
 
     if (!card) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="flex items-center justify-center min-h-screen bg-muted">
                 <p>Card not found.</p>
             </div>
         );
@@ -112,19 +160,7 @@ END:VCARD`;
 
                     </CardContent>
                 </Card>
-                 <div className="flex justify-center mt-8">
-                    <Button
-                        onClick={createVCard}
-                        style={{
-                            backgroundColor: card.accentColor,
-                            color: card.bgColor,
-                        }}
-                        className="transition-transform duration-200 hover:scale-105"
-                    >
-                        <FileDown className="w-4 h-5 mr-2" />
-                        Save to Contacts
-                    </Button>
-                </div>
+                <SaveToContactsButton card={card} />
             </main>
             <footer className="py-6 mt-8 text-center">
                 <p className="text-xs" style={{color: card.textColor}}>Powered by CardHub</p>
@@ -132,20 +168,3 @@ END:VCARD`;
         </div>
     );
 }
-
-const ContactLink = ({ href, icon: Icon, text }: { href: string, icon: React.ElementType, text: string }) => (
-    <Button asChild variant="ghost" className="justify-start h-auto p-3 text-left">
-        <a href={href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4">
-            <Icon className="w-6 h-6 shrink-0" />
-            <span className="flex-1 break-all">{text}</span>
-        </a>
-    </Button>
-);
-
-const SocialIcon = ({ href, icon: Icon, label }: { href: string, icon: React.ElementType, label: string }) => (
-    <Button asChild variant="ghost" size="icon" className="w-12 h-12 rounded-full transition-transform duration-200 hover:scale-110">
-        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
-            <Icon className="w-6 h-6" />
-        </a>
-    </Button>
-);
