@@ -2,7 +2,7 @@
 /**
  * @fileOverview Imports an existing card design from an image or PDF file and recreates it as an editable design.
  *
- * - importCardDesignFromImage - A function that handles the card design import process.
+ * - importCardDesignAction - A server action that handles the card design import process.
  * - ImportCardDesignFromImageInput - The input type for the importCardDesignFromImage function.
  * - ImportCardDesignFromImageOutput - The return type for the importCardDesignFromImage function.
  */
@@ -62,7 +62,7 @@ const importCardDesignFromImageFlow = ai.defineFlow(
   },
   async (input, dynamicAi) => {
     const aiInstance = dynamicAi || ai;
-    const {output} = await aiInstance.run('importCardDesignFromImagePrompt', input);
+    const {output} = await aiInstance.run(prompt, input);
     return output!;
   }
 );

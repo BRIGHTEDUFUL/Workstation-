@@ -2,7 +2,7 @@
 /**
  * @fileOverview Orchestrates the AI-powered generation of a complete card design from a text prompt.
  *
- * - generateCardDesignFromPrompt - A function that takes a user prompt and details, and returns a full card design.
+ * - generateCardDesignAction - A server action that takes a user prompt and details, and returns a full card design.
  * - GenerateCardDesignFromPromptInput - The input type for the generateCardDesignFromPrompt function.
  * - GenerateCardDesignFromPromptOutput - The return type for the generateCardDesignFromPrompt function.
  */
@@ -80,24 +80,25 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
   },
   async (input, dynamicAi) => {
     const aiInstance = dynamicAi || ai;
-    // Step 1: Create a design plan
-    const {output: designPlan} = await aiInstance.run('designPlanPrompt', input);
-    if (!designPlan) {
-      throw new Error('Failed to generate design plan.');
+    
+    // Step 1: Generate the design plan (colors, fonts, etc.)
+    const { output: designPlan } = await aiInstance.run('designPlanPrompt', input);
+    if(!designPlan) {
+        throw new Error('Failed to generate design plan.');
     }
 
-    // Step 2: Generate background image based on the design plan
-    const imagePrompt = `A modern, professional, high-quality business card background. The design should be suitable as a background, avoiding text or logos. The style is: ${designPlan.styleDescription}`;
-    const {media: backgroundImage} = await aiInstance.generate({
+    // Step 2: Generate the background image based on the plan
+    const {media} = await aiInstance.generate({
       model: googleAI.model('imagen-4.0-fast-generate-001'),
-      prompt: imagePrompt,
+      prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${designPlan.styleDescription}. The design should be suitable as a background, avoiding text or logos.`,
     });
-    
-    const url = backgroundImage?.url;
+
+    const url = media?.url;
     if (!url) {
       throw new Error('Image generation failed.');
     }
-    
+
+    // Step 3: Combine and return the results
     return {
       designPlan,
       backgroundImageDataUri: url,

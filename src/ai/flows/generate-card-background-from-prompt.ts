@@ -7,10 +7,10 @@
  * - GenerateCardBackgroundFromPromptOutput - The return type for the generateCardBackgroundFromPrompt function.
  */
 
-import {runWithApiKey} from '@/ai/genkit';
 import {ai} from '@/ai/config';
-import {z, Genkit} from 'genkit';
+import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
+import {genkit} from 'genkit';
 
 const GenerateCardBackgroundFromPromptInputSchema = z.object({
   prompt: z
@@ -32,14 +32,14 @@ export type GenerateCardBackgroundFromPromptOutput = z.infer<
   typeof GenerateCardBackgroundFromPromptOutputSchema
 >;
 
-export async function generateCardBackgroundFromPrompt(
+export async function generateCardBackgroundAction(
   input: GenerateCardBackgroundFromPromptInput,
   apiKey: string,
 ): Promise<GenerateCardBackgroundFromPromptOutput> {
   const dynamicAi = genkit({
     plugins: [googleAI({ apiKey })],
   });
-  return runWithApiKey(dynamicAi, generateCardBackgroundFromPromptFlow, input);
+  return generateCardBackgroundFromPromptFlow(input, dynamicAi);
 }
 
 const generateCardBackgroundFromPromptFlow = ai.defineFlow(
@@ -48,9 +48,10 @@ const generateCardBackgroundFromPromptFlow = ai.defineFlow(
     inputSchema: GenerateCardBackgroundFromPromptInputSchema,
     outputSchema: GenerateCardBackgroundFromPromptOutputSchema,
   },
-  async ({prompt}) => {
-    const {media} = await ai.generate({
-      model: 'googleai/imagen-4.0-fast-generate-001',
+  async ({prompt}, dynamicAi) => {
+     const aiInstance = dynamicAi || ai;
+    const {media} = await aiInstance.generate({
+      model: googleAI.model('imagen-4.0-fast-generate-001'),
       prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${prompt}. The design should be suitable as a background, avoiding text or logos.`,
     });
     const url = media?.url;
