@@ -14,11 +14,60 @@ import type { CardDetails } from './design-page';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
+import { Badge } from '../ui/badge';
 
 interface AiToolsProps {
   cardDetails: CardDetails;
   setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
 }
+
+const suggestedPrompts = [
+    {
+        category: 'Professional',
+        prompts: [
+            'Minimalist geometric pattern',
+            'Elegant marble texture',
+            'Dark carbon fiber',
+            'Brushed metal texture',
+        ],
+    },
+    {
+        category: 'Tech',
+        prompts: [
+            'Digital circuit board',
+            'Abstract connected nodes',
+            'Futuristic holographic grid',
+            'Blueprint schematic',
+        ],
+    },
+    {
+        category: 'Creative',
+        prompts: [
+            'Vibrant watercolor splash',
+            'Playful pop-art pattern',
+            'Abstract paint strokes',
+            'Deep space nebula',
+        ],
+    },
+    {
+        category: 'Health & Wellness',
+        prompts: [
+            'Serene zen garden',
+            'Abstract DNA helix',
+            'Soft nature background',
+            'Light blue medical pattern',
+        ],
+    },
+    {
+        category: 'Personal',
+        prompts: [
+            'Warm wood grain',
+            'Linen or fabric texture',
+            'Subtle floral pattern',
+            'Hand-drawn sketch lines',
+        ],
+    },
+];
 
 const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const { toast } = useToast();
@@ -148,6 +197,26 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                     onChange={(e) => setPrompt(e.target.value)}
                                     disabled={!apiKey}
                                 />
+                            </div>
+                            <div className="space-y-4">
+                                <Label className="text-sm text-muted-foreground">Suggestions</Label>
+                                {suggestedPrompts.map((category) => (
+                                    <div key={category.category}>
+                                        <h4 className="mb-2 text-sm font-semibold">{category.category}</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {category.prompts.map((p) => (
+                                                <Badge
+                                                    key={p}
+                                                    variant="outline"
+                                                    className="cursor-pointer"
+                                                    onClick={() => setPrompt(p)}
+                                                >
+                                                    {p}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                             <Button onClick={handleGenerate} disabled={isLoading || !prompt || !apiKey} className="w-full">
                                 <Sparkles className="w-4 h-4 mr-2" />
