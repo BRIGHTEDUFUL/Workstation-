@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Brush, Library, LogOut, Settings, BarChart, User, CreditCard } from 'lucide-react';
+import { LayoutDashboard, Brush, Library, LogOut, Settings, CreditCard } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,6 @@ const MainSidebar = () => {
     { href: '/my-cards', label: 'My Cards', icon: CreditCard },
     { href: '/design', label: 'Design Studio', icon: Brush },
     { href: '/templates', label: 'Templates', icon: Library },
-    { href: '/analytics', label: 'Analytics', icon: BarChart },
   ];
 
   const bottomMenuItems = [
