@@ -23,13 +23,20 @@ export type ImportCardDesignFromImageInput = z.infer<
   typeof ImportCardDesignFromImageInputSchema
 >;
 
-const ImportCardDesignFromImageOutputSchema = z.object({
-  designDescription: z
-    .string()
-    .describe(
-      'A detailed description of the imported card design, suitable for recreating it as an editable design.'
-    ),
+const DesignPlanSchema = z.object({
+  styleDescription: z.string().describe('A brief but descriptive summary of the visual style (e.g., "Minimalist black & gold with geometric lines", "Vibrant watercolor splash on a textured paper background").'),
+  bgColor: z.string().describe('A hex color code for the primary background color.'),
+  textColor: z.string().describe('A hex color code for the main text, ensuring high contrast with bgColor.'),
+  accentColor: z.string().describe('A hex color code for accent elements, complementing the other colors.'),
+  font: z.string().describe("Suggest a suitable font family from this list: 'var(--font-inter)', 'var(--font-source-code-pro)', 'Arial, sans-serif', 'Georgia, serif', 'Times New Roman, serif'"),
 });
+
+
+const ImportCardDesignFromImageOutputSchema = z.object({
+  designPlan: DesignPlanSchema,
+  analysis: z.string().describe("A summary of the AI's analysis of the card design.")
+});
+
 export type ImportCardDesignFromImageOutput = z.infer<
   typeof ImportCardDesignFromImageOutputSchema
 >;
@@ -50,23 +57,33 @@ export async function importCardDesignAction(
 const prompt = ai.definePrompt({
   name: 'importCardDesignFromImagePrompt',
   input: {schema: ImportCardDesignFromImageInputSchema},
-  output: {schema: ImportCardDesignFromImageOutputSchema},
-  prompt: `You are an AI assistant specialized in recreating card designs from existing images or PDF files.
+  output: {schema: DesignPlanSchema},
+  prompt: `You are an AI assistant specialized in analyzing business card designs from images.
 
-You will receive a card design as a data URI. Analyze the design and provide a detailed description of the card's layout, colors, fonts, patterns, and any other relevant design elements.
+You will receive a card design as an image. Analyze its layout, colors, and fonts.
+Your task is to extract the key design elements and return them as a structured design plan.
 
-This description should be comprehensive enough to allow a designer to recreate the card as an editable design.
+- Analyze the main colors: identify the background color, the primary text color, and a key accent color. Ensure the text and background colors have good contrast.
+- Suggest a font: Pick the most appropriate font from the provided list that matches the style of the card.
+- Provide a style description: Briefly summarize the overall aesthetic.
 
-Card Design: {{media url=fileDataUri}}
+Card Design Image: {{media url=fileDataUri}}
 
-Provide a detailed description of the card design:
+Generate a design plan based on this information.
 `,
 });
 
 async function importCardDesignFromImageFlow(
   input: ImportCardDesignFromImageInput,
-  aiInstance: Genkit,
+  aiInstance: Genkit
 ): Promise<ImportCardDesignFromImageOutput> {
-  const {output} = await aiInstance.run(prompt, input);
-  return output!;
+  const {output: designPlan} = await aiInstance.run(prompt, input);
+  if (!designPlan) {
+    throw new Error('Failed to analyze the card image and generate a design plan.');
+  }
+  
+  return {
+    designPlan,
+    analysis: `AI successfully analyzed the card. Style detected: ${designPlan.styleDescription}.`
+  };
 }
