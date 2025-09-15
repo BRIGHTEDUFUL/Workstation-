@@ -30,12 +30,14 @@ function DesignPageContents() {
         const getInitialCardDetails = (): CardDetails => {
             const templateId = searchParams.get('template');
             const cardId = searchParams.get('id');
+            // @ts-ignore
             const defaultLayout = cardLayouts.layouts.find(l => l.id === 'center-aligned')!.elements;
     
             if (cardId) {
                 const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
                 const cardToEdit = savedCards.find(c => c.id === cardId);
                 if (cardToEdit) {
+                    // Ensure older cards without a layout get the default one
                     if (!cardToEdit.elements || cardToEdit.elements.length === 0) {
                         // @ts-ignore
                         cardToEdit.elements = defaultLayout;
@@ -44,10 +46,12 @@ function DesignPageContents() {
                 }
             }
             
+            // Start with default details and always apply the default layout.
             let baseDetails = {...DEFAULT_CARD_DETAILS, elements: defaultLayout };
             const newCardId = uuidv4();
             let id = newCardId;
 
+            // If a template is used, apply its data over the defaults, but keep the layout.
             if (templateId) {
                 const template = placeholderImages.placeholderImages.find(t => t.id === templateId);
                 if (template && template.data) {
