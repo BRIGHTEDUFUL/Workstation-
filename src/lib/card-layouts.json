@@ -59,6 +59,32 @@
                 { "id": "title", "component": "title", "fontSize": 1.4, "fontWeight": 400 },
                 { "id": "company", "component": "company", "fontSize": 1.1, "fontWeight": 400 }
             ]
+        },
+        {
+            "id": "split-vertical",
+            "name": "Split Vertical",
+            "justifyContent": "center",
+            "textAlign": "left",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic" },
+                { "id": "logo", "component": "logo" },
+                { "id": "name", "component": "name", "fontSize": 2.0, "fontWeight": 700 },
+                { "id": "title", "component": "title", "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.0, "fontWeight": 400 }
+            ]
+        },
+        {
+            "id": "split-vertical-reverse",
+            "name": "Split Vertical (Reverse)",
+            "justifyContent": "center",
+            "textAlign": "left",
+            "elements": [
+                { "id": "profilePic", "component": "profilePic" },
+                { "id": "logo", "component": "logo" },
+                { "id": "name", "component": "name", "fontSize": 2.0, "fontWeight": 700 },
+                { "id": "title", "component": "title", "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.0, "fontWeight": 400 }
+            ]
         }
     ]
 }

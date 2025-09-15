@@ -6,7 +6,7 @@ import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import type { CardDetails, CardElement } from './card-data';
+import type { CardDetails } from './card-data';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import cardLayouts from '@/lib/card-layouts.json';
@@ -20,17 +20,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
   
     const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
 
-    const containerStyle = {
-        display: 'flex',
-        flexDirection: 'column' as 'column',
-        alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'),
-        justifyContent: layout.justifyContent as any,
-        textAlign: layout.textAlign as any,
-        height: '100%',
-        padding: '1rem',
-    };
-
-    const style = {
+    const baseStyle = {
         backgroundColor: cardDetails.bgColor,
         color: cardDetails.textColor,
         fontFamily: cardDetails.font,
@@ -47,12 +37,82 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
     const logoElement = cardDetails.elements.find(e => e.component === 'logo');
     const profilePicElement = cardDetails.elements.find(e => e.component === 'profilePic');
 
+    if (layout.id.startsWith('split-')) {
+        const isVertical = layout.id === 'split-vertical';
+        const splitSectionStyle = {
+            backgroundColor: cardDetails.accentColor,
+            color: cardDetails.bgColor, // Invert color for contrast
+        }
+        const textSectionStyle = {
+            color: cardDetails.textColor,
+        }
+
+        const SplitSection = (
+            <div 
+                className={cn("flex flex-col items-center p-4", isVertical ? 'w-2/5' : 'h-2/5')}
+                style={{...splitSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : 'flex-start' }}
+            >
+                {logoElement && cardDetails.logoUrl && (
+                    <Image src={cardDetails.logoUrl} alt="Company Logo" width={100} height={40} className="object-contain" />
+                )}
+            </div>
+        );
+
+        const TextSection = (
+             <div 
+                className={cn("flex flex-col p-8", isVertical ? 'w-3/5' : 'h-3/5')}
+                style={{ ...textSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'), textAlign: layout.textAlign as any, }}
+            >
+                {profilePicElement && cardDetails.profilePicUrl && (
+                    <div className="mb-4">
+                        <Avatar className={cn("border-2 w-20 h-20")} style={{ borderColor: cardDetails.textColor }}>
+                          <AvatarImage src={cardDetails.profilePicUrl} />
+                          <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                    </div>
+                )}
+                <h2 className="font-bold" style={{ fontSize: `${nameElement.fontSize}vw`, fontWeight: nameElement.fontWeight }}>
+                    {cardDetails.name}
+                </h2>
+                <p className="text-lg" style={{ fontSize: `${titleElement.fontSize}vw`, fontWeight: titleElement.fontWeight }}>
+                    {cardDetails.title}
+                </p>
+                <p className="text-sm mt-2" style={{ fontSize: `${companyElement.fontSize}vw`, fontWeight: companyElement.fontWeight }}>
+                    {cardDetails.company}
+                </p>
+            </div>
+        );
+
+
+        return (
+            <div
+                ref={ref}
+                className={cn("absolute flex w-full h-full shadow-lg backface-hidden rounded-lg overflow-hidden", isVertical ? 'flex-row' : 'flex-col')}
+                style={baseStyle}
+            >
+                {layout.id === 'split-vertical-reverse' ? 
+                    <>{TextSection}{SplitSection}</> : 
+                    <>{SplitSection}{TextSection}</>
+                }
+            </div>
+        );
+    }
+
+    const containerStyle = {
+        display: 'flex',
+        flexDirection: 'column' as 'column',
+        alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'),
+        justifyContent: layout.justifyContent as any,
+        textAlign: layout.textAlign as any,
+        height: '100%',
+        padding: '1rem',
+    };
 
     return (
         <div
             ref={ref}
             className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
-            style={style}
+            style={baseStyle}
         >
             <div className="relative w-full h-full">
                 <div style={containerStyle}>
