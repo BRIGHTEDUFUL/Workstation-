@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'theme-default-dark' | 'theme-midnight-slate' | 'theme-crimson-glow' | 'theme-forest-mist' | 'theme-sunset-flare' | 'theme-rose-gold' | 'light';
+type Theme = 'theme-default-dark' | 'theme-midnight-slate' | 'theme-crimson-glow' | 'theme-forest-mist' | 'theme-sunset-flare' | 'theme-rose-gold' | 'theme-moonlit-amethyst' | 'light';
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -43,14 +43,11 @@ export function ThemeProvider({
             'theme-crimson-glow',
             'theme-forest-mist',
             'theme-sunset-flare',
-            'theme-rose-gold'
+            'theme-rose-gold',
+            'theme-moonlit-amethyst'
         );
 
-        if (theme === 'light') {
-            root.classList.add('light');
-        } else {
-            root.classList.add(theme);
-        }
+        root.classList.add(theme);
     }
   }, [theme]);
 

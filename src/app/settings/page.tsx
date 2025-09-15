@@ -14,6 +14,7 @@ import { useTheme } from '@/components/theme/theme-provider';
 const themes = [
     { name: 'Default Dark', value: 'theme-default-dark' },
     { name: 'Midnight Slate', value: 'theme-midnight-slate' },
+    { name: 'Moonlit Amethyst', value: 'theme-moonlit-amethyst' },
     { name: 'Crimson Glow', value: 'theme-crimson-glow' },
     { name: 'Forest Mist', value: 'theme-forest-mist' },
     { name: 'Sunset Flare', value: 'theme-sunset-flare' },
