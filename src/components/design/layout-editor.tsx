@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,10 +16,21 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import type { CardDetails } from './card-data';
 import { Button } from '../ui/button';
-import { Upload, Globe } from 'lucide-react';
+import { Upload, Globe, Sparkles } from 'lucide-react';
 import cardLayouts from '@/lib/card-layouts.json';
 import PatternSelector from './pattern-selector';
+import { generateQrCodeDesignAction } from '@/ai/flows/generate-qr-code-design';
+import { useToast } from '@/hooks/use-toast';
+import { Badge } from '../ui/badge';
+import { Textarea } from '../ui/textarea';
 
+const qrStyleSuggestions = [
+    { name: 'Vintage', prompt: 'A vintage, sepia-toned QR code with ornate, classic patterns.' },
+    { name: 'Futuristic', prompt: 'A futuristic, glowing neon blue QR code on a dark circuit board background.' },
+    { name: 'Floral', prompt: 'A QR code with delicate, floral patterns integrated into the dark modules, using soft pastel colors.' },
+    { name: 'Watercolor', prompt: 'A QR code that looks like a watercolor painting, with soft, blended colors.' },
+    { name: 'Origami', prompt: 'A QR code that appears to be folded from paper, with geometric origami patterns.'},
+];
 
 interface LayoutEditorProps {
     cardDetails: CardDetails;
@@ -29,8 +40,11 @@ interface LayoutEditorProps {
 const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const logoInputRef = useRef<HTMLInputElement>(null);
+    const [qrPrompt, setQrPrompt] = useState(cardDetails.qrDesignPrompt || '');
+    const [isGeneratingQr, setIsGeneratingQr] = useState(false);
+    const { toast } = useToast();
 
-    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setCardDetails(prev => ({ ...prev, [name]: value }));
     }, [setCardDetails]);
@@ -77,6 +91,54 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
         });
     };
 
+    const handleGenerateQrCode = async () => {
+        if (!cardDetails.website) {
+            toast({
+                variant: 'destructive',
+                title: 'Missing Website URL',
+                description: 'Please enter a website URL to generate a QR code.',
+            });
+            return;
+        }
+        if (!qrPrompt) {
+            toast({
+                variant: 'destructive',
+                title: 'Missing Design Prompt',
+                description: 'Please enter a prompt to style your QR code.',
+            });
+            return;
+        }
+
+        setIsGeneratingQr(true);
+        try {
+            const result = await generateQrCodeDesignAction({
+                url: cardDetails.website,
+                prompt: qrPrompt,
+            });
+
+            setCardDetails(prev => ({
+                ...prev,
+                qrUrl: result.qrCodeDataUri,
+                qrDesignPrompt: qrPrompt,
+            }));
+
+            toast({
+                title: 'QR Code Generated!',
+                description: 'Your custom QR code has been created.',
+            });
+
+        } catch (error) {
+            console.error('Failed to generate QR code:', error);
+            toast({
+                variant: 'destructive',
+                title: 'Generation Failed',
+                description: 'Could not generate the QR code design. Please try again.',
+            });
+        } finally {
+            setIsGeneratingQr(false);
+        }
+    };
+
     return (
         <Accordion type="multiple" defaultValue={['card-content', 'card-style']} className="w-full">
             <AccordionItem value="card-content">
@@ -97,10 +159,10 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                 <Input id="company" name="company" value={cardDetails.company} onChange={handleInputChange} placeholder="e.g. Acme Inc." />
                             </div>
                              <div className="space-y-2">
-                                <Label htmlFor="website">Website</Label>
+                                <Label htmlFor="website">Website URL (for QR Code)</Label>
                                 <div className="relative">
                                     <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                    <Input id="website" name="website" value={cardDetails.website || ''} onChange={handleInputChange} placeholder="your.website.com" className="pl-10" />
+                                    <Input id="website" name="website" value={cardDetails.website || ''} onChange={handleInputChange} placeholder="https://your-website.com" className="pl-10" />
                                 </div>
                             </div>
                             
@@ -201,6 +263,38 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                         </CardContent>
                     </Card>
                  </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="qr-code">
+                <AccordionTrigger className='text-base font-semibold'>QR Code Design</AccordionTrigger>
+                <AccordionContent>
+                    <Card className="border-0 shadow-none">
+                        <CardContent className="space-y-6 pt-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="qrPrompt">AI Design Prompt</Label>
+                                <Textarea id="qrPrompt" name="qrPrompt" value={qrPrompt} onChange={(e) => setQrPrompt(e.target.value)} placeholder="e.g., A QR code made of blooming flowers" />
+                            </div>
+                             <div className="space-y-2">
+                                <Label className="text-sm text-muted-foreground">Suggestions</Label>
+                                <div className="flex flex-wrap gap-2">
+                                    {qrStyleSuggestions.map((s) => (
+                                        <Badge
+                                            key={s.name}
+                                            variant="outline"
+                                            className="cursor-pointer"
+                                            onClick={() => setQrPrompt(s.prompt)}
+                                        >
+                                            {s.name}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </div>
+                            <Button onClick={handleGenerateQrCode} disabled={isGeneratingQr || !cardDetails.website} className="w-full">
+                                <Sparkles className="w-4 h-4 mr-2" />
+                                {isGeneratingQr ? 'Generating QR Code...' : 'Generate AI QR Code'}
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </AccordionContent>
             </AccordionItem>
         </Accordion>
     );

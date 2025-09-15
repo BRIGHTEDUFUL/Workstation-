@@ -36,6 +36,7 @@ export type CardDetails = {
     
     profilePicUrl?: string;
     website?: string;
+    qrDesignPrompt?: string;
 };
 
 export const DEFAULT_CARD_DETAILS: CardDetails = {

@@ -76,10 +76,10 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
 
             let cardToSave = { ...cardDetails };
 
-            if (cardToSave.website) {
+            if (cardToSave.website && !cardToSave.qrUrl.startsWith('data:image')) {
                 const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardToSave.website)}&bgcolor=${cardToSave.bgColor.substring(1)}&color=${cardToSave.textColor.substring(1)}&qzone=1`;
                 cardToSave.qrUrl = qrUrl;
-            } else {
+            } else if (!cardToSave.website) {
                 cardToSave.qrUrl = ''; // Clear QR if no website
             }
 

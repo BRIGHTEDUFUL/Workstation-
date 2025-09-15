@@ -42,6 +42,10 @@ function DesignPageContents() {
                         cardToEdit.layoutId = defaultLayout.id;
                         cardToEdit.elements = defaultLayout.elements;
                     }
+                     // Ensure QR URL is correctly formed if it's not a data URI
+                    if (cardToEdit.website && !cardToEdit.qrUrl?.startsWith('data:image')) {
+                        cardToEdit.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardToEdit.website)}&bgcolor=${cardToEdit.bgColor.substring(1)}&color=${cardToEdit.textColor.substring(1)}&qzone=1`;
+                    }
                     return cardToEdit;
                 }
             }
@@ -64,11 +68,13 @@ function DesignPageContents() {
                 }
             }
             
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(window.location.origin + '/share/' + id)}&bgcolor=${baseDetails.bgColor.substring(1)}&color=${baseDetails.textColor.substring(1)}&qzone=1`;
+            const website = baseDetails.website || (typeof window !== 'undefined' ? `${window.location.origin}/share/${id}` : '');
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(website)}&bgcolor=${baseDetails.bgColor.substring(1)}&color=${baseDetails.textColor.substring(1)}&qzone=1`;
 
             return {
                 ...baseDetails,
                 id: id,
+                website: website,
                 qrUrl: qrUrl,
             };
         };
