@@ -56,7 +56,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
         >
             <div className="relative w-full h-full">
                 <div style={containerStyle}>
-                    {profilePicElement && (
+                    {profilePicElement && cardDetails.profilePicUrl && (
                         <div className="mb-4">
                             <Avatar className={cn("border-2 w-20 h-20")} style={{ borderColor: cardDetails.accentColor }}>
                               <AvatarImage src={cardDetails.profilePicUrl} />

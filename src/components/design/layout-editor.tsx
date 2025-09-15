@@ -65,6 +65,16 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
             event.target.value = '';
         }
     };
+    
+    const toggleComponent = (component: 'profilePic' | 'logo') => {
+        setCardDetails(prev => {
+            const hasComponent = prev.elements.some(e => e.component === component);
+            const newElements = hasComponent
+                ? prev.elements.filter(e => e.component !== component)
+                : [...prev.elements, { id: component, component }];
+            return { ...prev, elements: newElements };
+        });
+    };
 
     return (
         <Accordion type="multiple" defaultValue={['card-content', 'card-style']} className="w-full">
