@@ -5,7 +5,7 @@ import { CardDetails, DEFAULT_CARD_DETAILS } from "@/components/design/card-data
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Phone, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook, FileDown } from "lucide-react";
+import { Mail, Phone, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook, FileDown, Music } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // In a real app, this function would fetch data from a database.
@@ -145,6 +145,7 @@ export default function CardLandingPage({ params }: { params: { id: string } }) 
                             {card.twitter && <SocialIcon href={card.twitter} icon={Twitter} label="X/Twitter" />}
                             {card.instagram && <SocialIcon href={card.instagram} icon={Instagram} label="Instagram" />}
                             {card.facebook && <SocialIcon href={card.facebook} icon={Facebook} label="Facebook" />}
+                            {card.tiktok && <SocialIcon href={card.tiktok} icon={Music} label="TikTok" />}
                         </div>
 
                     </CardContent>

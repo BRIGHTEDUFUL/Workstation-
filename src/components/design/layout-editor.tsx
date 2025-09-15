@@ -14,7 +14,7 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import type { CardDetails } from './card-data';
 import { Button } from '../ui/button';
-import { Upload, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook } from 'lucide-react';
+import { Upload, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook, Music } from 'lucide-react';
 import { Textarea } from '../ui/textarea';
 
 interface LayoutEditorProps {
@@ -153,14 +153,6 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                             </div>
 
                              <div className="space-y-2">
-                                <Label htmlFor="landingPageUrl">Landing Page URL</Label>
-                                <div className="relative">
-                                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                    <Input id="landingPageUrl" name="landingPageUrl" value={cardDetails.landingPageUrl || ''} onChange={handleInputChange} placeholder="https://your.link.com" className="pl-10" />
-                                </div>
-                            </div>
-
-                            <div className="space-y-2">
                                 <Label htmlFor="slogan">Footer Slogan (Back of Card)</Label>
                                 <Input id="slogan" name="slogan" value={cardDetails.slogan || ''} onChange={handleInputChange} placeholder="e.g. Creating the future." />
                             </div>
@@ -211,6 +203,13 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                 <AccordionContent>
                     <Card className="border-0 shadow-none">
                         <CardContent className="space-y-6 pt-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="landingPageUrl">Landing Page URL</Label>
+                                <div className="relative">
+                                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                    <Input id="landingPageUrl" name="landingPageUrl" value={cardDetails.landingPageUrl || ''} onChange={handleInputChange} placeholder="https://your.link.com" className="pl-10" />
+                                </div>
+                            </div>
                              <div className="space-y-2">
                                 <Label htmlFor="landingPageBio">Bio</Label>
                                 <Textarea id="landingPageBio" name="landingPageBio" value={cardDetails.landingPageBio || ''} onChange={handleInputChange} placeholder="Tell your visitors a little about yourself." />
@@ -234,7 +233,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                     <SocialLinkInput name="twitter" placeholder="https://x.com/..." value={cardDetails.twitter || ''} onChange={handleInputChange} icon={Twitter} />
                                     <SocialLinkInput name="instagram" placeholder="https://instagram.com/..." value={cardDetails.instagram || ''} onChange={handleInputChange} icon={Instagram} />
                                     <SocialLinkInput name="facebook" placeholder="https://facebook.com/..." value={cardDetails.facebook || ''} onChange={handleInputChange} icon={Facebook} />
-                                     <SocialLinkInput name="tiktok" placeholder="https://tiktok.com/@..." value={cardDetails.tiktok || ''} onChange={handleInputChange} icon={LinkIcon} />
+                                     <SocialLinkInput name="tiktok" placeholder="https://tiktok.com/@..." value={cardDetails.tiktok || ''} onChange={handleInputChange} icon={Music} />
                                 </div>
                             </div>
                         </CardContent>
