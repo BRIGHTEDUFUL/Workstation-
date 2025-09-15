@@ -41,6 +41,11 @@ export default function MyCards() {
         name: `${cardToDuplicate.name} (Copy)`,
       };
 
+      // Ensure website URL is carried over correctly
+      if (cardToDuplicate.website) {
+        newCard.website = cardToDuplicate.website;
+      }
+
       const updatedCards = [...cards, newCard];
       localStorage.setItem('savedCards', JSON.stringify(updatedCards));
       setCards(updatedCards);
@@ -105,5 +110,3 @@ export default function MyCards() {
     </div>
   );
 };
-
-    

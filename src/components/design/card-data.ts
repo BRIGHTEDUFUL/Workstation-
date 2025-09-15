@@ -54,5 +54,6 @@ export const DEFAULT_CARD_DETAILS: CardDetails = {
     profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100",
     elements: [],
     layoutId: 'center-aligned',
+    website: '',
     qrDesignPrompt: ''
 };

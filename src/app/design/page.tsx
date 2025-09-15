@@ -68,8 +68,8 @@ function DesignPageContents() {
                 }
             }
             
-            const website = baseDetails.website || (typeof window !== 'undefined' ? `${window.location.origin}/share/${id}` : '');
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(website)}&bgcolor=${baseDetails.bgColor.substring(1)}&color=${baseDetails.textColor.substring(1)}&qzone=1`;
+            const website = baseDetails.website || '';
+            const qrUrl = website ? `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(website)}&bgcolor=${baseDetails.bgColor.substring(1)}&color=${baseDetails.textColor.substring(1)}&qzone=1` : '';
 
             return {
                 ...baseDetails,
