@@ -62,7 +62,7 @@ const importCardDesignFromImageFlow = ai.defineFlow(
   },
   async (input, dynamicAi) => {
     const aiInstance = dynamicAi || ai;
-    const {output} = await aiInstance.prompt('importCardDesignFromImagePrompt', input);
+    const {output} = await aiInstance.run('importCardDesignFromImagePrompt', input);
     return output!;
   }
 );

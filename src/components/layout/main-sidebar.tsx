@@ -8,27 +8,25 @@ import {
   SidebarMenuButton,
   SidebarFooter,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Brush, Library, LogOut, Settings, CreditCard } from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { CardHubLogo } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { navItems, bottomNavItems } from '@/lib/nav-items';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const MainSidebar = () => {
   const pathname = usePathname();
-
-  const menuItems = [
-    { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/my-cards', label: 'My Cards', icon: CreditCard },
-    { href: '/design', label: 'Design Studio', icon: Brush },
-    { href: '/templates', label: 'Templates', icon: Library },
-  ];
-
-  const bottomMenuItems = [
-    { href: '/settings', label: 'Settings', icon: Settings },
-  ]
 
   return (
     <>
@@ -40,7 +38,7 @@ const MainSidebar = () => {
       </SidebarHeader>
       <SidebarContent className="flex-grow p-2">
         <SidebarMenu>
-          {menuItems.map((item) => (
+          {navItems.map((item) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
@@ -60,7 +58,7 @@ const MainSidebar = () => {
       <Separator className='my-2' />
       <SidebarContent className="p-2">
         <SidebarMenu>
-           {bottomMenuItems.map((item) => (
+           {bottomNavItems.map((item) => (
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
@@ -79,19 +77,35 @@ const MainSidebar = () => {
       </SidebarContent>
       <Separator className='my-2' />
       <SidebarFooter className="p-3">
-        <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9">
-                <AvatarImage src="https://picsum.photos/seed/user-avatar/40/40" data-ai-hint="user avatar"/>
-                <AvatarFallback>U</AvatarFallback>
-            </Avatar>
-            <div className="flex-col hidden group-data-[collapsible=icon]:hidden">
-                <span className="font-semibold text-sm">User Name</span>
-                <span className="text-xs text-muted-foreground">user@cardhub.com</span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+             <div className="flex items-center gap-3 cursor-pointer">
+                <Avatar className="h-9 w-9">
+                    <AvatarImage src="https://picsum.photos/seed/user-avatar/40/40" data-ai-hint="user avatar"/>
+                    <AvatarFallback>U</AvatarFallback>
+                </Avatar>
+                <div className="flex-col hidden group-data-[collapsible=icon]:hidden">
+                    <span className="font-semibold text-sm">User Name</span>
+                    <span className="text-xs text-muted-foreground">user@cardhub.com</span>
+                </div>
             </div>
-            <Button variant="ghost" size="icon" className="ml-auto group-data-[collapsible=icon]:w-full">
-                <LogOut className="h-4 w-4"/>
-            </Button>
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 mb-2 ml-2" side="top" align="start">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/account">Account</Link>
+            </DropdownMenuItem>
+             <DropdownMenuItem asChild>
+              <Link href="/settings">Settings</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <LogOut className="w-4 h-4 mr-2"/>
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarFooter>
     </>
   );
