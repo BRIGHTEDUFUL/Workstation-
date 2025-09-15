@@ -108,7 +108,9 @@ const DesignPage = () => {
 
      useEffect(() => {
         // Update landing page URL whenever ID changes
-        setCardDetails(prev => ({...prev, landingPageUrl: typeof window !== 'undefined' ? `${window.location.origin}/card/${prev.id}` : `/card/${prev.id}`}));
+        if (cardDetails.id) {
+          setCardDetails(prev => ({...prev, landingPageUrl: typeof window !== 'undefined' ? `${window.location.origin}/card/${prev.id}` : `/card/${prev.id}`}));
+        }
     }, [cardDetails.id]);
 
     const handleExport = async () => {

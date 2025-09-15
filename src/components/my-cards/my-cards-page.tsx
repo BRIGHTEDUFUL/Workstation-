@@ -30,6 +30,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import type { CardDetails } from '../design/design-page';
 import { useToast } from '@/hooks/use-toast';
+import { v4 as uuidv4 } from 'uuid';
 
 const MyCardsPage = () => {
     const [cards, setCards] = useState<CardDetails[]>([]);
@@ -55,7 +56,7 @@ const MyCardsPage = () => {
     const handleDuplicate = (cardToDuplicate: CardDetails) => {
       const newCard = {
         ...cardToDuplicate,
-        id: crypto.randomUUID(), // Assign a new unique ID
+        id: uuidv4(), // Assign a new unique ID
         name: `${cardToDuplicate.name} (Copy)`,
       };
 
