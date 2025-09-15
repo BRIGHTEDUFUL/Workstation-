@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +14,8 @@ import {
 import { Textarea } from '../ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import type { CardDetails } from './design-page';
+import { Button } from '../ui/button';
+import { Upload } from 'lucide-react';
 
 interface LayoutEditorProps {
     cardDetails: CardDetails;
@@ -73,6 +75,9 @@ const CategorySpecificFields = ({ cardDetails, handleInputChange }: { cardDetail
 
 
 const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
+    const profilePicInputRef = useRef<HTMLInputElement>(null);
+    const logoInputRef = useRef<HTMLInputElement>(null);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setCardDetails(prev => ({ ...prev, [name]: value }));
@@ -84,6 +89,22 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
 
     const handleFontChange = (value: string) => {
         setCardDetails(prev => ({ ...prev, font: value }));
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'profilePicUrl' | 'logoUrl') => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUri = e.target?.result as string;
+                setCardDetails(prev => ({ ...prev, [fieldName]: dataUri }));
+            };
+            reader.readAsDataURL(file);
+        }
+        // Reset file input
+        if(event.target) {
+            event.target.value = '';
+        }
     };
 
     return (
@@ -106,10 +127,25 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                 <Input id="company" name="company" value={cardDetails.company} onChange={handleInputChange} placeholder="e.g. Acme Inc." />
                             </div>
                             <CategorySpecificFields cardDetails={cardDetails} handleInputChange={handleInputChange} />
+                            
                             <div className="space-y-2">
-                                <Label htmlFor="profilePicUrl">Profile Picture URL</Label>
-                                <Input id="profilePicUrl" name="profilePicUrl" value={cardDetails.profilePicUrl} onChange={handleInputChange} placeholder="https://..." />
+                                <Label>Profile Picture</Label>
+                                <Input id="profilePicUrl" type="file" className="hidden" ref={profilePicInputRef} onChange={(e) => handleFileChange(e, 'profilePicUrl')} accept="image/*" />
+                                <Button variant="outline" className="w-full" onClick={() => profilePicInputRef.current?.click()}>
+                                    <Upload className="w-4 h-4 mr-2" />
+                                    Upload Profile Picture
+                                </Button>
                             </div>
+
+                            <div className="space-y-2">
+                                <Label>Company Logo</Label>
+                                <Input id="logoUrl" type="file" className="hidden" ref={logoInputRef} onChange={(e) => handleFileChange(e, 'logoUrl')} accept="image/*" />
+                                <Button variant="outline" className="w-full" onClick={() => logoInputRef.current?.click()}>
+                                    <Upload className="w-4 h-4 mr-2" />
+                                    Upload Logo
+                                </Button>
+                            </div>
+
                             <div className="space-y-2">
                                 <Label htmlFor="slogan">Footer Slogan (Back of Card)</Label>
                                 <Input id="slogan" name="slogan" value={cardDetails.slogan || ''} onChange={handleInputChange} placeholder="e.g. Creating the future." />

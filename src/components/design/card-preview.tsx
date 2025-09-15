@@ -53,9 +53,14 @@ const CardPreview = ({ cardDetails }: CardPreviewProps) => {
         >
           {/* Card Front */}
           <div
-            className="absolute flex flex-col w-full h-full p-8 text-center shadow-lg backface-hidden rounded-lg"
+            className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
             style={frontStyle}
           >
+             {cardDetails.logoUrl && (
+                <div className="absolute top-6 left-8">
+                    <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
+                </div>
+            )}
             <div className='p-0 flex flex-col items-center justify-center h-full'>
               <Avatar className="w-16 h-16 mb-4 border-2" style={{borderColor: cardDetails.accentColor}}>
                 <AvatarImage src={cardDetails.profilePicUrl} />
