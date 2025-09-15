@@ -1,3 +1,64 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "card-1",
+      "description": "A modern business card with a dark background and blue accents.",
+      "imageUrl": "https://picsum.photos/seed/card1/400/225",
+      "imageHint": "modern business"
+    },
+    {
+      "id": "card-2",
+      "description": "A minimalist business card with a light background and elegant typography.",
+      "imageUrl": "https://picsum.photos/seed/card2/400/225",
+      "imageHint": "minimalist business"
+    },
+    {
+      "id": "card-3",
+      "description": "A vibrant and colorful business card for a creative professional.",
+      "imageUrl": "https://picsum.photos/seed/card3/400/225",
+      "imageHint": "vibrant creative"
+    },
+    {
+      "id": "card-4",
+      "description": "A professional business card with a clean layout and a corporate feel.",
+      "imageUrl": "https://picsum.photos/seed/card4/400/225",
+      "imageHint": "professional corporate"
+    },
+    {
+      "id": "template-1",
+      "description": "Corporate Blue template",
+      "imageUrl": "https://picsum.photos/seed/template1/500/281",
+      "imageHint": "corporate blue"
+    },
+    {
+      "id": "template-2",
+      "description": "Creative Gradient template",
+      "imageUrl": "https://picsum.photos/seed/template2/500/281",
+      "imageHint": "creative gradient"
+    },
+    {
+      "id": "template-3",
+      "description": "Minimalist White template",
+      "imageUrl": "https://picsum.photos/seed/template3/500/281",
+      "imageHint": "minimalist white"
+    },
+    {
+      "id": "template-4",
+      "description": "Elegant Dark template",
+      "imageUrl": "https://picsum.photos/seed/template4/500/281",
+      "imageHint": "elegant dark"
+    },
+    {
+      "id": "template-5",
+      "description": "Playful Pink template",
+      "imageUrl": "https://picsum.photos/seed/template5/500/281",
+      "imageHint": "playful pink"
+    },
+    {
+      "id": "template-6",
+      "description": "Nature Green template",
+      "imageUrl": "https://picsum.photos/seed/template6/500/281",
+      "imageHint": "nature green"
+    }
+  ]
 }
