@@ -97,27 +97,37 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, set
       cursor: draggingElement ? 'grabbing' : 'grab',
     };
 
+    let content;
     switch (element.component) {
       case 'name':
-        return <h2 className="font-bold text-3xl" onMouseDown={(e) => handleMouseDown(e, element.id)} style={{ ...elementStyle, fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.name}</h2>;
+        content = <h2 className="font-bold text-3xl" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.name}</h2>;
+        break;
       case 'title':
-        return <p className="text-lg" onMouseDown={(e) => handleMouseDown(e, element.id)} style={{ ...elementStyle, fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.accentColor }}>{cardDetails.title}</p>;
+        content = <p className="text-lg" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.accentColor }}>{cardDetails.title}</p>;
+        break;
       case 'company':
-        return <p className="text-sm" onMouseDown={(e) => handleMouseDown(e, element.id)} style={{ ...elementStyle, fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.company}</p>;
+        content = <p className="text-sm" style={{ fontSize: `${element.fontSize}vw`, fontWeight: element.fontWeight, color: element.color || cardDetails.textColor }}>{cardDetails.company}</p>;
+        break;
       case 'profilePic':
-        return (
-          <div onMouseDown={(e) => handleMouseDown(e, element.id)} style={elementStyle}>
+        content = (
             <Avatar className={cn("border-2 w-16 h-16")} style={{ borderColor: cardDetails.accentColor }}>
               <AvatarImage src={cardDetails.profilePicUrl} />
               <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
             </Avatar>
-          </div>
         );
+        break;
       case 'logo':
-        return cardDetails.logoUrl ? <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" onMouseDown={(e) => handleMouseDown(e, element.id)} style={elementStyle} /> : null;
+        content = cardDetails.logoUrl ? <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" /> : null;
+        break;
       default:
-        return null;
+        content = null;
     }
+
+    return (
+        <div key={element.id} onMouseDown={(e) => handleMouseDown(e, element.id)} style={elementStyle}>
+            {content}
+        </div>
+    )
   };
 
   return (
