@@ -7,7 +7,7 @@
  * - ImportCardDesignFromImageOutput - The return type for the importCardDesignFromImage function.
  */
 
-import {ai} from '@/ai/genkit';
+import {ai, runWithApiKey} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ImportCardDesignFromImageInputSchema = z.object({
@@ -16,6 +16,7 @@ const ImportCardDesignFromImageInputSchema = z.object({
     .describe(
       "The card design image or PDF file, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  apiKey: z.string().optional(),
 });
 export type ImportCardDesignFromImageInput = z.infer<typeof ImportCardDesignFromImageInputSchema>;
 
@@ -29,7 +30,7 @@ export type ImportCardDesignFromImageOutput = z.infer<typeof ImportCardDesignFro
 export async function importCardDesignFromImage(
   input: ImportCardDesignFromImageInput
 ): Promise<ImportCardDesignFromImageOutput> {
-  return importCardDesignFromImageFlow(input);
+  return runWithApiKey(importCardDesignFromImageFlow, input, input.apiKey);
 }
 
 const prompt = ai.definePrompt({

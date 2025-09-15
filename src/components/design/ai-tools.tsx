@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { generateCardBackgroundFromPrompt, importCardDesignFromImage } from '@/ai/flows';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -11,6 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sparkles, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './design-page';
+import Link from 'next/link';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Terminal } from 'lucide-react';
 
 interface AiToolsProps {
   cardDetails: CardDetails;
@@ -22,12 +25,29 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const [prompt, setPrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [filename, setFilename] = useState('');
+    const [apiKey, setApiKey] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    useEffect(() => {
+      // Ensure this only runs on the client
+      if (typeof window !== 'undefined') {
+        const storedApiKey = localStorage.getItem('googleApiKey');
+        setApiKey(storedApiKey);
+      }
+    }, []);
+
     const handleGenerate = async () => {
+        if (!apiKey) {
+            toast({
+                variant: 'destructive',
+                title: 'API Key Missing',
+                description: 'Please set your Google AI API key in the settings.',
+            });
+            return;
+        }
         setIsLoading(true);
         try {
-            const result = await generateCardBackgroundFromPrompt({ prompt });
+            const result = await generateCardBackgroundFromPrompt({ prompt, apiKey });
 
             setCardDetails(prev => ({
                 ...prev,
@@ -44,7 +64,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             toast({
                 variant: 'destructive',
                 title: 'Generation Failed',
-                description: 'Could not generate design from prompt.',
+                description: 'Could not generate design. Check your API key and prompt.',
             });
         } finally {
             setIsLoading(false);
@@ -67,9 +87,17 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     };
 
     const handleImport = async (fileDataUri: string) => {
+        if (!apiKey) {
+            toast({
+                variant: 'destructive',
+                title: 'API Key Missing',
+                description: 'Please set your Google AI API key in the settings.',
+            });
+            return;
+        }
         setIsLoading(true);
         try {
-            const result = await importCardDesignFromImage({ fileDataUri });
+            const result = await importCardDesignFromImage({ fileDataUri, apiKey });
             setCardDetails(prev => ({...prev, designDescription: result.designDescription }));
             toast({
               title: "Import Successful!",
@@ -95,10 +123,19 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                 <CardDescription>Use AI to generate or import designs.</CardDescription>
             </CardHeader>
             <CardContent>
+                {!apiKey && (
+                    <Alert className="mb-4">
+                        <Terminal className="h-4 w-4" />
+                        <AlertTitle>API Key Not Set</AlertTitle>
+                        <AlertDescription>
+                            You need to <Link href="/settings" className="font-semibold underline">set your Google AI API key</Link> to use the AI tools.
+                        </AlertDescription>
+                    </Alert>
+                )}
                 <Tabs defaultValue="generate">
                     <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="generate">Generate</TabsTrigger>
-                        <TabsTrigger value="import">Import</TabsTrigger>
+                        <TabsTrigger value="generate" disabled={!apiKey}>Generate</TabsTrigger>
+                        <TabsTrigger value="import" disabled={!apiKey}>Import</TabsTrigger>
                     </TabsList>
                     <TabsContent value="generate" className="mt-4">
                         <div className="space-y-4">
@@ -106,12 +143,13 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                 <Label htmlFor="prompt">Background Prompt</Label>
                                 <Textarea
                                     id="prompt"
-                                    placeholder="e.g., A minimalist card with a galaxy background and glowing text"
+                                    placeholder="e.g., A minimalist card with a galaxy background"
                                     value={prompt}
                                     onChange={(e) => setPrompt(e.target.value)}
+                                    disabled={!apiKey}
                                 />
                             </div>
-                            <Button onClick={handleGenerate} disabled={isLoading || !prompt} className="w-full">
+                            <Button onClick={handleGenerate} disabled={isLoading || !prompt || !apiKey} className="w-full">
                                 <Sparkles className="w-4 h-4 mr-2" />
                                 {isLoading ? 'Generating...' : 'Generate with AI'}
                             </Button>
@@ -121,8 +159,8 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="import-file">Upload Image or PDF</Label>
-                                <Input id="import-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" />
-                                <Button variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()} disabled={isLoading}>
+                                <Input id="import-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" disabled={!apiKey} />
+                                <Button variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()} disabled={isLoading || !apiKey}>
                                     <Upload className="w-4 h-4 mr-2" />
                                     {isLoading ? 'Importing...' : (filename || 'Choose a file')}
                                 </Button>

@@ -7,7 +7,7 @@
  * - GenerateCardBackgroundFromPromptOutput - The return type for the generateCardBackgroundFromPrompt function.
  */
 
-import {ai} from '@/ai/genkit';
+import {ai, runWithApiKey} from '@/ai/genkit';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 
@@ -15,6 +15,7 @@ const GenerateCardBackgroundFromPromptInputSchema = z.object({
   prompt: z
     .string()
     .describe('A text prompt describing the desired card background design.'),
+  apiKey: z.string().optional(),
 });
 export type GenerateCardBackgroundFromPromptInput = z.infer<
   typeof GenerateCardBackgroundFromPromptInputSchema
@@ -24,7 +25,8 @@ const GenerateCardBackgroundFromPromptOutputSchema = z.object({
   backgroundImageDataUri: z
     .string()
     .describe(
-      'The generated card background image as a data URI. It must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.')
+      "The generated card background image as a data URI. It must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
 });
 export type GenerateCardBackgroundFromPromptOutput = z.infer<
   typeof GenerateCardBackgroundFromPromptOutputSchema
@@ -33,7 +35,7 @@ export type GenerateCardBackgroundFromPromptOutput = z.infer<
 export async function generateCardBackgroundFromPrompt(
   input: GenerateCardBackgroundFromPromptInput
 ): Promise<GenerateCardBackgroundFromPromptOutput> {
-  return generateCardBackgroundFromPromptFlow(input);
+  return runWithApiKey(generateCardBackgroundFromPromptFlow, input, input.apiKey);
 }
 
 const generateCardBackgroundFromPromptFlow = ai.defineFlow(
@@ -46,7 +48,7 @@ const generateCardBackgroundFromPromptFlow = ai.defineFlow(
     const {media} = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-image-preview'),
       prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${prompt}. The design should be suitable as a background, avoiding text or logos.`,
-       config: {
+      config: {
         responseModalities: ['TEXT', 'IMAGE'],
       },
     });
