@@ -21,7 +21,7 @@ import Image from 'next/image';
 import placeholderImages from '@/lib/placeholder-images.json';
 
 const MyCardsPage = () => {
-    const cards = placeholderImages.placeholderImages.filter(img => img.id.startsWith('card-'));
+    const cards = placeholderImages.placeholderImages.filter(img => img.id.startsWith('template-'));
 
   return (
     <div className="flex flex-col h-screen">
@@ -44,21 +44,21 @@ const MyCardsPage = () => {
         {cards.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {cards.map((card, index) => (
-              <Card key={index} className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
+              <Card key={card.id} className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
                 <CardContent className="p-0">
                   <Image
                     src={card.imageUrl}
                     alt={card.description}
                     width={400}
                     height={225}
-                    className="object-cover w-full h-auto aspect-[16/9] transition-transform duration-300 group-hover:scale-105"
+                    className="object-cover w-full h-auto aspect-video transition-transform duration-300 group-hover:scale-105"
                     data-ai-hint={card.imageHint}
                   />
                 </CardContent>
                 <CardHeader className="flex-row items-center justify-between">
                     <div>
-                        <CardTitle>Card Design {index + 1}</CardTitle>
-                        <CardDescription>Last updated: 2 days ago</CardDescription>
+                        <CardTitle>{card.description}</CardTitle>
+                        <CardDescription>Last updated: {index + 1} day ago</CardDescription>
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -68,7 +68,7 @@ const MyCardsPage = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem asChild>
-                                <Link href="/design"><Pencil className="w-4 h-4 mr-2"/>Edit</Link>
+                                <Link href={`/design?template=${card.id}`}><Pencil className="w-4 h-4 mr-2"/>Edit</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem><Copy className="w-4 h-4 mr-2"/>Duplicate</DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">
