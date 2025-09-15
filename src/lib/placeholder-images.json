@@ -28,7 +28,7 @@
       "id": "template-1",
       "description": "Luxe Gold & Black",
       "category": "Business",
-      "imageUrl": "https://picsum.photos/seed/luxegold/500/281",
+      "imageUrl": "https://picsum.photos/seed/luxegold-theme/500/281",
       "imageHint": "luxury gold black",
       "data": {
         "name": "Alexandre Dubois",
@@ -44,7 +44,7 @@
       "id": "template-2",
       "description": "Glassmorphism Wave",
       "category": "Business",
-      "imageUrl": "https://picsum.photos/seed/glasswave/500/281",
+      "imageUrl": "https://picsum.photos/seed/glasswave-theme/500/281",
       "imageHint": "glassmorphism blue",
       "data": {
         "name": "Isabella Rossi",
@@ -60,7 +60,7 @@
       "id": "template-3",
       "description": "Emerald Geometric",
       "category": "Business",
-      "imageUrl": "https://picsum.photos/seed/emeraldgeo/500/281",
+      "imageUrl": "https://picsum.photos/seed/emeraldgeo-theme/500/281",
       "imageHint": "emerald geometric",
       "data": {
         "name": "Ben Carter",
@@ -76,7 +76,7 @@
       "id": "template-4",
       "description": "Holographic Future",
       "category": "Creative",
-      "imageUrl": "https://picsum.photos/seed/holographic/500/281",
+      "imageUrl": "https://picsum.photos/seed/holographic-theme/500/281",
       "imageHint": "holographic future",
        "data": {
         "name": "Luna Chen",
@@ -92,7 +92,7 @@
       "id": "template-5",
       "description": "Crimson Executive",
       "category": "Business",
-      "imageUrl": "https://picsum.photos/seed/crimsonexec/500/281",
+      "imageUrl": "https://picsum.photos/seed/crimsonexec-theme/500/281",
       "imageHint": "crimson red",
       "data": {
         "name": "Marcus Thorne",
@@ -108,7 +108,7 @@
       "id": "template-6",
       "description": "Aurora Gradient",
       "category": "Personal",
-      "imageUrl": "https://picsum.photos/seed/auroragradient/500/281",
+      "imageUrl": "https://picsum.photos/seed/auroragradient-theme/500/281",
       "imageHint": "aurora gradient",
       "data": {
         "name": "Chloe Kim",
@@ -124,7 +124,7 @@
       "id": "template-7",
       "description": "Midnight Marble",
       "category": "Personal",
-      "imageUrl": "https://picsum.photos/seed/midnightmarble/500/281",
+      "imageUrl": "https://picsum.photos/seed/midnightmarble-theme/500/281",
       "imageHint": "marble luxury",
       "data": {
         "name": "Julian Vance",
@@ -140,7 +140,7 @@
       "id": "template-8",
       "description": "Cyber Grid",
       "category": "Creative",
-      "imageUrl": "https://picsum.photos/seed/cybergrid/500/281",
+      "imageUrl": "https://picsum.photos/seed/cybergrid-theme/500/281",
       "imageHint": "cyber grid",
       "data": {
         "name": "Kai",
@@ -156,7 +156,7 @@
       "id": "template-9",
       "description": "Teal Medical",
       "category": "Medical",
-      "imageUrl": "https://picsum.photos/seed/medicalcard/500/281",
+      "imageUrl": "https://picsum.photos/seed/medicalcard-theme/500/281",
       "imageHint": "medical health",
       "data": {
         "name": "Dr. Elena Rodriguez",
@@ -174,7 +174,7 @@
       "id": "template-10",
       "description": "Neon Event Pass",
       "category": "Event",
-      "imageUrl": "https://picsum.photos/seed/eventpass/500/281",
+      "imageUrl": "https://picsum.photos/seed/eventpass-theme/500/281",
       "imageHint": "event neon",
       "data": {
         "name": "Guest",
@@ -193,7 +193,7 @@
       "id": "template-11",
       "description": "University ID",
       "category": "Student",
-      "imageUrl": "https://picsum.photos/seed/universityid/500/281",
+      "imageUrl": "https://picsum.photos/seed/universityid-theme/500/281",
       "imageHint": "student id",
       "data": {
         "name": "Samantha Miller",
@@ -210,7 +210,7 @@
       "id": "template-12",
       "description": "Carbon Fiber Tech",
       "category": "Business",
-      "imageUrl": "https://picsum.photos/seed/carbontech/500/281",
+      "imageUrl": "https://picsum.photos/seed/carbontech-theme/500/281",
       "imageHint": "carbon tech",
       "data": {
         "name": "Kenji Tanaka",
@@ -226,7 +226,7 @@
         "id": "template-13",
         "description": "Platinum Membership",
         "category": "Membership",
-        "imageUrl": "https://picsum.photos/seed/membership/500/281",
+        "imageUrl": "https://picsum.photos/seed/membership-theme/500/281",
         "imageHint": "platinum member",
         "data": {
           "name": "Sofia Loren",
@@ -243,7 +243,7 @@
         "id": "template-14",
         "description": "Vibrant Portfolio",
         "category": "Creative",
-        "imageUrl": "https://picsum.photos/seed/creativefolio/500/281",
+        "imageUrl": "https://picsum.photos/seed/creativefolio-theme/500/281",
         "imageHint": "vibrant portfolio",
         "data": {
           "name": "Javier Reyes",
@@ -259,7 +259,7 @@
         "id": "template-15",
         "description": "Clean Personal Branding",
         "category": "Personal",
-        "imageUrl": "https://picsum.photos/seed/personalbrand/500/281",
+        "imageUrl": "https://picsum.photos/seed/personalbrand-theme/500/281",
         "imageHint": "clean personal",
         "data": {
           "name": "Olivia Grace",
@@ -275,7 +275,7 @@
         "id": "template-16",
         "description": "Earthy & Organic",
         "category": "Personal",
-        "imageUrl": "https://picsum.photos/seed/earthyorganic/500/281",
+        "imageUrl": "https://picsum.photos/seed/earthyorganic-theme/500/281",
         "imageHint": "earthy organic",
         "data": {
           "name": "Liam Gallagher",
@@ -291,7 +291,7 @@
         "id": "template-17",
         "description": "Deep Ocean",
         "category": "Business",
-        "imageUrl": "https://picsum.photos/seed/deepocean/500/281",
+        "imageUrl": "https://picsum.photos/seed/deepocean-theme/500/281",
         "imageHint": "deep ocean",
         "data": {
           "name": "Dr. Aris Thorne",
@@ -307,7 +307,7 @@
         "id": "template-18",
         "description": "Playful Pop Art",
         "category": "Creative",
-        "imageUrl": "https://picsum.photos/seed/popart/500/281",
+        "imageUrl": "https://picsum.photos/seed/popart-theme/500/281",
         "imageHint": "popart playful",
         "data": {
           "name": "Mika",
