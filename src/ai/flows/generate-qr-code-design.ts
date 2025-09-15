@@ -57,24 +57,10 @@ const generateQrCodeDesignFlow = ai.defineFlow(
     });
     const baseQrCodeDataUri = `data:image/png;base64,${qrCodeBuffer.toString('base64')}`;
 
-    // 2. Use the image-to-image model to stylize the QR code
-    const {media} = await ai.generate({
-        model: 'googleai/gemini-2.5-flash-image-preview',
-        prompt: [
-            {media: {url: baseQrCodeDataUri, contentType: 'image/png'}},
-            {text: `Apply the following style to this QR code: "${prompt}". The QR code functionality must be preserved. The final image must be a scannable QR code with clear distinction between dark and light modules.`},
-        ],
-        config: {
-            responseModalities: ['IMAGE'], 
-        },
-    });
-
-    if (!media || !media.url) {
-      throw new Error('QR code stylization failed. The model did not return an image.');
-    }
-    
+    // AI stylization is disabled for free-tier key compatibility.
+    // Return the standard QR code for now.
     return {
-      qrCodeDataUri: media.url,
+      qrCodeDataUri: baseQrCodeDataUri,
     };
   }
 );
