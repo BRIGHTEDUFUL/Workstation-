@@ -74,7 +74,7 @@ const TemplatesPage = () => {
                     <CardFooter className="p-4 bg-card">
                       <p className="font-semibold">{template.description}</p>
                       <Button asChild size="sm" className="ml-auto">
-                        <Link href="/design">Use Template</Link>
+                        <Link href={`/design?template=${template.id}`}>Use Template</Link>
                       </Button>
                     </CardFooter>
                   </Card>

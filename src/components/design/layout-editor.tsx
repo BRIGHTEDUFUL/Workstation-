@@ -20,6 +20,58 @@ interface LayoutEditorProps {
     setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
 }
 
+const CategorySpecificFields = ({ cardDetails, handleInputChange }: { cardDetails: CardDetails, handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
+    switch (cardDetails.category) {
+        case 'Medical':
+            return (
+                <>
+                    <div className="space-y-2">
+                        <Label htmlFor="policyNumber">Policy Number</Label>
+                        <Input id="policyNumber" name="policyNumber" value={cardDetails.policyNumber || ''} onChange={handleInputChange} placeholder="e.g. ABC123456789" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="planType">Plan Type</Label>
+                        <Input id="planType" name="planType" value={cardDetails.planType || ''} onChange={handleInputChange} placeholder="e.g. PPO Gold" />
+                    </div>
+                </>
+            );
+        case 'Event':
+            return (
+                <>
+                    <div className="space-y-2">
+                        <Label htmlFor="eventName">Event Name</Label>
+                        <Input id="eventName" name="eventName" value={cardDetails.eventName || ''} onChange={handleInputChange} placeholder="e.g. Tech Conference 2024" />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="eventDate">Event Date</Label>
+                        <Input id="eventDate" name="eventDate" value={cardDetails.eventDate || ''} onChange={handleInputChange} placeholder="e.g. October 26-28, 2024" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="accessLevel">Access Level</Label>
+                        <Input id="accessLevel" name="accessLevel" value={cardDetails.accessLevel || ''} onChange={handleInputChange} placeholder="e.g. VIP Access" />
+                    </div>
+                </>
+            );
+        case 'Membership':
+             return (
+                <div className="space-y-2">
+                    <Label htmlFor="memberId">Member ID</Label>
+                    <Input id="memberId" name="memberId" value={cardDetails.memberId || ''} onChange={handleInputChange} placeholder="e.g. M-987654" />
+                </div>
+            );
+        case 'Student':
+            return (
+                <div className="space-y-2">
+                    <Label htmlFor="studentId">Student/ID Number</Label>
+                    <Input id="studentId" name="studentId" value={cardDetails.studentId || ''} onChange={handleInputChange} placeholder="e.g. 2024-00123" />
+                </div>
+            );
+        default:
+            return null;
+    }
+}
+
+
 const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -53,6 +105,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                 <Label htmlFor="company">Company / Organization</Label>
                                 <Input id="company" name="company" value={cardDetails.company} onChange={handleInputChange} placeholder="e.g. Acme Inc." />
                             </div>
+                            <CategorySpecificFields cardDetails={cardDetails} handleInputChange={handleInputChange} />
                             <div className="space-y-2">
                                 <Label htmlFor="profilePicUrl">Profile Picture URL</Label>
                                 <Input id="profilePicUrl" name="profilePicUrl" value={cardDetails.profilePicUrl} onChange={handleInputChange} placeholder="https://..." />

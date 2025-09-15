@@ -29,105 +29,247 @@
       "description": "Luxe Gold & Black",
       "category": "Business",
       "imageUrl": "https://picsum.photos/seed/luxegold/500/281",
-      "imageHint": "luxury gold black"
+      "imageHint": "luxury gold black",
+      "data": {
+        "name": "Alexandre Dubois",
+        "title": "Founder & CEO",
+        "company": "Dubois Holdings",
+        "bgColor": "#1a1a1a",
+        "textColor": "#f0e6d2",
+        "accentColor": "#d4af37",
+        "font": "Georgia, serif"
+      }
     },
     {
       "id": "template-2",
       "description": "Glassmorphism Wave",
       "category": "Business",
       "imageUrl": "https://picsum.photos/seed/glasswave/500/281",
-      "imageHint": "glassmorphism blue"
+      "imageHint": "glassmorphism blue",
+      "data": {
+        "name": "Isabella Rossi",
+        "title": "Lead Product Designer",
+        "company": "Nexus Innovations",
+        "bgColor": "#e0f7fa",
+        "textColor": "#004d40",
+        "accentColor": "#26c6da",
+        "font": "'Inter', sans-serif"
+      }
     },
     {
       "id": "template-3",
       "description": "Emerald Geometric",
       "category": "Business",
       "imageUrl": "https://picsum.photos/seed/emeraldgeo/500/281",
-      "imageHint": "emerald geometric"
+      "imageHint": "emerald geometric",
+      "data": {
+        "name": "Ben Carter",
+        "title": "Architect",
+        "company": "Urban Structures",
+        "bgColor": "#004d40",
+        "textColor": "#ffffff",
+        "accentColor": "#b9f6ca",
+        "font": "'Source Code Pro', monospace"
+      }
     },
     {
       "id": "template-4",
       "description": "Holographic Future",
       "category": "Creative",
       "imageUrl": "https://picsum.photos/seed/holographic/500/281",
-      "imageHint": "holographic future"
+      "imageHint": "holographic future",
+       "data": {
+        "name": "Luna Chen",
+        "title": "XR Developer",
+        "company": "Andromeda Labs",
+        "bgColor": "#1a0b2e",
+        "textColor": "#e6e0f0",
+        "accentColor": "#be3cfa",
+        "font": "'Source Code Pro', monospace"
+      }
     },
     {
       "id": "template-5",
       "description": "Crimson Executive",
       "category": "Business",
       "imageUrl": "https://picsum.photos/seed/crimsonexec/500/281",
-      "imageHint": "crimson red"
+      "imageHint": "crimson red",
+      "data": {
+        "name": "Marcus Thorne",
+        "title": "Managing Director",
+        "company": "Thorne & Associates",
+        "bgColor": "#6a0000",
+        "textColor": "#f5f5f5",
+        "accentColor": "#ffcdd2",
+        "font": "'Times New Roman', serif"
+      }
     },
     {
       "id": "template-6",
       "description": "Aurora Gradient",
       "category": "Personal",
       "imageUrl": "https://picsum.photos/seed/auroragradient/500/281",
-      "imageHint": "aurora gradient"
+      "imageHint": "aurora gradient",
+      "data": {
+        "name": "Chloe Kim",
+        "title": "Wellness Coach",
+        "company": "Mind & Body",
+        "bgColor": "#4A00E0",
+        "textColor": "#FFFFFF",
+        "accentColor": "#8E2DE2",
+        "font": "'Inter', sans-serif"
+      }
     },
     {
       "id": "template-7",
       "description": "Midnight Marble",
       "category": "Personal",
       "imageUrl": "https://picsum.photos/seed/midnightmarble/500/281",
-      "imageHint": "marble luxury"
+      "imageHint": "marble luxury",
+      "data": {
+        "name": "Julian Vance",
+        "title": "Private Chef",
+        "company": "The Gilded Spoon",
+        "bgColor": "#0f0f0f",
+        "textColor": "#e5e5e5",
+        "accentColor": "#c0c0c0",
+        "font": "Georgia, serif"
+      }
     },
     {
       "id": "template-8",
       "description": "Cyber Grid",
       "category": "Creative",
       "imageUrl": "https://picsum.photos/seed/cybergrid/500/281",
-      "imageHint": "cyber grid"
+      "imageHint": "cyber grid",
+      "data": {
+        "name": "Kai",
+        "title": "DJ / Producer",
+        "company": "Bassline Collective",
+        "bgColor": "#0d0221",
+        "textColor": "#00f6ff",
+        "accentColor": "#ff00e5",
+        "font": "'Source Code Pro', monospace"
+      }
     },
     {
       "id": "template-9",
       "description": "Teal Medical",
       "category": "Medical",
       "imageUrl": "https://picsum.photos/seed/medicalcard/500/281",
-      "imageHint": "medical health"
+      "imageHint": "medical health",
+      "data": {
+        "name": "Dr. Elena Rodriguez",
+        "title": "Pediatrician",
+        "company": "Community Health Clinic",
+        "policyNumber": "GRP98765A",
+        "planType": "FamilyCare PPO",
+        "bgColor": "#e0f2f1",
+        "textColor": "#004d40",
+        "accentColor": "#b2dfdb",
+        "font": "Arial, sans-serif"
+      }
     },
     {
       "id": "template-10",
       "description": "Neon Event Pass",
       "category": "Event",
       "imageUrl": "https://picsum.photos/seed/eventpass/500/281",
-      "imageHint": "event neon"
+      "imageHint": "event neon",
+      "data": {
+        "name": "Guest",
+        "title": "VIP Access",
+        "company": "Synthwave Fest '24",
+        "eventName": "Synthwave Fest '24",
+        "eventDate": "10.26.2024",
+        "accessLevel": "All Access",
+        "bgColor": "#260126",
+        "textColor": "#f0f0f0",
+        "accentColor": "#f600ff",
+        "font": "'Source Code Pro', monospace"
+      }
     },
     {
       "id": "template-11",
       "description": "University ID",
       "category": "Student",
       "imageUrl": "https://picsum.photos/seed/universityid/500/281",
-      "imageHint": "student id"
+      "imageHint": "student id",
+      "data": {
+        "name": "Samantha Miller",
+        "title": "Computer Science",
+        "company": "Oakwood University",
+        "studentId": "OU-112358",
+        "bgColor": "#002147",
+        "textColor": "#ffffff",
+        "accentColor": "#f0c808",
+        "font": "Arial, sans-serif"
+      }
     },
     {
       "id": "template-12",
       "description": "Carbon Fiber Tech",
       "category": "Business",
       "imageUrl": "https://picsum.photos/seed/carbontech/500/281",
-      "imageHint": "carbon tech"
+      "imageHint": "carbon tech",
+      "data": {
+        "name": "Kenji Tanaka",
+        "title": "Systems Analyst",
+        "company": "Cyber Solutions",
+        "bgColor": "#343a40",
+        "textColor": "#e9ecef",
+        "accentColor": "#007bff",
+        "font": "'Inter', sans-serif"
+      }
     },
     {
         "id": "template-13",
         "description": "Platinum Membership",
         "category": "Membership",
         "imageUrl": "https://picsum.photos/seed/membership/500/281",
-        "imageHint": "platinum member"
+        "imageHint": "platinum member",
+        "data": {
+          "name": "Sofia Loren",
+          "title": "Platinum Member",
+          "company": "Aura Fitness Club",
+          "memberId": "AC-00199",
+          "bgColor": "#e5e4e2",
+          "textColor": "#2d2d2d",
+          "accentColor": "#b2b2b2",
+          "font": "Georgia, serif"
+        }
     },
     {
         "id": "template-14",
         "description": "Vibrant Portfolio",
         "category": "Creative",
         "imageUrl": "https://picsum.photos/seed/creativefolio/500/281",
-        "imageHint": "vibrant portfolio"
+        "imageHint": "vibrant portfolio",
+        "data": {
+          "name": "Javier Reyes",
+          "title": "Illustrator",
+          "company": "Javi Draws",
+          "bgColor": "#fff3e0",
+          "textColor": "#e65100",
+          "accentColor": "#ff9800",
+          "font": "'Inter', sans-serif"
+        }
     },
     {
         "id": "template-15",
         "description": "Clean Personal Branding",
         "category": "Personal",
         "imageUrl": "https://picsum.photos/seed/personalbrand/500/281",
-        "imageHint": "clean personal"
+        "imageHint": "clean personal",
+        "data": {
+          "name": "Olivia Grace",
+          "title": "Writer & Blogger",
+          "company": "oliviagrace.io",
+          "bgColor": "#fafafa",
+          "textColor": "#212121",
+          "accentColor": "#bdbdbd",
+          "font": "'Inter', sans-serif"
+        }
     }
   ]
 }

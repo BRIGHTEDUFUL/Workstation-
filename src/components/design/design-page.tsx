@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -13,6 +13,8 @@ import LayoutEditor from './layout-editor';
 import { Download, Share2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import placeholderImages from '@/lib/placeholder-images.json';
 
 export type CardDetails = {
     id: string;
@@ -27,6 +29,7 @@ export type CardDetails = {
     designDescription: string;
     logoUrl?: string;
     slogan?: string;
+    category?: string;
     
     // Landing page fields
     landingPageBio?: string;
@@ -39,22 +42,46 @@ export type CardDetails = {
     facebook?: string;
     tiktok?: string;
     profilePicUrl?: string;
+
+    // Category specific fields
+    policyNumber?: string;
+    planType?: string;
+    eventName?: string;
+    eventDate?: string;
+    accessLevel?: string;
+    memberId?: string;
+    studentId?: string;
+};
+
+const DEFAULT_CARD_DETAILS: CardDetails = {
+    id: '1',
+    name: 'Your Name',
+    title: 'Your Title',
+    company: 'Your Company',
+    qrUrl: 'https://firebase.google.com',
+    bgColor: '#ffffff',
+    textColor: '#111827',
+    accentColor: '#3b82f6',
+    font: 'Inter',
+    category: 'Business',
+    designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
+    profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100"
 };
 
 const DesignPage = () => {
-    const [cardDetails, setCardDetails] = useState<CardDetails>({
-        id: '1',
-        name: 'Your Name',
-        title: 'Your Title',
-        company: 'Your Company',
-        qrUrl: 'https://firebase.google.com',
-        bgColor: '#ffffff',
-        textColor: '#111827',
-        accentColor: '#3b82f6',
-        font: 'Inter',
-        designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
-        profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100"
-    });
+    const searchParams = useSearchParams();
+    const [cardDetails, setCardDetails] = useState<CardDetails>(DEFAULT_CARD_DETAILS);
+
+    useEffect(() => {
+        const templateId = searchParams.get('template');
+        if (templateId) {
+            const template = placeholderImages.placeholderImages.find(t => t.id === templateId);
+            if (template) {
+                // @ts-ignore
+                setCardDetails({ ...DEFAULT_CARD_DETAILS, ...template.data, category: template.category });
+            }
+        }
+    }, [searchParams]);
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">
