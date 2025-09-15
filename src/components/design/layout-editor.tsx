@@ -179,7 +179,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                     <Input id="accentColor" name="accentColor" type="color" value={cardDetails.accentColor} onChange={handleInputChange} className="p-1 h-10" />
                                 </div>
                             </div>
-                            <div className="space-y-2">
+                             <div className="space-y-2">
                                 <Label>Background Pattern</Label>
                                 <PatternSelector cardDetails={cardDetails} setCardDetails={setCardDetails} />
                             </div>

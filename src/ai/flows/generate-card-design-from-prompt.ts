@@ -46,7 +46,7 @@ const designPlanPrompt = ai.definePrompt({
   output: {schema: DesignPlanSchema},
   prompt: `You are a professional business card designer. Your task is to create a design plan based on the user's request.
 
-Analyze the user's prompt and details to create a cohesive and professional design plan. The plan should include a category, a style description for an image generator, appropriate colors, and a font.
+Analyze the user's prompt and details to create a cohesive and professional design plan. The plan should include a category, a style description for an image generator, appropriate colors, a font, and optionally a background pattern from the provided list.
 
 User Prompt: "{{prompt}}"
 Card Details:
@@ -54,7 +54,7 @@ Card Details:
 - Title: {{title}}
 - Company: {{company}}
 
-Generate a design plan based on this information. Ensure the colors have good contrast and the font is appropriate for the described style.`,
+Generate a design plan based on this information. Ensure the colors have good contrast and the font is appropriate for the described style. If the prompt mentions a pattern (like 'dots', 'lines', 'grid'), set the pattern field. If the prompt asks for a background image, leave the pattern field empty.`,
 });
 
 const generateCardDesignFromPromptFlow = ai.defineFlow(

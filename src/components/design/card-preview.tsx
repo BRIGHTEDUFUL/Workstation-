@@ -26,7 +26,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
         color: cardDetails.textColor,
         fontFamily: cardDetails.font,
         ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
-        ...(cardDetails.backgroundImage && {
+        ...(cardDetails.backgroundImage && !cardDetails.pattern && {
         backgroundImage: `url(${cardDetails.backgroundImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',

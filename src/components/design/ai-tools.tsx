@@ -94,6 +94,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                 accentColor: result.designPlan.accentColor,
                 font: result.designPlan.font,
                 backgroundImage: result.backgroundImageDataUri,
+                pattern: result.designPlan.pattern,
                 category: result.designPlan.category,
             }));
 
@@ -148,6 +149,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                 textColor: result.designPlan.textColor,
                 accentColor: result.designPlan.accentColor,
                 font: result.designPlan.font,
+                pattern: result.designPlan.pattern,
                 backgroundImage: '', // Clear background image when importing design
             }));
             toast({

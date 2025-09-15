@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Imports an existing card design from an image or PDF file and recreates it as an editable design.
@@ -43,13 +44,14 @@ const prompt = ai.definePrompt({
   output: {schema: DesignPlanSchema},
   prompt: `You are an AI assistant specialized in analyzing business card designs from images.
 
-You will receive a card design as an image. Analyze its layout, colors, and fonts.
+You will receive a card design as an image. Analyze its layout, colors, fonts, and background patterns.
 Your task is to extract the key design elements and return them as a structured design plan.
 
 - Analyze the main colors: identify the background color, the primary text color, and a key accent color. Ensure the text and background colors have good contrast.
 - Suggest a font: Pick the most appropriate font from the provided list that matches the style of the card.
 - Provide a style description: Briefly summarize the overall aesthetic.
 - Categorize the design: Determine the most fitting category for the card design.
+- Detect a pattern: If the background has a noticeable repeating pattern (like dots, lines, grid), identify it from the provided list. Otherwise, leave the pattern field empty.
 
 Card Design Image: {{media url=fileDataUri}}
 
