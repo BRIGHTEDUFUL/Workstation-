@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-export default function Templates() {
+export default async function Templates() {
   const templates = placeholderImages.placeholderImages.filter(img =>
     img.id.startsWith('template-')
   );

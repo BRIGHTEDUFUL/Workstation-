@@ -1,4 +1,5 @@
 
+
 'use client';
 import { CardDetails, DEFAULT_CARD_DETAILS } from "@/components/design/card-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,14 +9,9 @@ import { Mail, Phone, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook, 
 import { useEffect, useState } from "react";
 
 // In a real app, this function would fetch data from a database.
-// For now, we simulate an async fetch and find the card from localStorage on the client.
-async function getCardDetails(id: string): Promise<CardDetails | null> {
+// For this prototype, we simulate an async fetch from localStorage on the client.
+function getCardDetails(id: string): CardDetails | null {
     if (typeof window === 'undefined') {
-        // On the server, we can't access localStorage. We return a default structure.
-        // The client-side effect will then hydrate with the correct data.
-        if (id === DEFAULT_CARD_DETAILS.id) {
-            return DEFAULT_CARD_DETAILS;
-        }
         return null;
     }
 
@@ -25,7 +21,6 @@ async function getCardDetails(id: string): Promise<CardDetails | null> {
     if (card) return card;
 
     if (id === DEFAULT_CARD_DETAILS.id) {
-        // Fallback to default card if no specific card is found
         return DEFAULT_CARD_DETAILS;
     }
     
@@ -51,8 +46,6 @@ const SocialIcon = ({ href, icon: Icon, label }: { href: string, icon: React.Ele
 
 const SaveToContactsButton = ({ card }: { card: CardDetails }) => {
     const createVCard = () => {
-        if (!card) return;
-
         const vCard = `BEGIN:VCARD
 VERSION:3.0
 FN:${card.name}
@@ -96,14 +89,10 @@ export default function CardLandingPage({ params }: { params: { id: string } }) 
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchCard = async () => {
-            setIsLoading(true);
-            const cardData = await getCardDetails(params.id);
-            setCard(cardData);
-            setIsLoading(false);
-        };
-
-        fetchCard();
+        // Data fetching is now synchronous within the effect
+        const cardData = getCardDetails(params.id);
+        setCard(cardData);
+        setIsLoading(false);
     }, [params.id]);
 
     if (isLoading) {

@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils';
 import MainLayout from '@/components/layout/main-layout';
 import { Inter, Source_Code_Pro } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const sourceCodePro = Source_Code_Pro({ subsets: ['latin'], variable: '--font-source-code-pro' })
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
+const sourceCodePro = Source_Code_Pro({ subsets: ['latin'], variable: '--font-source-code-pro', display: 'swap' })
 
 export const metadata: Metadata = {
   title: 'CardHub',
