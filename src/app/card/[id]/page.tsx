@@ -1,10 +1,10 @@
+
 'use client';
-import { CardDetails } from "@/components/design/design-page";
+import { CardDetails, DEFAULT_CARD_DETAILS } from "@/components/design/design-page";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Phone, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook, UserPlus, FileDown } from "lucide-react";
-import Link from "next/link";
+import { Mail, Phone, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook, FileDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 // This is a mock. In a real app, you'd fetch this from a database.
@@ -18,17 +18,9 @@ const MOCK_CARD_DATA: Omit<CardDetails, 'landingPageUrl'> & {
     instagram?: string;
     facebook?: string;
 } = {
+    ...DEFAULT_CARD_DETAILS,
     id: '1',
-    name: 'Your Name',
-    title: 'Your Title',
-    company: 'Your Company',
     qrUrl: '',
-    bgColor: '#ffffff',
-    textColor: '#111827',
-    accentColor: '#3b82f6',
-    font: 'Inter',
-    designDescription: '',
-    profilePicUrl: "https://picsum.photos/seed/user-avatar/150/150",
     landingPageBio: "Welcome to my digital hub! I'm a passionate creator and innovator, always looking for the next challenge. Let's connect and build something amazing together.",
     email: "user@example.com",
     phone: "+11234567890",
@@ -44,7 +36,7 @@ export default function CardLandingPage({ params }: { params: { id: string } }) 
 
     useEffect(() => {
         // In a real app, you would fetch the card details based on params.id
-        // For now, we use mock data.
+        // For now, we use mock data that is synced with the design studio's default.
         if (params.id === MOCK_CARD_DATA.id) {
             setCard(MOCK_CARD_DATA);
         }
@@ -88,18 +80,22 @@ END:VCARD`;
                 <Card className="overflow-hidden shadow-2xl" style={{ backgroundColor: card.bgColor, border: 'none' }}>
                     <div className="h-32" style={{ backgroundColor: card.accentColor }} />
                     <CardContent className="p-6 text-center -mt-20">
-                        <Avatar className="w-32 h-32 mx-auto border-4 shadow-lg" style={{ borderColor: card.bgColor }}>
-                            <AvatarImage src={card.profilePicUrl} alt={card.name} />
-                            <AvatarFallback>{card.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
+                        {card.profilePicUrl && (
+                            <Avatar className="w-32 h-32 mx-auto border-4 shadow-lg" style={{ borderColor: card.bgColor }}>
+                                <AvatarImage src={card.profilePicUrl} alt={card.name} />
+                                <AvatarFallback>{card.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                        )}
                         
                         <h1 className="mt-4 text-4xl font-bold">{card.name}</h1>
                         <p className="text-xl" style={{ color: card.accentColor }}>{card.title}</p>
                         <p className="text-md">{card.company}</p>
 
-                        <p className="mt-6 text-base text-center max-w-prose mx-auto" style={{color: card.textColor}}>
-                            {card.landingPageBio}
-                        </p>
+                        {card.landingPageBio && (
+                            <p className="mt-6 text-base text-center max-w-prose mx-auto" style={{color: card.textColor}}>
+                                {card.landingPageBio}
+                            </p>
+                        )}
 
                         <div className="grid grid-cols-1 gap-4 mt-8 text-left sm:grid-cols-2">
                             {card.email && <ContactLink href={`mailto:${card.email}`} icon={Mail} text={card.email} />}

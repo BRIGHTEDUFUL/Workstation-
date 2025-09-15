@@ -1,3 +1,4 @@
+
 'use client'
 
 import React, { useState, useEffect } from 'react';
@@ -46,7 +47,7 @@ export type CardDetails = {
     studentId?: string;
 };
 
-const DEFAULT_CARD_DETAILS: CardDetails = {
+export const DEFAULT_CARD_DETAILS: CardDetails = {
     id: '1',
     name: 'Your Name',
     title: 'Your Title',
@@ -60,7 +61,7 @@ const DEFAULT_CARD_DETAILS: CardDetails = {
     designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
     profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100",
     logoUrl: "https://picsum.photos/seed/logo-avatar/100/40",
-    landingPageUrl: "https://example.com",
+    landingPageUrl: typeof window !== 'undefined' ? `${window.location.origin}/card/1` : '/card/1',
 };
 
 const DesignPage = () => {
