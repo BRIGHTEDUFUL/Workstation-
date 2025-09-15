@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, forwardRef } from 'react';
+import React, { useState, forwardRef, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,11 +17,10 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
   const [isFlipped, setIsFlipped] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState('');
 
-  React.useEffect(() => {
-    const urlToEncode = cardDetails.landingPageUrl || `${window.location.origin}/card/${cardDetails.id}`;
-    const generatedQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(urlToEncode)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
-    setQrCodeUrl(generatedQrCodeUrl);
-  }, [cardDetails.id, cardDetails.landingPageUrl, cardDetails.bgColor, cardDetails.textColor]);
+  useEffect(() => {
+    // The QR code is now generated from the qrUrl field, which is managed and saved in the design header.
+    setQrCodeUrl(cardDetails.qrUrl);
+  }, [cardDetails.qrUrl]);
   
   const frontStyle = {
       backgroundColor: cardDetails.bgColor,

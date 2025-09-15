@@ -42,10 +42,13 @@ const DesignHeader = ({ cardDetails, cardPreviewRef }: DesignHeaderProps) => {
             const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
             const existingCardIndex = savedCards.findIndex(c => c.id === cardDetails.id);
 
-            // Ensure the landing page URL is up-to-date before saving
+            const landingPageUrl = `${window.location.origin}/card/${cardDetails.id}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(landingPageUrl)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+
             const cardToSave = {
                 ...cardDetails,
-                landingPageUrl: `${window.location.origin}/card/${cardDetails.id}`
+                landingPageUrl,
+                qrUrl
             };
 
             if (existingCardIndex > -1) {
@@ -62,6 +65,9 @@ const DesignHeader = ({ cardDetails, cardPreviewRef }: DesignHeaderProps) => {
                 title: 'Card Saved!',
                 description: 'Your design has been saved to "My Cards".',
             });
+             // Force a reload of the component to reflect the new QR code if it was just created.
+            window.dispatchEvent(new CustomEvent('card-saved', { detail: cardToSave }));
+
         } catch (error) {
             console.error(error);
             toast({

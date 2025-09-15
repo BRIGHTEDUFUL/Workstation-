@@ -23,40 +23,58 @@ function DesignPageContents() {
     const cardPreviewRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const templateId = searchParams.get('template');
-        const cardId = searchParams.get('id');
-        let newCardId = uuidv4();
-
-        const getLandingPageUrl = (id: string) => typeof window !== 'undefined' ? `${window.location.origin}/card/${id}` : `/card/${id}`;
-
-        if (cardId) {
-            const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
-            const cardToEdit = savedCards.find(c => c.id === cardId);
-            if (cardToEdit) {
-                setCardDetails(cardToEdit);
+        const getInitialCardDetails = () => {
+            const templateId = searchParams.get('template');
+            const cardId = searchParams.get('id');
+            const newCardId = uuidv4();
+    
+            const getLandingPageUrl = (id: string) => typeof window !== 'undefined' ? `${window.location.origin}/card/${id}` : `/card/${id}`;
+    
+            if (cardId) {
+                const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
+                const cardToEdit = savedCards.find(c => c.id === cardId);
+                if (cardToEdit) {
+                    return cardToEdit;
+                }
             }
-        } else if (templateId) {
-            const template = placeholderImages.placeholderImages.find(t => t.id === templateId);
-            if (template) {
-                // @ts-ignore
-                setCardDetails({ 
-                    ...DEFAULT_CARD_DETAILS, 
-                    ...template.data, 
-                    category: template.category, 
-                    id: newCardId,
-                    landingPageUrl: getLandingPageUrl(newCardId)
-                });
-            }
-        } else {
-            // New card
-             setCardDetails(prev => ({
-                 ...prev, 
-                 id: newCardId,
-                 landingPageUrl: getLandingPageUrl(newCardId)
-            }));
-        }
+            
+            let baseDetails = {...DEFAULT_CARD_DETAILS};
+            let id = newCardId;
 
-    }, [searchParams]);
+            if (templateId) {
+                const template = placeholderImages.placeholderImages.find(t => t.id === templateId);
+                if (template) {
+                    // @ts-ignore
+                    baseDetails = { ...baseDetails, ...template.data, category: template.category };
+                }
+            }
+            
+            const landingPageUrl = getLandingPageUrl(id);
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(landingPageUrl)}&bgcolor=${baseDetails.bgColor.substring(1)}&color=${baseDetails.textColor.substring(1)}&qzone=1`;
+
+            return {
+                ...baseDetails,
+                id: id,
+                landingPageUrl: landingPageUrl,
+                qrUrl: qrUrl,
+            };
+        };
+
+        setCardDetails(getInitialCardDetails());
+
+        const handleCardSaved = (event: Event) => {
+            const customEvent = event as CustomEvent<CardDetails>;
+            if(customEvent.detail.id === cardDetails.id) {
+                setCardDetails(customEvent.detail);
+            }
+        };
+
+        window.addEventListener('card-saved', handleCardSaved);
+        return () => {
+            window.removeEventListener('card-saved', handleCardSaved);
+        };
+
+    }, [searchParams, cardDetails.id]);
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">
