@@ -26,7 +26,6 @@ function DesignPageContents() {
         const getInitialCardDetails = () => {
             const templateId = searchParams.get('template');
             const cardId = searchParams.get('id');
-            const newCardId = uuidv4();
     
             const getLandingPageUrl = (id: string) => typeof window !== 'undefined' ? `${window.location.origin}/card/${id}` : `/card/${id}`;
     
@@ -39,6 +38,7 @@ function DesignPageContents() {
             }
             
             let baseDetails = {...DEFAULT_CARD_DETAILS};
+            const newCardId = uuidv4();
             let id = newCardId;
 
             if (templateId) {
@@ -61,7 +61,9 @@ function DesignPageContents() {
         };
 
         setCardDetails(getInitialCardDetails());
+    }, [searchParams]);
 
+    useEffect(() => {
         const handleCardSaved = (event: Event) => {
             const customEvent = event as CustomEvent<CardDetails>;
             if(customEvent.detail.id === cardDetails.id) {
@@ -73,8 +75,7 @@ function DesignPageContents() {
         return () => {
             window.removeEventListener('card-saved', handleCardSaved);
         };
-
-    }, [searchParams, cardDetails.id]);
+    }, [cardDetails.id]);
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">

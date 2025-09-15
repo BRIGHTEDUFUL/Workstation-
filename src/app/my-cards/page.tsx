@@ -38,6 +38,11 @@ export default function MyCards() {
         name: `${cardToDuplicate.name} (Copy)`,
       };
 
+      // Update landing page and QR code URLs for the new card
+      newCard.landingPageUrl = `${window.location.origin}/card/${newCard.id}`;
+      newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(newCard.landingPageUrl)}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
+
+
       const updatedCards = [...cards, newCard];
       localStorage.setItem('savedCards', JSON.stringify(updatedCards));
       setCards(updatedCards);

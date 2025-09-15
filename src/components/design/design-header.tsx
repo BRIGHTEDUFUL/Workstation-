@@ -65,7 +65,7 @@ const DesignHeader = ({ cardDetails, cardPreviewRef }: DesignHeaderProps) => {
                 title: 'Card Saved!',
                 description: 'Your design has been saved to "My Cards".',
             });
-             // Force a reload of the component to reflect the new QR code if it was just created.
+             // Dispatch a custom event to notify other components that a card has been saved
             window.dispatchEvent(new CustomEvent('card-saved', { detail: cardToSave }));
 
         } catch (error) {
