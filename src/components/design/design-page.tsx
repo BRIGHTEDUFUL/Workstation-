@@ -20,7 +20,7 @@ import placeholderImages from '@/lib/placeholder-images.json';
 export type CardDetails = {
     id: string;
     name: string;
-    title: string;
+    title:string;
     company: string;
     qrUrl: string;
     bgColor: string;
@@ -69,7 +69,7 @@ export const DEFAULT_CARD_DETAILS: CardDetails = {
     category: 'Business',
     designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
     profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100",
-    logoUrl: "https://picsum.photos/seed/logo-avatar/100/40",
+    logoUrl: "",
     landingPageUrl: typeof window !== 'undefined' ? `${window.location.origin}/card/1` : '/card/1',
 };
 
