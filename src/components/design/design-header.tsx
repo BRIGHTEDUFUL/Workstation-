@@ -42,12 +42,18 @@ const DesignHeader = ({ cardDetails, cardPreviewRef }: DesignHeaderProps) => {
             const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
             const existingCardIndex = savedCards.findIndex(c => c.id === cardDetails.id);
 
+            // Ensure the landing page URL is up-to-date before saving
+            const cardToSave = {
+                ...cardDetails,
+                landingPageUrl: `${window.location.origin}/card/${cardDetails.id}`
+            };
+
             if (existingCardIndex > -1) {
                 // Update existing card
-                savedCards[existingCardIndex] = cardDetails;
+                savedCards[existingCardIndex] = cardToSave;
             } else {
                 // Add new card
-                savedCards.push(cardDetails);
+                savedCards.push(cardToSave);
             }
 
             localStorage.setItem('savedCards', JSON.stringify(savedCards));

@@ -25,6 +25,9 @@ function DesignPageContents() {
     useEffect(() => {
         const templateId = searchParams.get('template');
         const cardId = searchParams.get('id');
+        let newCardId = uuidv4();
+
+        const getLandingPageUrl = (id: string) => typeof window !== 'undefined' ? `${window.location.origin}/card/${id}` : `/card/${id}`;
 
         if (cardId) {
             const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
@@ -36,21 +39,24 @@ function DesignPageContents() {
             const template = placeholderImages.placeholderImages.find(t => t.id === templateId);
             if (template) {
                 // @ts-ignore
-                setCardDetails({ ...DEFAULT_CARD_DETAILS, ...template.data, category: template.category, id: uuidv4() });
+                setCardDetails({ 
+                    ...DEFAULT_CARD_DETAILS, 
+                    ...template.data, 
+                    category: template.category, 
+                    id: newCardId,
+                    landingPageUrl: getLandingPageUrl(newCardId)
+                });
             }
         } else {
             // New card
-             setCardDetails(prev => ({...prev, id: uuidv4()}));
+             setCardDetails(prev => ({
+                 ...prev, 
+                 id: newCardId,
+                 landingPageUrl: getLandingPageUrl(newCardId)
+            }));
         }
 
     }, [searchParams]);
-
-     useEffect(() => {
-        // Update landing page URL whenever ID changes
-        if (cardDetails.id) {
-          setCardDetails(prev => ({...prev, landingPageUrl: typeof window !== 'undefined' ? `${window.location.origin}/card/${prev.id}` : `/card/${prev.id}`}));
-        }
-    }, [cardDetails.id]);
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">
