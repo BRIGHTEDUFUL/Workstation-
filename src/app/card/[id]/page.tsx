@@ -9,7 +9,7 @@ import { Mail, Phone, Link as LinkIcon, Linkedin, Twitter, Instagram, Facebook, 
 import { useEffect, useState } from "react";
 
 // In a real app, this function would fetch data from a database.
-// For this prototype, we simulate an async fetch from localStorage on the client.
+// For this prototype, we simulate a fetch from localStorage on the client.
 function getCardDetails(id: string): CardDetails | null {
     if (typeof window === 'undefined') {
         return null;
