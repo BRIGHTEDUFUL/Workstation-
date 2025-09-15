@@ -16,8 +16,9 @@ import { getPatternStyle } from '@/lib/patterns';
 // CardFront Component
 interface CardFrontProps {
   cardDetails: CardDetails;
+  isFlipped: boolean;
 }
-const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, ref) => {
+const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails, isFlipped }, ref) => {
   
     const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
 
@@ -89,7 +90,10 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
         return (
             <div
                 ref={ref}
-                className={cn("absolute flex w-full h-full shadow-lg backface-hidden rounded-lg overflow-hidden", isVertical ? 'flex-row' : 'flex-col')}
+                className={cn("absolute flex w-full h-full shadow-lg backface-hidden rounded-lg overflow-hidden", 
+                    isVertical ? 'flex-row' : 'flex-col',
+                    {'rotate-y-180': isFlipped}
+                )}
                 style={baseStyle}
             >
                 {layout.id.endsWith('-reverse') ? 
@@ -113,7 +117,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
     return (
         <div
             ref={ref}
-            className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
+            className={cn("absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg", {'rotate-y-180': isFlipped})}
             style={baseStyle}
         >
             <div className="relative w-full h-full">
@@ -245,6 +249,7 @@ const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }:
             <CardFront 
               ref={cardFrontRef} 
               cardDetails={cardDetails} 
+              isFlipped={isFlipped}
             />
             <CardBack ref={cardBackRef} cardDetails={cardDetails} />
           </div>
@@ -264,3 +269,5 @@ const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }:
 };
 
 export default CardPreview;
+
+    
