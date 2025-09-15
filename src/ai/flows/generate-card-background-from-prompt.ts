@@ -7,7 +7,6 @@
  * - GenerateCardBackgroundFromPromptOutput - The return type for the generateCardBackgroundFromPrompt function.
  */
 
-import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {Genkit, genkit} from 'genkit';
@@ -34,7 +33,7 @@ export type GenerateCardBackgroundFromPromptOutput = z.infer<
 
 export async function generateCardBackgroundAction(
   input: GenerateCardBackgroundFromPromptInput,
-  apiKey: string,
+  apiKey: string
 ): Promise<GenerateCardBackgroundFromPromptOutput> {
   const dynamicAi = genkit({
     plugins: [googleAI({apiKey})],
@@ -42,23 +41,19 @@ export async function generateCardBackgroundAction(
   return generateCardBackgroundFromPromptFlow(input, dynamicAi);
 }
 
-const generateCardBackgroundFromPromptFlow = ai.defineFlow(
-  {
-    name: 'generateCardBackgroundFromPromptFlow',
-    inputSchema: GenerateCardBackgroundFromPromptInputSchema,
-    outputSchema: GenerateCardBackgroundFromPromptOutputSchema,
-  },
-  async (input, aiInstance: Genkit) => {
-    const {media} = await aiInstance.generate({
-      model: googleAI.model('imagen-4.0-fast-generate-001'),
-      prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${input.prompt}. The design should be suitable as a background, avoiding text or logos.`,
-    });
-    const url = media?.url;
-    if (!url) {
-      throw new Error('Image generation failed.');
-    }
-    return {
-      backgroundImageDataUri: url,
-    };
+async function generateCardBackgroundFromPromptFlow(
+  input: GenerateCardBackgroundFromPromptInput,
+  aiInstance: Genkit
+): Promise<GenerateCardBackgroundFromPromptOutput> {
+  const {media} = await aiInstance.generate({
+    model: googleAI.model('imagen-4.0-fast-generate-001'),
+    prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${input.prompt}. The design should be suitable as a background, avoiding text or logos.`,
+  });
+  const url = media?.url;
+  if (!url) {
+    throw new Error('Image generation failed.');
   }
-);
+  return {
+    backgroundImageDataUri: url,
+  };
+}

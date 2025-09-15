@@ -70,35 +70,31 @@ Card Details:
 Generate a design plan based on this information. Ensure the colors have good contrast and the font is appropriate for the described style.`,
 });
 
-const generateCardDesignFromPromptFlow = ai.defineFlow(
-  {
-    name: 'generateCardDesignFromPromptFlow',
-    inputSchema: GenerateCardDesignFromPromptInputSchema,
-    outputSchema: GenerateCardDesignFromPromptOutputSchema,
-  },
-  async (input, aiInstance: Genkit) => {
-    // Step 1: Generate the design plan (colors, fonts, etc.)
-    const {output: designPlan} = await aiInstance.run(designPlanPrompt, input);
+async function generateCardDesignFromPromptFlow(
+  input: GenerateCardDesignFromPromptInput,
+  aiInstance: Genkit,
+): Promise<GenerateCardDesignFromPromptOutput> {
+  // Step 1: Generate the design plan (colors, fonts, etc.)
+  const {output: designPlan} = await designPlanPrompt(input, {ai: aiInstance});
 
-    if (!designPlan) {
-      throw new Error('Failed to generate design plan.');
-    }
-
-    // Step 2: Generate the background image based on the plan
-    const {media} = await aiInstance.generate({
-      model: googleAI.model('imagen-4.0-fast-generate-001'),
-      prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${designPlan.styleDescription}. The design should be suitable as a background, avoiding text or logos.`,
-    });
-
-    const url = media?.url;
-    if (!url) {
-      throw new Error('Image generation failed.');
-    }
-
-    // Step 3: Combine and return the results
-    return {
-      designPlan,
-      backgroundImageDataUri: url,
-    };
+  if (!designPlan) {
+    throw new Error('Failed to generate design plan.');
   }
-);
+
+  // Step 2: Generate the background image based on the plan
+  const {media} = await aiInstance.generate({
+    model: googleAI.model('imagen-4.0-fast-generate-001'),
+    prompt: `A modern, professional, high-quality 3D business card background with the following theme: ${designPlan.styleDescription}. The design should be suitable as a background, avoiding text or logos.`,
+  });
+
+  const url = media?.url;
+  if (!url) {
+    throw new Error('Image generation failed.');
+  }
+
+  // Step 3: Combine and return the results
+  return {
+    designPlan,
+    backgroundImageDataUri: url,
+  };
+}

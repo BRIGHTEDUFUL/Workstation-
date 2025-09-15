@@ -60,14 +60,10 @@ Provide a detailed description of the card design:
 `,
 });
 
-const importCardDesignFromImageFlow = ai.defineFlow(
-  {
-    name: 'importCardDesignFromImageFlow',
-    inputSchema: ImportCardDesignFromImageInputSchema,
-    outputSchema: ImportCardDesignFromImageOutputSchema,
-  },
-  async (input, aiInstance: Genkit) => {
-    const {output} = await aiInstance.run(prompt, input);
-    return output!;
-  }
-);
+async function importCardDesignFromImageFlow(
+  input: ImportCardDesignFromImageInput,
+  aiInstance: Genkit,
+): Promise<ImportCardDesignFromImageOutput> {
+  const {output} = await prompt(input, {ai: aiInstance});
+  return output!;
+}
