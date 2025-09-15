@@ -10,6 +10,7 @@
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
+import { DesignPlanSchema } from '@/ai/schemas/design-plan-schema';
 
 const GenerateCardDesignFromPromptInputSchema = z.object({
   prompt: z.string().describe('A text prompt describing the desired card design.'),
@@ -20,15 +21,6 @@ const GenerateCardDesignFromPromptInputSchema = z.object({
 export type GenerateCardDesignFromPromptInput = z.infer<
   typeof GenerateCardDesignFromPromptInputSchema
 >;
-
-const DesignPlanSchema = z.object({
-  category: z.string().describe("Categorize the design style (e.g., 'Business', 'Creative', 'Minimalist', 'Luxury')."),
-  styleDescription: z.string().describe('A brief but descriptive summary of the visual style for the image generator (e.g., "Minimalist black & gold with geometric lines", "Vibrant watercolor splash on a textured paper background").'),
-  bgColor: z.string().describe('A hex color code for the primary background color.'),
-  textColor: z.string().describe('A hex color code for the main text, ensuring high contrast with bgColor.'),
-  accentColor: z.string().describe('A hex color code for accent elements, complementing the other colors.'),
-  font: z.string().describe("Suggest a suitable font family from this list: 'var(--font-inter)', 'var(--font-source-code-pro)', 'Arial, sans-serif', 'Georgia, serif', 'Times New Roman, serif'"),
-});
 
 const GenerateCardDesignFromPromptOutputSchema = z.object({
   designPlan: DesignPlanSchema,

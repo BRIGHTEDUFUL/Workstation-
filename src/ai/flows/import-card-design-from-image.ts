@@ -9,6 +9,7 @@
 
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
+import { DesignPlanSchema } from '@/ai/schemas/design-plan-schema';
 
 const ImportCardDesignFromImageInputSchema = z.object({
   fileDataUri: z
@@ -20,15 +21,6 @@ const ImportCardDesignFromImageInputSchema = z.object({
 export type ImportCardDesignFromImageInput = z.infer<
   typeof ImportCardDesignFromImageInputSchema
 >;
-
-const DesignPlanSchema = z.object({
-  styleDescription: z.string().describe('A brief but descriptive summary of the visual style (e.g., "Minimalist black & gold with geometric lines", "Vibrant watercolor splash on a textured paper background").'),
-  bgColor: z.string().describe('A hex color code for the primary background color.'),
-  textColor: z.string().describe('A hex color code for the main text, ensuring high contrast with bgColor.'),
-  accentColor: z.string().describe('A hex color code for accent elements, complementing the other colors.'),
-  font: z.string().describe("Suggest a suitable font family from this list: 'var(--font-inter)', 'var(--font-source-code-pro)', 'Arial, sans-serif', 'Georgia, serif', 'Times New Roman, serif'"),
-});
-
 
 const ImportCardDesignFromImageOutputSchema = z.object({
   designPlan: DesignPlanSchema,
@@ -57,6 +49,7 @@ Your task is to extract the key design elements and return them as a structured 
 - Analyze the main colors: identify the background color, the primary text color, and a key accent color. Ensure the text and background colors have good contrast.
 - Suggest a font: Pick the most appropriate font from the provided list that matches the style of the card.
 - Provide a style description: Briefly summarize the overall aesthetic.
+- Categorize the design: Determine the most fitting category for the card design.
 
 Card Design Image: {{media url=fileDataUri}}
 
