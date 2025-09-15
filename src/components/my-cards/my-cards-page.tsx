@@ -1,13 +1,22 @@
 'use client'
 import { PlusCircle, Trash, Copy, Pencil, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -18,10 +27,64 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Image from 'next/image';
-import placeholderImages from '@/lib/placeholder-images.json';
+import { useEffect, useState } from 'react';
+import type { CardDetails } from '../design/design-page';
+import { useToast } from '@/hooks/use-toast';
 
 const MyCardsPage = () => {
-    const cards = placeholderImages.placeholderImages.filter(img => img.id.startsWith('template-'));
+    const [cards, setCards] = useState<CardDetails[]>([]);
+    const [isMounted, setIsMounted] = useState(false);
+    const { toast } = useToast();
+
+    useEffect(() => {
+        setIsMounted(true);
+        const savedCards = JSON.parse(localStorage.getItem('savedCards') || '[]');
+        setCards(savedCards);
+    }, []);
+
+    const handleDelete = (cardId: string) => {
+        const updatedCards = cards.filter(card => card.id !== cardId);
+        localStorage.setItem('savedCards', JSON.stringify(updatedCards));
+        setCards(updatedCards);
+        toast({
+            title: "Card Deleted",
+            description: "The card has been removed from your collection.",
+        });
+    };
+    
+    const handleDuplicate = (cardToDuplicate: CardDetails) => {
+      const newCard = {
+        ...cardToDuplicate,
+        id: crypto.randomUUID(), // Assign a new unique ID
+        name: `${cardToDuplicate.name} (Copy)`,
+      };
+
+      const updatedCards = [...cards, newCard];
+      localStorage.setItem('savedCards', JSON.stringify(updatedCards));
+      setCards(updatedCards);
+      toast({
+        title: 'Card Duplicated',
+        description: 'A copy of the card has been added to your collection.',
+      });
+    };
+
+    if (!isMounted) {
+        // You can return a loading spinner or skeleton here
+        return (
+             <div className="flex flex-col h-screen">
+                <header className="flex items-center justify-between p-6 border-b shrink-0 border-border">
+                    <div>
+                        <h1 className="text-2xl font-bold tracking-tight">My Cards</h1>
+                        <p className="text-muted-foreground">Manage your saved card designs.</p>
+                    </div>
+                </header>
+                <main className="flex-1 p-6 overflow-auto">
+                    <p>Loading cards...</p>
+                </main>
+            </div>
+        )
+    }
+
 
   return (
     <div className="flex flex-col h-screen">
@@ -43,22 +106,29 @@ const MyCardsPage = () => {
       <main className="flex-1 p-6 overflow-auto">
         {cards.length > 0 ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {cards.map((card, index) => (
+            {cards.map((card) => (
               <Card key={card.id} className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
-                <CardContent className="p-0">
-                  <Image
-                    src={card.imageUrl}
-                    alt={card.description}
-                    width={400}
-                    height={225}
-                    className="object-cover w-full h-auto aspect-video transition-transform duration-300 group-hover:scale-105"
-                    data-ai-hint={card.imageHint}
-                  />
-                </CardContent>
+                <Link href={`/design?id=${card.id}`}>
+                    <CardContent className="p-0" style={{backgroundColor: card.bgColor}}>
+                        <div className="relative w-full aspect-video" style={{
+                            backgroundColor: card.bgColor,
+                            color: card.textColor,
+                            fontFamily: card.font,
+                            backgroundImage: card.backgroundImage ? `url(${card.backgroundImage})` : 'none',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                        }}>
+                             <div className='absolute inset-0 flex flex-col items-center justify-center p-4 text-center'>
+                                {card.profilePicUrl && <Image src={card.profilePicUrl} alt={card.name} width={48} height={48} className="mb-2 rounded-full" />}
+                                <h3 className="font-bold" style={{color: card.textColor}}>{card.name}</h3>
+                                <p className="text-sm" style={{color: card.accentColor}}>{card.title}</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Link>
                 <CardHeader className="flex-row items-center justify-between">
                     <div>
-                        <CardTitle>{card.description}</CardTitle>
-                        <CardDescription>Last updated: {index + 1} day ago</CardDescription>
+                        <CardTitle className="text-lg">{card.name}</CardTitle>
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -68,12 +138,31 @@ const MyCardsPage = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem asChild>
-                                <Link href={`/design?template=${card.id}`}><Pencil className="w-4 h-4 mr-2"/>Edit</Link>
+                                <Link href={`/design?id=${card.id}`}><Pencil className="w-4 h-4 mr-2"/>Edit</Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem><Copy className="w-4 h-4 mr-2"/>Duplicate</DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive focus:text-destructive-foreground focus:bg-destructive">
-                                <Trash className="w-4 h-4 mr-2"/>Delete
-                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleDuplicate(card)}><Copy className="w-4 h-4 mr-2"/>Duplicate</DropdownMenuItem>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" className="w-full justify-start px-2 py-1.5 text-sm font-normal text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                                        <Trash className="w-4 h-4 mr-2"/>Delete
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete your card design.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDelete(card.id)} className="bg-destructive hover:bg-destructive/90">
+                                            Delete
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardHeader>
