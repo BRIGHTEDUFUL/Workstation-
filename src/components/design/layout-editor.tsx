@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useRef, useCallback } from 'react';
@@ -91,7 +92,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     }, [setCardDetails]);
 
     const handleSelectChange = useCallback((name: string, value: string) => {
-        setCardDetails(prev => ({ ...prev, [name]: value }));
+        setCardDetails(prev => ({ ...prev, [name]: value as any }));
     }, [setCardDetails]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fieldName: 'profilePicUrl' | 'logoUrl') => {
@@ -188,6 +189,8 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                     <SelectContent>
                                         <SelectItem value="classic">Classic</SelectItem>
                                         <SelectItem value="modern-left">Modern Left</SelectItem>
+                                        <SelectItem value="modern-right">Modern Right</SelectItem>
+                                        <SelectItem value="minimalist">Minimalist</SelectItem>
                                         <SelectItem value="no-photo-centered">No Photo, Centered</SelectItem>
                                     </SelectContent>
                                 </Select>

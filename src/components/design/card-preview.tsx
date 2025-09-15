@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, forwardRef, useEffect } from 'react';
@@ -39,14 +40,14 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
       fontFamily: cardDetails.font,
   };
 
-  const hasPhoto = cardDetails.layout !== 'no-photo-centered';
+  const hasPhoto = !['no-photo-centered', 'minimalist'].includes(cardDetails.layout);
 
   const renderContent = () => {
     const textContent = (
-      <div className={cn("text-center", cardDetails.layout === 'modern-left' && 'text-left')}>
-        <h2 className="text-3xl font-bold" style={{ color: cardDetails.textColor }}>{cardDetails.name}</h2>
-        <p className="text-lg" style={{ color: cardDetails.accentColor }}>{cardDetails.title}</p>
-        <p className="text-sm mt-1">{cardDetails.company}</p>
+      <div className={cn("text-center", ['modern-left', 'modern-right'].includes(cardDetails.layout) && 'text-left')}>
+        <h2 className={cn("font-bold", cardDetails.layout === 'minimalist' ? 'text-4xl' : 'text-3xl')} style={{ color: cardDetails.textColor }}>{cardDetails.name}</h2>
+        <p className={cn(cardDetails.layout === 'minimalist' ? 'text-xl' : 'text-lg')} style={{ color: cardDetails.accentColor }}>{cardDetails.title}</p>
+        { cardDetails.layout !== 'minimalist' && <p className="text-sm mt-1">{cardDetails.company}</p> }
       </div>
     );
 
@@ -54,8 +55,7 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
       <Avatar className={cn(
           "border-2",
           cardDetails.layout === 'classic' && "w-16 h-16 mb-4",
-          cardDetails.layout === 'modern-left' && "w-20 h-20",
-          cardDetails.layout === 'no-photo-centered' && 'hidden'
+          (cardDetails.layout === 'modern-left' || cardDetails.layout === 'modern-right') && "w-20 h-20",
         )} style={{borderColor: cardDetails.accentColor}}>
         <AvatarImage src={cardDetails.profilePicUrl} />
         <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
@@ -70,7 +70,15 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
             {textContent}
           </div>
         );
+      case 'modern-right':
+        return (
+          <div className='p-0 flex items-center justify-end h-full gap-6'>
+            {textContent}
+            {avatar}
+          </div>
+        );
       case 'no-photo-centered':
+      case 'minimalist':
          return (
           <div className='p-0 flex flex-col items-center justify-center h-full'>
             {textContent}
@@ -103,7 +111,7 @@ const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ cardDetails 
               className="absolute flex flex-col w-full h-full p-8 shadow-lg backface-hidden rounded-lg"
               style={frontStyle}
             >
-              {cardDetails.logoUrl && (
+              {cardDetails.logoUrl && cardDetails.layout !== 'minimalist' && (
                   <div className="absolute top-6 left-8">
                       <Image src={cardDetails.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
                   </div>

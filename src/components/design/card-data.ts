@@ -1,4 +1,5 @@
 
+
 export type CardDetails = {
     id: string;
     name: string;
@@ -9,7 +10,7 @@ export type CardDetails = {
     textColor: string;
     accentColor: string;
     font: string;
-    layout: 'classic' | 'modern-left' | 'no-photo-centered';
+    layout: 'classic' | 'modern-left' | 'modern-right' | 'minimalist' | 'no-photo-centered';
     designDescription: string;
     logoUrl?: string;
     slogan?: string;
