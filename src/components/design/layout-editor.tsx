@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useRef } from 'react';
@@ -11,11 +12,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '../ui/textarea';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import type { CardDetails } from './design-page';
 import { Button } from '../ui/button';
-import { Upload, Linkedin, Twitter, Instagram, Facebook, Link as LinkIcon, Smartphone, Mail, Globe, Hash } from 'lucide-react';
+import { Upload, Link as LinkIcon } from 'lucide-react';
+import { Textarea } from '../ui/textarea';
 
 interface LayoutEditorProps {
     cardDetails: CardDetails;
@@ -73,6 +74,12 @@ const CategorySpecificFields = ({ cardDetails, handleInputChange }: { cardDetail
     }
 }
 
+const SocialLinkInput = ({ name, placeholder, value, onChange, icon: Icon }: { name: string, placeholder: string, value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, icon: React.ElementType }) => (
+    <div className="relative">
+        <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input id={name} name={name} value={value} onChange={onChange} placeholder={placeholder} className="pl-10" />
+    </div>
+);
 
 const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     const profilePicInputRef = useRef<HTMLInputElement>(null);
@@ -108,7 +115,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
     };
 
     return (
-        <Accordion type="multiple" defaultValue={['card-content']} className="w-full">
+        <Accordion type="multiple" defaultValue={['card-content', 'card-style']} className="w-full">
             <AccordionItem value="card-content">
                 <AccordionTrigger className='text-base font-semibold'>Card Content</AccordionTrigger>
                 <AccordionContent>
@@ -158,6 +165,15 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                                 <Label htmlFor="slogan">Footer Slogan (Back of Card)</Label>
                                 <Input id="slogan" name="slogan" value={cardDetails.slogan || ''} onChange={handleInputChange} placeholder="e.g. Creating the future." />
                             </div>
+                        </CardContent>
+                    </Card>
+                </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="card-style">
+                <AccordionTrigger className='text-base font-semibold'>Card Style</AccordionTrigger>
+                 <AccordionContent>
+                    <Card className="border-0 shadow-none">
+                        <CardContent className="space-y-6 pt-6">
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="bgColor">Background</Label>
@@ -189,7 +205,7 @@ const LayoutEditor = ({ cardDetails, setCardDetails }: LayoutEditorProps) => {
                             </div>
                         </CardContent>
                     </Card>
-                </AccordionContent>
+                 </AccordionContent>
             </AccordionItem>
         </Accordion>
     );

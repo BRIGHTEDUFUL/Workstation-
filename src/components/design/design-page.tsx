@@ -36,6 +36,15 @@ export type CardDetails = {
     // Landing page fields
     landingPageUrl?: string;
     profilePicUrl?: string;
+    landingPageBio?: string;
+    email?: string;
+    phone?: string;
+    website?: string;
+    linkedin?: string;
+    twitter?: string;
+    instagram?: string;
+    facebook?: string;
+    tiktok?: string;
 
     // Category specific fields
     policyNumber?: string;
