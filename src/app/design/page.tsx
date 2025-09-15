@@ -49,7 +49,6 @@ function DesignPageContents() {
                 }
             }
             
-            // Start with default details and always apply the default layout.
             let baseDetails: CardDetails = {
                 ...DEFAULT_CARD_DETAILS, 
                 elements: defaultLayout.elements,
@@ -58,7 +57,6 @@ function DesignPageContents() {
             const newCardId = uuidv4();
             let id = newCardId;
 
-            // If a template is used, apply its data over the defaults, but keep the layout.
             if (templateId) {
                 const template = placeholderImages.placeholderImages.find(t => t.id === templateId);
                 if (template && template.data) {
@@ -67,13 +65,12 @@ function DesignPageContents() {
                 }
             }
             
-            const website = baseDetails.website || '';
             const qrUrl = '';
 
             return {
                 ...baseDetails,
                 id: id,
-                website: website,
+                website: '',
                 qrUrl: qrUrl,
             };
         };
