@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -219,7 +220,8 @@
         "bgColor": "#343a40",
         "textColor": "#e9ecef",
         "accentColor": "#007bff",
-        "font": "'Inter', sans-serif"
+        "font": "'Inter', sans-serif",
+        "pattern": "carbon-fiber"
       }
     },
     {
@@ -300,7 +302,8 @@
           "bgColor": "#000080",
           "textColor": "#ffffff",
           "accentColor": "#add8e6",
-          "font": "'Inter', sans-serif"
+          "font": "'Inter', sans-serif",
+          "pattern": "wavy"
         }
     },
     {
@@ -316,7 +319,8 @@
           "bgColor": "#ffde59",
           "textColor": "#000000",
           "accentColor": "#ff007f",
-          "font": "'Source Code Pro', monospace"
+          "font": "'Source Code Pro', monospace",
+          "pattern": "zig-zag"
         }
     }
   ]
