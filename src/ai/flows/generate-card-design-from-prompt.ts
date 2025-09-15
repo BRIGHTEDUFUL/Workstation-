@@ -9,7 +9,7 @@
 
 import {runWithApiKey} from '@/ai/genkit';
 import {ai} from '@/ai/config';
-import {z} from 'genkit';
+import {z, Genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 
 const GenerateCardDesignFromPromptInputSchema = z.object({
@@ -17,7 +17,6 @@ const GenerateCardDesignFromPromptInputSchema = z.object({
   name: z.string().describe("The user's name for the card."),
   title: z.string().describe("The user's title for the card."),
   company: z.string().describe("The user's company for the card."),
-  apiKey: z.string().optional(),
 });
 export type GenerateCardDesignFromPromptInput = z.infer<
   typeof GenerateCardDesignFromPromptInputSchema
@@ -45,9 +44,10 @@ export type GenerateCardDesignFromPromptOutput = z.infer<
 >;
 
 export async function generateCardDesignFromPrompt(
+  ai: Genkit,
   input: GenerateCardDesignFromPromptInput
 ): Promise<GenerateCardDesignFromPromptOutput> {
-  return runWithApiKey(generateCardDesignFromPromptFlow, input, input.apiKey);
+  return runWithApiKey(ai, generateCardDesignFromPromptFlow, input);
 }
 
 

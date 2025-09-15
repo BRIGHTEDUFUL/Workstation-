@@ -15,6 +15,8 @@ import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { Badge } from '../ui/badge';
+import { genkit, Genkit } from 'genkit';
+import { googleAI } from '@genkit-ai/googleai';
 
 interface AiToolsProps {
   cardDetails: CardDetails;
@@ -75,6 +77,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const [isLoading, setIsLoading] = useState(false);
     const [filename, setFilename] = useState('');
     const [apiKey, setApiKey] = useState<string | null>(null);
+    const [aiInstance, setAiInstance] = useState<Genkit | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -82,11 +85,17 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
       if (typeof window !== 'undefined') {
         const storedApiKey = localStorage.getItem('googleApiKey');
         setApiKey(storedApiKey);
+        if (storedApiKey) {
+            const dynamicAi = genkit({
+                plugins: [googleAI({apiKey: storedApiKey})],
+            });
+            setAiInstance(dynamicAi);
+        }
       }
     }, []);
 
     const handleGenerate = async () => {
-        if (!apiKey) {
+        if (!aiInstance) {
             toast({
                 variant: 'destructive',
                 title: 'API Key Missing',
@@ -96,9 +105,8 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
         }
         setIsLoading(true);
         try {
-            const result = await generateCardDesignFromPrompt({ 
+            const result = await generateCardDesignFromPrompt(aiInstance, { 
                 prompt, 
-                apiKey,
                 name: cardDetails.name,
                 title: cardDetails.title,
                 company: cardDetails.company
@@ -147,7 +155,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     };
 
     const handleImport = async (fileDataUri: string) => {
-        if (!apiKey) {
+        if (!aiInstance) {
             toast({
                 variant: 'destructive',
                 title: 'API Key Missing',
@@ -157,7 +165,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
         }
         setIsLoading(true);
         try {
-            const result = await importCardDesignFromImage({ fileDataUri, apiKey });
+            const result = await importCardDesignFromImage(aiInstance, { fileDataUri });
             setCardDetails(prev => ({...prev, designDescription: result.designDescription }));
             toast({
               title: "Import Successful!",

@@ -1,21 +1,18 @@
 'use server';
-import {genkit, Flow} from 'genkit';
+import {genkit, Flow, Genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'zod';
 
 // A wrapper to dynamically initialize Google AI with a user-provided key
 export async function runWithApiKey<I extends z.ZodType, O extends z.ZodType>(
+  ai: Genkit,
   flow: Flow<I, O>,
-  input: z.infer<I>,
-  apiKey?: string
+  input: z.infer<I>
 ): Promise<z.infer<O>> {
-  if (!apiKey) {
-    throw new Error('API key is required.');
+  if (!ai) {
+    throw new Error('AI instance is required.');
   }
-  const dynamicAi = genkit({
-    plugins: [googleAI({apiKey})],
-  });
-  const dynamicFlow = dynamicAi.flow(
+  const dynamicFlow = ai.flow(
     flow.name,
     flow.inputSchema,
     flow.outputSchema,

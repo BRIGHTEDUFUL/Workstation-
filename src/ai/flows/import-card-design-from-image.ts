@@ -9,7 +9,7 @@
 
 import {runWithApiKey} from '@/ai/genkit';
 import {ai} from '@/ai/config';
-import {z} from 'genkit';
+import {z, Genkit} from 'genkit';
 
 const ImportCardDesignFromImageInputSchema = z.object({
   fileDataUri: z
@@ -17,7 +17,6 @@ const ImportCardDesignFromImageInputSchema = z.object({
     .describe(
       "The card design image or PDF file, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
-  apiKey: z.string().optional(),
 });
 export type ImportCardDesignFromImageInput = z.infer<typeof ImportCardDesignFromImageInputSchema>;
 
@@ -29,9 +28,10 @@ const ImportCardDesignFromImageOutputSchema = z.object({
 export type ImportCardDesignFromImageOutput = z.infer<typeof ImportCardDesignFromImageOutputSchema>;
 
 export async function importCardDesignFromImage(
+  ai: Genkit,
   input: ImportCardDesignFromImageInput
 ): Promise<ImportCardDesignFromImageOutput> {
-  return runWithApiKey(importCardDesignFromImageFlow, input, input.apiKey);
+  return runWithApiKey(ai, importCardDesignFromImageFlow, input);
 }
 
 const prompt = ai.definePrompt({

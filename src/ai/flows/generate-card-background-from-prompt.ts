@@ -9,14 +9,13 @@
 
 import {runWithApiKey} from '@/ai/genkit';
 import {ai} from '@/ai/config';
-import {z} from 'genkit';
+import {z, Genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 
 const GenerateCardBackgroundFromPromptInputSchema = z.object({
   prompt: z
     .string()
     .describe('A text prompt describing the desired card background design.'),
-  apiKey: z.string().optional(),
 });
 export type GenerateCardBackgroundFromPromptInput = z.infer<
   typeof GenerateCardBackgroundFromPromptInputSchema
@@ -34,9 +33,10 @@ export type GenerateCardBackgroundFromPromptOutput = z.infer<
 >;
 
 export async function generateCardBackgroundFromPrompt(
+  ai: Genkit,
   input: GenerateCardBackgroundFromPromptInput
 ): Promise<GenerateCardBackgroundFromPromptOutput> {
-  return runWithApiKey(generateCardBackgroundFromPromptFlow, input, input.apiKey);
+  return runWithApiKey(ai, generateCardBackgroundFromPromptFlow, input);
 }
 
 const generateCardBackgroundFromPromptFlow = ai.defineFlow(
