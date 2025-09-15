@@ -100,7 +100,7 @@ function DesignPageContents() {
         <div className="flex flex-col h-screen overflow-hidden bg-background">
             <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
             <ResizablePanelGroup direction="horizontal" className="flex-1">
-                <ResizablePanel defaultSize={35} minSize={30} maxSize={45}>
+                <ResizablePanel defaultSize={40} minSize={35} maxSize={50}>
                     <ScrollArea className="h-full">
                         <div className="p-6 space-y-8">
                             <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
@@ -109,7 +109,7 @@ function DesignPageContents() {
                     </ScrollArea>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={65}>
+                <ResizablePanel defaultSize={60}>
                     <div className="flex items-center justify-center h-full p-8 bg-muted/30">
                        <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} setCardDetails={setCardDetails} />
                     </div>
