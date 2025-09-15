@@ -59,6 +59,24 @@
       "description": "Holographic Future",
       "imageUrl": "https://picsum.photos/seed/holographic/500/281",
       "imageHint": "holographic future"
+    },
+    {
+      "id": "template-7",
+      "description": "Aurora Gradient",
+      "imageUrl": "https://picsum.photos/seed/auroragradient/500/281",
+      "imageHint": "aurora gradient"
+    },
+    {
+      "id": "template-8",
+      "description": "Midnight Marble",
+      "imageUrl": "https://picsum.photos/seed/midnightmarble/500/281",
+      "imageHint": "marble luxury"
+    },
+    {
+      "id": "template-9",
+      "description": "Cyber Grid",
+      "imageUrl": "https://picsum.photos/seed/cybergrid/500/281",
+      "imageHint": "cyber grid"
     }
   ]
 }
