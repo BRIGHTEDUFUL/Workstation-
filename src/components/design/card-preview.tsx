@@ -89,7 +89,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
         return (
             <div
                 ref={ref}
-                className={cn("absolute flex w-full h-full shadow-lg backface-hidden rounded-lg overflow-hidden", 
+                className={cn("absolute w-full h-full shadow-lg backface-hidden rounded-lg overflow-hidden flex", 
                     isVertical ? 'flex-row' : 'flex-col'
                 )}
                 style={{...baseStyle}}
@@ -238,10 +238,9 @@ const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }:
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             className={cn(
-              'relative w-full aspect-[1.7/1] transition-transform duration-300 preserve-3d',
+              'relative w-full aspect-[1.7/1] transition-transform duration-700 preserve-3d',
               { 'rotate-y-180': isFlipped }
             )}
-            style={{ transformStyle: 'preserve-3d', transition: 'transform 0.8s ease-in-out' }}
           >
             <CardFront 
               ref={cardFrontRef} 
@@ -265,3 +264,5 @@ const CardPreview = ({ cardDetails, setCardDetails, cardFrontRef, cardBackRef }:
 };
 
 export default CardPreview;
+
+    
