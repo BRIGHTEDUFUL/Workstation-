@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, forwardRef, useEffect } from 'react';
+import React, { useState, forwardRef, useEffect, useRef } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -153,17 +153,40 @@ interface CardPreviewProps {
 
 const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const cardContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardContainerRef.current || isFlipped) return;
+
+    const { left, top, width, height } = cardContainerRef.current.getBoundingClientRect();
+    const x = e.clientX - left;
+    const y = e.clientY - top;
+
+    const rotateX = ((height / 2 - y) / (height / 2)) * -8; // Max rotation 8 degrees
+    const rotateY = ((x - width / 2) / (width / 2)) * 8; // Max rotation 8 degrees
+
+    cardContainerRef.current.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (cardContainerRef.current) {
+      cardContainerRef.current.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    }
+  };
 
   return (
     <div className="w-full max-w-lg">
       <div className="bg-transparent">
         <div className="perspective-1000">
           <div
+            ref={cardContainerRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
             className={cn(
-              'relative w-full aspect-[1.7/1] transition-transform duration-700 preserve-3d',
+              'relative w-full aspect-[1.7/1] transition-transform duration-300 preserve-3d',
               { 'rotate-y-180': isFlipped }
             )}
-            style={{ transformStyle: 'preserve-3d' }}
+            style={{ transformStyle: 'preserve-3d', transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}
           >
             <CardFront ref={cardFrontRef} cardDetails={cardDetails} />
             <CardBack ref={cardBackRef} cardDetails={cardDetails} />
@@ -184,3 +207,5 @@ const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProp
 };
 
 export default CardPreview;
+
+    
