@@ -64,7 +64,7 @@ const importCardDesignFromImageFlow = ai.defineFlow(
     outputSchema: ImportCardDesignFromImageOutputSchema,
   },
   async (input) => {
-    const {output: designPlan} = await ai.run(prompt, input);
+    const {output: designPlan} = await prompt(input);
     if (!designPlan) {
       throw new Error('Failed to analyze the card image and generate a design plan.');
     }

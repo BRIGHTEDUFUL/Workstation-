@@ -65,7 +65,7 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
   },
   async (input) => {
     // Step 1: Generate the design plan (colors, fonts, etc.)
-    const {output: designPlan} = await ai.run(designPlanPrompt, input);
+    const {output: designPlan} = await designPlanPrompt(input);
 
     if (!designPlan) {
       throw new Error('Failed to generate design plan.');
