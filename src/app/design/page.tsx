@@ -27,8 +27,6 @@ function DesignPageContents() {
             const templateId = searchParams.get('template');
             const cardId = searchParams.get('id');
     
-            const getLandingPageUrl = (id: string) => typeof window !== 'undefined' ? `${window.location.origin}/card/${id}` : `/card/${id}`;
-    
             if (cardId) {
                 const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
                 const cardToEdit = savedCards.find(c => c.id === cardId);
@@ -49,13 +47,11 @@ function DesignPageContents() {
                 }
             }
             
-            const landingPageUrl = getLandingPageUrl(id);
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(landingPageUrl)}&bgcolor=${baseDetails.bgColor.substring(1)}&color=${baseDetails.textColor.substring(1)}&qzone=1`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(baseDetails.landingPageUrl || '')}&bgcolor=${baseDetails.bgColor.substring(1)}&color=${baseDetails.textColor.substring(1)}&qzone=1`;
 
             return {
                 ...baseDetails,
                 id: id,
-                landingPageUrl: landingPageUrl,
                 qrUrl: qrUrl,
             };
         };
@@ -80,15 +76,14 @@ function DesignPageContents() {
     useEffect(() => {
         // Debounced QR code regeneration
         const handler = setTimeout(() => {
-            const landingPageUrl = `${window.location.origin}/card/${cardDetails.id}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(landingPageUrl)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardDetails.landingPageUrl || '')}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
             setCardDetails(prev => ({...prev, qrUrl}));
         }, 500);
 
         return () => {
             clearTimeout(handler);
         };
-    }, [cardDetails.bgColor, cardDetails.textColor, cardDetails.id]);
+    }, [cardDetails.bgColor, cardDetails.textColor, cardDetails.landingPageUrl]);
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">

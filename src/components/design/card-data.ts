@@ -45,7 +45,7 @@ export const DEFAULT_CARD_DETAILS: CardDetails = {
     name: 'Your Name',
     title: 'Your Title',
     company: 'Your Company',
-    qrUrl: 'https://firebase.google.com',
+    qrUrl: '',
     bgColor: '#ffffff',
     textColor: '#111827',
     accentColor: '#3b82f6',
@@ -54,5 +54,5 @@ export const DEFAULT_CARD_DETAILS: CardDetails = {
     category: 'Business',
     designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
     profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100",
-    landingPageUrl: typeof window !== 'undefined' ? `${window.location.origin}/card/1` : '/card/1',
+    landingPageUrl: '',
 };

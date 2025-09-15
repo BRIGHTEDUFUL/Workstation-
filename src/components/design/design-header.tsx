@@ -42,12 +42,10 @@ const DesignHeader = ({ cardDetails, cardPreviewRef }: DesignHeaderProps) => {
             const savedCards: CardDetails[] = JSON.parse(localStorage.getItem('savedCards') || '[]');
             const existingCardIndex = savedCards.findIndex(c => c.id === cardDetails.id);
 
-            const landingPageUrl = `${window.location.origin}/card/${cardDetails.id}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(landingPageUrl)}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(cardDetails.landingPageUrl || '')}&bgcolor=${cardDetails.bgColor.substring(1)}&color=${cardDetails.textColor.substring(1)}&qzone=1`;
 
             const cardToSave = {
                 ...cardDetails,
-                landingPageUrl,
                 qrUrl
             };
 
@@ -88,11 +86,13 @@ const DesignHeader = ({ cardDetails, cardPreviewRef }: DesignHeaderProps) => {
                     <Save className="w-4 h-4 mr-2" />
                     {isSaving ? 'Saving...' : 'Save Card'}
                 </Button>
-                <Button variant="outline" asChild>
-                    <Link href={`/card/${cardDetails.id}`} target="_blank">
-                        <Share2 className="w-4 h-4 mr-2" /> Share
-                    </Link>
-                </Button>
+                {cardDetails.landingPageUrl && (
+                    <Button variant="outline" asChild>
+                        <a href={cardDetails.landingPageUrl} target="_blank" rel="noopener noreferrer">
+                            <Share2 className="w-4 h-4 mr-2" /> Share
+                        </a>
+                    </Button>
+                )}
                 <Button onClick={handleExport}>
                     <Download className="w-4 h-4 mr-2" /> Export
                 </Button>

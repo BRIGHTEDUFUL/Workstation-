@@ -32,15 +32,16 @@ export default function MyCards() {
     };
     
     const handleDuplicate = (cardToDuplicate: CardDetails) => {
+      const newId = uuidv4();
       const newCard = {
         ...cardToDuplicate,
-        id: uuidv4(), // Assign a new unique ID
+        id: newId,
         name: `${cardToDuplicate.name} (Copy)`,
+        landingPageUrl: cardToDuplicate.landingPageUrl, // Keep the same landing page url or clear it
       };
 
-      // Update landing page and QR code URLs for the new card
-      newCard.landingPageUrl = `${window.location.origin}/card/${newCard.id}`;
-      newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(newCard.landingPageUrl)}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
+      // Update QR code URL for the new card
+      newCard.qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(newCard.landingPageUrl || '')}&bgcolor=${newCard.bgColor.substring(1)}&color=${newCard.textColor.substring(1)}&qzone=1`;
 
 
       const updatedCards = [...cards, newCard];
