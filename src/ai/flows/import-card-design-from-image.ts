@@ -7,9 +7,10 @@
  * - ImportCardDesignFromImageOutput - The return type for the importCardDesignFromImage function.
  */
 
-import {runWithApiKey} from '@/ai/genkit';
 import {ai} from '@/ai/config';
-import {z, Genkit} from 'genkit';
+import {z} from 'genkit';
+import { googleAI } from '@genkit-ai/googleai';
+import { genkit } from 'genkit';
 
 const ImportCardDesignFromImageInputSchema = z.object({
   fileDataUri: z
@@ -27,11 +28,14 @@ const ImportCardDesignFromImageOutputSchema = z.object({
 });
 export type ImportCardDesignFromImageOutput = z.infer<typeof ImportCardDesignFromImageOutputSchema>;
 
-export async function importCardDesignFromImage(
-  ai: Genkit,
-  input: ImportCardDesignFromImageInput
+export async function importCardDesignAction(
+  input: ImportCardDesignFromImageInput,
+  apiKey: string,
 ): Promise<ImportCardDesignFromImageOutput> {
-  return runWithApiKey(ai, importCardDesignFromImageFlow, input);
+  const dynamicAi = genkit({
+    plugins: [googleAI({ apiKey })],
+  });
+  return importCardDesignFromImageFlow(input, dynamicAi);
 }
 
 const prompt = ai.definePrompt({
@@ -56,8 +60,9 @@ const importCardDesignFromImageFlow = ai.defineFlow(
     inputSchema: ImportCardDesignFromImageInputSchema,
     outputSchema: ImportCardDesignFromImageOutputSchema,
   },
-  async input => {
-    const {output} = await prompt(input);
+  async (input, dynamicAi) => {
+    const aiInstance = dynamicAi || ai;
+    const {output} = await aiInstance.prompt('importCardDesignFromImagePrompt', input);
     return output!;
   }
 );

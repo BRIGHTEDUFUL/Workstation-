@@ -7,10 +7,10 @@
  * - GenerateCardDesignFromPromptOutput - The return type for the generateCardDesignFromPrompt function.
  */
 
-import {runWithApiKey} from '@/ai/genkit';
 import {ai} from '@/ai/config';
-import {z, Genkit} from 'genkit';
+import {z} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
+import {genkit} from 'genkit';
 
 const GenerateCardDesignFromPromptInputSchema = z.object({
   prompt: z.string().describe('A text prompt describing the desired card design.'),
@@ -43,11 +43,14 @@ export type GenerateCardDesignFromPromptOutput = z.infer<
   typeof GenerateCardDesignFromPromptOutputSchema
 >;
 
-export async function generateCardDesignFromPrompt(
-  ai: Genkit,
-  input: GenerateCardDesignFromPromptInput
+export async function generateCardDesignAction(
+  input: GenerateCardDesignFromPromptInput,
+  apiKey: string,
 ): Promise<GenerateCardDesignFromPromptOutput> {
-  return runWithApiKey(ai, generateCardDesignFromPromptFlow, input);
+   const dynamicAi = genkit({
+    plugins: [googleAI({apiKey})],
+  });
+  return generateCardDesignFromPromptFlow(input, dynamicAi);
 }
 
 
@@ -75,16 +78,17 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     inputSchema: GenerateCardDesignFromPromptInputSchema,
     outputSchema: GenerateCardDesignFromPromptOutputSchema,
   },
-  async (input) => {
+  async (input, dynamicAi) => {
+    const aiInstance = dynamicAi || ai;
     // Step 1: Create a design plan
-    const {output: designPlan} = await designPlanPrompt(input);
+    const {output: designPlan} = await aiInstance.prompt('designPlanPrompt', input);
     if (!designPlan) {
       throw new Error('Failed to generate design plan.');
     }
 
     // Step 2: Generate background image based on the design plan
     const imagePrompt = `A modern, professional, high-quality business card background. The design should be suitable as a background, avoiding text or logos. The style is: ${designPlan.styleDescription}`;
-    const {media: backgroundImage} = await ai.generate({
+    const {media: backgroundImage} = await aiInstance.generate({
       model: googleAI.model('imagen-4.0-fast-generate-001'),
       prompt: imagePrompt,
     });

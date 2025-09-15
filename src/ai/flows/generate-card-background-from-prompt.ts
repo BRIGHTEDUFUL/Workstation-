@@ -33,10 +33,13 @@ export type GenerateCardBackgroundFromPromptOutput = z.infer<
 >;
 
 export async function generateCardBackgroundFromPrompt(
-  ai: Genkit,
-  input: GenerateCardBackgroundFromPromptInput
+  input: GenerateCardBackgroundFromPromptInput,
+  apiKey: string,
 ): Promise<GenerateCardBackgroundFromPromptOutput> {
-  return runWithApiKey(ai, generateCardBackgroundFromPromptFlow, input);
+  const dynamicAi = genkit({
+    plugins: [googleAI({ apiKey })],
+  });
+  return runWithApiKey(dynamicAi, generateCardBackgroundFromPromptFlow, input);
 }
 
 const generateCardBackgroundFromPromptFlow = ai.defineFlow(
