@@ -46,25 +46,29 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             // Wait a moment before starting the next download
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            // Temporarily remove transform from the parent container to capture back correctly
-            const parentContainer = backNode.parentElement;
-            const originalParentTransform = parentContainer ? parentContainer.style.transform : '';
-            if (parentContainer) {
-                parentContainer.style.transform = 'none';
+            // Export Back - Temporarily remove all rotations to capture correctly
+            const flippableContainer = backNode.parentElement;
+            if (!flippableContainer) {
+                throw new Error("Flippable container not found");
             }
+            
+            // Store original classes to restore them later
+            const originalContainerClass = flippableContainer.className;
+            const originalBackNodeClass = backNode.className;
 
-
-            // Export Back
+            // Remove rotation from parent and child before capture
+            flippableContainer.classList.remove('rotate-y-180');
+            backNode.classList.remove('rotate-y-180');
+            
             const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
             const backLink = document.createElement('a');
             backLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`;
             backLink.href = backDataUrl;
             backLink.click();
 
-            // Restore the transform
-            if (parentContainer) {
-                parentContainer.style.transform = originalParentTransform;
-            }
+            // Restore classes immediately after capture
+            flippableContainer.className = originalContainerClass;
+            backNode.className = originalBackNodeClass;
 
         } catch (err) {
             console.error(err);
@@ -73,14 +77,6 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                 title: 'Export Failed',
                 description: 'Could not export the card images.',
             });
-             // Ensure transform is restored even on error
-            const parentContainer = backNode.parentElement;
-            if (parentContainer && parentContainer.style.transform === 'none') {
-                // Failsafe: Re-apply the original or a default state if needed.
-                // In this case, the original transform style should be reapplied from the variable.
-                const originalParentTransform = parentContainer.dataset.originalTransform || '';
-                parentContainer.style.transform = originalParentTransform;
-            }
         }
     };
 
