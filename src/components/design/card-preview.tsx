@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, forwardRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
@@ -13,17 +13,14 @@ import cardLayouts from '@/lib/card-layouts.json';
 import { getPatternStyle } from '@/lib/patterns';
 
 // CardFront Component
-interface CardFrontProps {
-  cardDetails: CardDetails;
-}
-const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, ref) => {
+const CardFront = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
 
   const baseStyle = {
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
     fontFamily: cardDetails.font,
-    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor, 0.1),
+    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor, 0.2),
     ...(cardDetails.backgroundImage && !cardDetails.pattern && {
       backgroundImage: `url(${cardDetails.backgroundImage})`,
       backgroundSize: 'cover',
@@ -36,60 +33,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
   const companyElement = cardDetails.elements.find(e => e.component === 'company') || { fontSize: 1.1, fontWeight: 400 };
   const logoElement = cardDetails.elements.find(e => e.component === 'logo');
   const profilePicElement = cardDetails.elements.find(e => e.component === 'profilePic');
-
-  if (layout.id.startsWith('split-')) {
-    const isVertical = layout.id.includes('vertical');
-    const splitSectionStyle = {
-      backgroundColor: cardDetails.accentColor,
-      color: cardDetails.bgColor, // Invert color for contrast
-    };
-    const textSectionStyle = {
-      color: cardDetails.textColor,
-    };
-
-    const SplitSection = (
-      <div
-        className={cn("flex flex-col p-4", isVertical ? 'w-2/5' : 'h-2/5')}
-        style={{ ...splitSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : 'flex-start', textAlign: layout.textAlign as any }}
-      >
-        {logoElement && cardDetails.logoUrl && (
-          <Image src={cardDetails.logoUrl} alt="Company Logo" width={100} height={40} className="object-contain" />
-        )}
-      </div>
-    );
-
-    const TextSection = (
-      <div
-        className={cn("flex flex-col p-8", isVertical ? 'w-3/5' : 'h-3/5')}
-        style={{ ...textSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'), textAlign: layout.textAlign as any }}
-      >
-        {profilePicElement && cardDetails.profilePicUrl && (
-          <div className="mb-4">
-            <Avatar className={cn("border-2 w-20 h-20")} style={{ borderColor: cardDetails.textColor }}>
-              <AvatarImage src={cardDetails.profilePicUrl} />
-              <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-          </div>
-        )}
-        <h2 className="font-bold" style={{ fontSize: `clamp(1rem, ${nameElement.fontSize}vw, 2.5rem)`, fontWeight: nameElement.fontWeight }}>
-          {cardDetails.name}
-        </h2>
-        <p className="text-lg" style={{ fontSize: `clamp(0.8rem, ${titleElement.fontSize}vw, 1.5rem)`, fontWeight: titleElement.fontWeight }}>
-          {cardDetails.title}
-        </p>
-        <p className="text-sm mt-2" style={{ fontSize: `clamp(0.7rem, ${companyElement.fontSize}vw, 1.2rem)`, fontWeight: companyElement.fontWeight }}>
-          {cardDetails.company}
-        </p>
-      </div>
-    );
-
-    return (
-      <div className={cn("absolute w-full h-full shadow-lg rounded-lg overflow-hidden flex", isVertical ? 'flex-row' : 'flex-col')} style={{ ...baseStyle }}>
-        {layout.id.endsWith('-reverse') ? <>{TextSection}{SplitSection}</> : <>{SplitSection}{TextSection}</>}
-      </div>
-    );
-  }
-
+  
   const containerStyle = {
     display: 'flex',
     flexDirection: 'column' as 'column',
@@ -97,43 +41,42 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
     justifyContent: layout.justifyContent as any,
     textAlign: layout.textAlign as any,
     height: '100%',
-    padding: '1rem',
+    padding: '1.5rem',
   };
 
   return (
     <div
-      className={cn("absolute w-full h-full p-8 shadow-lg rounded-lg")}
+      ref={ref}
+      className={cn("absolute w-full h-full rounded-lg backface-hidden")}
       style={{ ...baseStyle }}
     >
-      <div className="relative w-full h-full">
-        <div style={containerStyle}>
-          {profilePicElement && cardDetails.profilePicUrl && (
-            <div className="mb-4">
-              <Avatar className={cn("border-2 w-20 h-20")} style={{ borderColor: cardDetails.accentColor }}>
-                <AvatarImage src={cardDetails.profilePicUrl} />
-                <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
-              </Avatar>
-            </div>
-          )}
-          
-          <div className="flex flex-col">
-            <h2 className="font-bold" style={{ fontSize: `clamp(1rem, ${nameElement.fontSize}vw, 2.5rem)`, fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
-              {cardDetails.name}
-            </h2>
-            <p className="text-lg" style={{ fontSize: `clamp(0.8rem, ${titleElement.fontSize}vw, 1.5rem)`, fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
-              {cardDetails.title}
-            </p>
-            <p className="text-sm mt-2" style={{ fontSize: `clamp(0.7rem, ${companyElement.fontSize}vw, 1.2rem)`, fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
-              {cardDetails.company}
-            </p>
+      <div style={containerStyle}>
+        {profilePicElement && cardDetails.profilePicUrl && (
+          <div className="mb-4">
+            <Avatar className={cn("border-2 w-20 h-20")} style={{ borderColor: cardDetails.accentColor }}>
+              <AvatarImage src={cardDetails.profilePicUrl} />
+              <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
+            </Avatar>
           </div>
-
-          {logoElement && cardDetails.logoUrl && (
-            <div className="mt-auto">
-              <Image src={cardDetails.logoUrl} alt="Company Logo" width={100} height={25} className="object-contain h-6" />
-            </div>
-          )}
+        )}
+        
+        <div className="flex flex-col">
+          <h2 className="font-bold" style={{ fontSize: `clamp(1rem, ${nameElement.fontSize}vw, 2.5rem)`, fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
+            {cardDetails.name}
+          </h2>
+          <p className="text-lg" style={{ fontSize: `clamp(0.8rem, ${titleElement.fontSize}vw, 1.5rem)`, fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
+            {cardDetails.title}
+          </p>
+          <p className="text-sm mt-2" style={{ fontSize: `clamp(0.7rem, ${companyElement.fontSize}vw, 1.2rem)`, fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
+            {cardDetails.company}
+          </p>
         </div>
+
+        {logoElement && cardDetails.logoUrl && (
+          <div className="mt-auto">
+            <Image src={cardDetails.logoUrl} alt="Company Logo" width={100} height={25} className="object-contain h-6" />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -141,40 +84,31 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
 CardFront.displayName = 'CardFront';
 
 // CardBack Component
-interface CardBackProps {
-  cardDetails: CardDetails;
-}
-const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref) => {
-  const [qrCodeUrl, setQrCodeUrl] = useState('');
-
-  useEffect(() => {
-    setQrCodeUrl(cardDetails.qrUrl);
-  }, [cardDetails.qrUrl]);
-
+const CardBack = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const style = {
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
     fontFamily: cardDetails.font,
-    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor, 0.1),
+    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor, 0.2),
   };
 
   return (
     <div
       ref={ref}
-      className="absolute w-full h-full p-6 shadow-lg rounded-lg backface-hidden rotate-y-180"
+      className="absolute w-full h-full rounded-lg backface-hidden rotate-y-180"
       style={{ ...style }}
     >
       <CardContent className="flex flex-col items-center justify-center p-0 w-full h-full">
-        {qrCodeUrl ? (
+        {cardDetails.qrUrl ? (
           <Image
-            src={qrCodeUrl}
+            src={cardDetails.qrUrl}
             alt="QR Code"
             width={128}
             height={128}
             className="rounded-lg"
           />
         ) : (
-          <div className="w-32 h-32 bg-gray-200 rounded-lg animate-pulse" />
+          <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse" />
         )}
         <p className="mt-4 text-xs text-center px-4">{cardDetails.slogan || 'Scan to connect'}</p>
       </CardContent>
@@ -182,7 +116,6 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
   );
 });
 CardBack.displayName = 'CardBack';
-
 
 // Main CardPreview Component
 interface CardPreviewProps {
@@ -204,12 +137,8 @@ const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProp
             { 'rotate-y-180': isFlipped }
           )}
         >
-          <div ref={cardFrontRef} className="absolute w-full h-full backface-hidden">
-            <CardFront cardDetails={cardDetails} />
-          </div>
-          <div ref={cardBackRef} className="absolute w-full h-full backface-hidden rotate-y-180">
-            <CardBack cardDetails={cardDetails} />
-          </div>
+          <CardFront cardDetails={cardDetails} ref={cardFrontRef} />
+          <CardBack cardDetails={cardDetails} ref={cardBackRef} />
         </div>
       </div>
 
