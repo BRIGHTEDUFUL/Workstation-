@@ -26,6 +26,17 @@
             ]
         },
         {
+            "id": "minimalist-professional",
+            "name": "Minimalist Professional",
+            "justifyContent": "space-between",
+            "textAlign": "left",
+            "elements": [
+                { "id": "name", "component": "name", "fontSize": 2.4, "fontWeight": 600 },
+                { "id": "title", "component": "title", "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.2, "fontWeight": 400 }
+            ]
+        },
+        {
             "id": "right-aligned",
             "name": "Right Aligned",
             "justifyContent": "center",
