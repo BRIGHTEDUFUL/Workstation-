@@ -3,7 +3,6 @@
 
 import React from 'react';
 import type { CardDetails } from './card-data';
-import { getPatternStyle } from '@/lib/patterns';
 import cardLayouts from '@/lib/card-layouts.json';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -17,10 +16,6 @@ interface CardFaceProps {
 const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
-
-  const baseStyle: React.CSSProperties = {
-    fontFamily: cardDetails.font,
-  };
 
   const nameElement = elements.find(e => e.component === 'name') || { fontSize: 2.2, fontWeight: 700 };
   const titleElement = elements.find(e => e.component === 'title') || { fontSize: 1.4, fontWeight: 400 };
@@ -78,14 +73,14 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
       );
 
       return (
-          <div className={cn("w-full h-full overflow-hidden flex", isVertical ? 'flex-row' : 'flex-col')} style={baseStyle}>
+          <div className={cn("w-full h-full overflow-hidden flex", isVertical ? 'flex-row' : 'flex-col')} style={{ fontFamily: cardDetails.font }}>
               {layout.id.endsWith('-reverse') ? <>{TextSection}{SplitSection}</> : <>{SplitSection}{TextSection}</>}
           </div>
       );
   }
   
   const containerStyle: React.CSSProperties = {
-    ...baseStyle,
+    fontFamily: cardDetails.font,
     display: 'flex',
     flexDirection: 'column',
     alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'),

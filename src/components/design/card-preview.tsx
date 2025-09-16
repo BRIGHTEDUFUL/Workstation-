@@ -4,7 +4,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { CardDetails } from './card-data';
 import Image from 'next/image';
@@ -15,7 +14,7 @@ import { getPatternStyle } from '@/lib/patterns';
 const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   // IMPORTANT: The back of the card should ONLY use the background color.
   // It must NOT use patterns or background images from the front.
-  const style = {
+  const style: React.CSSProperties = {
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor, // Use text color for slogan
   };
@@ -47,7 +46,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
         ) : (
           <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse" />
         )}
-        <p className="mt-4 text-xs text-center px-4">
+        <p className="mt-4 text-xs text-center px-4" style={{ fontFamily: cardDetails.font }}>
           {cardDetails.slogan || 'Scan to connect'}
         </p>
       </div>
@@ -70,7 +69,6 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
 
   // This style is ONLY for the front of the card.
   const frontStyle: React.CSSProperties = {
-    fontFamily: cardDetails.font,
     ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
   };
 
