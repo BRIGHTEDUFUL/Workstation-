@@ -114,6 +114,7 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
             is3D && "card-3d-wrapper"
           )}
         >
+          {/* This container holds both faces as siblings */}
           <div className={cn('absolute w-full h-full', is3D && 'card-3d')}>
             {/* Front Face Container */}
             <div 
