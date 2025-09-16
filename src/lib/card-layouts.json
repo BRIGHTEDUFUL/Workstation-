@@ -26,10 +26,32 @@
             ]
         },
         {
-            "id": "minimalist-professional",
-            "name": "Minimalist Professional",
-            "justifyContent": "space-between",
+            "id": "minimalist-pro-left",
+            "name": "Minimalist Pro - Left",
+            "justifyContent": "center",
             "textAlign": "left",
+            "elements": [
+                { "id": "name", "component": "name", "fontSize": 2.4, "fontWeight": 600 },
+                { "id": "title", "component": "title", "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.2, "fontWeight": 400 }
+            ]
+        },
+        {
+            "id": "minimalist-pro-center",
+            "name": "Minimalist Pro - Center",
+            "justifyContent": "center",
+            "textAlign": "center",
+            "elements": [
+                { "id": "name", "component": "name", "fontSize": 2.4, "fontWeight": 600 },
+                { "id": "title", "component": "title", "fontSize": 1.2, "fontWeight": 400 },
+                { "id": "company", "component": "company", "fontSize": 1.2, "fontWeight": 400 }
+            ]
+        },
+        {
+            "id": "minimalist-pro-right",
+            "name": "Minimalist Pro - Right",
+            "justifyContent": "center",
+            "textAlign": "right",
             "elements": [
                 { "id": "name", "component": "name", "fontSize": 2.4, "fontWeight": 600 },
                 { "id": "title", "component": "title", "fontSize": 1.2, "fontWeight": 400 },
