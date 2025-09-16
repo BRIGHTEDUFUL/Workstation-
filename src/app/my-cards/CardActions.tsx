@@ -77,7 +77,7 @@ const CardPreview = ({ card }: { card: CardDetails }) => {
         const SplitSection = (
             <div
                 className={cn("flex flex-col p-4", isVertical ? 'w-2/5' : 'h-2/5', 'items-center justify-center')}
-                 style={{...splitSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : 'flex-start', textAlign: layout.textAlign as any }}
+                 style={{...splitSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'), textAlign: layout.textAlign as any }}
             >
                 {logoElement && card.logoUrl && (
                     <Image src={card.logoUrl} alt="Company Logo" width={80} height={30} className="object-contain" />
@@ -98,13 +98,13 @@ const CardPreview = ({ card }: { card: CardDetails }) => {
                         </Avatar>
                     </div>
                 )}
-                 <h3 className="font-bold text-lg" style={{ color: card.textColor }}>
+                 <h3 className="font-bold" style={{ fontSize: '1.125rem', lineHeight: '1.75rem', color: card.textColor }}>
                     {card.name}
                 </h3>
-                <p className="text-sm" style={{ color: card.accentColor }}>
+                <p style={{ fontSize: '0.875rem', lineHeight: '1.25rem', color: card.accentColor }}>
                     {card.title}
                 </p>
-                <p className="text-xs mt-1" style={{ color: card.textColor }}>
+                <p className="mt-1" style={{ fontSize: '0.75rem', lineHeight: '1rem', color: card.textColor }}>
                     {card.company}
                 </p>
             </div>
@@ -141,13 +141,13 @@ const CardPreview = ({ card }: { card: CardDetails }) => {
                     </div>
                 )}
                 <div className="flex flex-col">
-                    <h3 className="font-bold text-lg" style={{ color: card.textColor }}>
+                    <h3 className="font-bold" style={{ fontSize: '1.125rem', lineHeight: '1.75rem', color: card.textColor }}>
                         {card.name}
                     </h3>
-                    <p className="text-sm" style={{ color: card.accentColor }}>
+                    <p style={{ fontSize: '0.875rem', lineHeight: '1.25rem', color: card.accentColor }}>
                         {card.title}
                     </p>
-                    <p className="text-xs mt-1" style={{ color: card.textColor }}>
+                    <p className="mt-1" style={{ fontSize: '0.75rem', lineHeight: '1rem', color: card.textColor }}>
                         {card.company}
                     </p>
                 </div>
@@ -155,7 +155,7 @@ const CardPreview = ({ card }: { card: CardDetails }) => {
                     <div className="mt-auto">
                         <Image src={card.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
                     </div>
-                )}
+                 )}
             </div>
         </div>
     )
