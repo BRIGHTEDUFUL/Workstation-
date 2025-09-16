@@ -14,29 +14,38 @@ import CardFace from './card-face';
 const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails, className?: string }>(({ cardDetails, className }, ref) => {
   const style = {
     backgroundColor: cardDetails.bgColor,
-    color: cardDetails.textColor,
-    fontFamily: cardDetails.font
   };
 
   return (
     <div
       ref={ref}
-      className={cn("absolute w-full h-full rounded-lg", className)}
+      className={cn("absolute w-full h-full rounded-lg backface-hidden", className)}
       style={{ ...style }}
     >
-      <CardContent className="flex flex-col items-center justify-center p-0 w-full h-full">
+      <CardContent className="flex flex-col items-center justify-center p-4 w-full h-full">
+        {cardDetails.logoUrl && (
+          <Image
+            src={cardDetails.logoUrl}
+            alt="Company Logo"
+            width={100}
+            height={40}
+            className="object-contain h-10 mb-4"
+          />
+        )}
         {cardDetails.qrUrl ? (
           <Image
             src={cardDetails.qrUrl}
             alt="QR Code"
             width={128}
             height={128}
-            className="rounded-lg"
+            className="rounded-lg aspect-square"
           />
         ) : (
           <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse" />
         )}
-        <p className="mt-4 text-xs text-center px-4">{cardDetails.slogan || 'Scan to connect'}</p>
+        <p className="mt-4 text-xs text-center px-4" style={{ color: cardDetails.textColor }}>
+          {cardDetails.slogan || 'Scan to connect'}
+        </p>
       </CardContent>
     </div>
   );
@@ -93,8 +102,8 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
           )}
         >
           <div className={cn('absolute w-full h-full', is3D && 'card-3d')}>
-            <CardFace cardDetails={cardDetails} ref={cardFrontRef} isPreview={true} className="absolute w-full h-full backface-hidden" />
-            <CardBack cardDetails={cardDetails} ref={cardBackRef} className="backface-hidden rotate-y-180" />
+            <CardFace cardDetails={cardDetails} ref={cardFrontRef} isPreview={true} />
+            <CardBack cardDetails={cardDetails} ref={cardBackRef} className="rotate-y-180" />
           </div>
         </div>
       </div>
@@ -114,3 +123,4 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
 
 CardPreview.displayName = 'CardPreview';
 export default CardPreview;
+
