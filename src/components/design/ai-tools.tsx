@@ -173,88 +173,94 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const isLoadingImport = isLoading && activeTab === 'import';
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>AI Tools</CardTitle>
-                <CardDescription>Use AI to generate or import designs.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                {!isApiKeySet && (
-                    <Alert className="mb-4">
-                        <Terminal className="h-4 w-4" />
-                        <AlertTitle>API Key Not Set</AlertTitle>
-                        <AlertDescription>
-                            For AI features to work, your Google AI API key must be set as an environment variable named <code>GOOGLE_API_KEY</code> on the server. You can still set a temporary key for the browser in <Link href="/settings" className="font-semibold underline">Settings</Link> to enable these tools.
-                        </AlertDescription>
-                    </Alert>
-                )}
-                <Tabs defaultValue="generate">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="generate" disabled={!isApiKeySet}>Generate</TabsTrigger>
-                        <TabsTrigger value="import" disabled={!isApiKeySet}>Import</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="generate" className="mt-4">
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="prompt">Design Prompt</Label>
-                                <Textarea
-                                    id="prompt"
-                                    placeholder="e.g., A minimalist card with a galaxy background"
-                                    value={prompt}
-                                    onChange={(e) => setPrompt(e.target.value)}
-                                    disabled={!isApiKeySet}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-sm text-muted-foreground">Suggestions for '{cardDetails.category}'</Label>
-                                <div className="flex flex-wrap gap-2">
-                                    {suggestionsLoading ? (
-                                        <>
-                                            <Skeleton className="h-6 w-48" />
-                                            <Skeleton className="h-6 w-40" />
-                                            <Skeleton className="h-6 w-52" />
-                                        </>
-                                    ) : (
-                                        suggestions.map((p) => (
-                                            <Badge
-                                                key={p}
-                                                variant="outline"
-                                                className="cursor-pointer"
-                                                onClick={() => setPrompt(p)}
-                                            >
-                                                {p}
-                                            </Badge>
-                                        ))
-                                    )}
+        <div>
+            <Card>
+                <CardHeader>
+                    <CardTitle>AI Tools</CardTitle>
+                    <CardDescription>Use AI to generate or import designs.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {!isApiKeySet && (
+                        <Alert className="mb-4">
+                            <Terminal className="h-4 w-4" />
+                            <AlertTitle>API Key Not Set</AlertTitle>
+                            <AlertDescription>
+                                To enable AI features, please set your Google AI API key in <Link href="/settings" className="font-semibold underline">Settings</Link>.
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                    <Tabs defaultValue="generate">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="generate" disabled={!isApiKeySet}>Generate</TabsTrigger>
+                            <TabsTrigger value="import" disabled={!isApiKeySet}>Import</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="generate" className="mt-4">
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="prompt">Design Prompt</Label>
+                                    <Textarea
+                                        id="prompt"
+                                        placeholder="e.g., A minimalist card with a galaxy background"
+                                        value={prompt}
+                                        onChange={(e) => setPrompt(e.target.value)}
+                                        disabled={!isApiKeySet}
+                                    />
                                 </div>
-                            </div>
-                            <Button onClick={handleGenerate} disabled={isLoadingGenerate || !prompt || !isApiKeySet} className="w-full">
-                                <Sparkles className="w-4 h-4 mr-2" />
-                                {isLoadingGenerate ? 'Generating...' : 'Generate with AI'}
-                            </Button>
-                        </div>
-                    </TabsContent>
-                    <TabsContent value="import" className="mt-4">
-                        <div className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="import-file">Upload Image or PDF</Label>
-                                <Input id="import-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" disabled={!isApiKeySet} />
-                                <Button variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()} disabled={isLoadingImport || !isApiKeySet}>
-                                    <Upload className="w-4 h-4 mr-2" />
-                                    {isLoadingImport ? 'Importing...' : (filename || 'Choose a file')}
+                                <div className="space-y-2">
+                                    <Label className="text-sm text-muted-foreground">Suggestions for '{cardDetails.category}'</Label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {suggestionsLoading ? (
+                                            <>
+                                                <Skeleton className="h-6 w-48" />
+                                                <Skeleton className="h-6 w-40" />
+                                                <Skeleton className="h-6 w-52" />
+                                            </>
+                                        ) : (
+                                            suggestions.map((p) => (
+                                                <Badge
+                                                    key={p}
+                                                    variant="outline"
+                                                    className="cursor-pointer"
+                                                    onClick={() => setPrompt(p)}
+                                                >
+                                                    {p}
+                                                </Badge>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                                <Button onClick={handleGenerate} disabled={isLoadingGenerate || !prompt || !isApiKeySet} className="w-full">
+                                    <Sparkles className="w-4 h-4 mr-2" />
+                                    {isLoadingGenerate ? 'Generating...' : 'Generate with AI'}
                                 </Button>
                             </div>
-                        </div>
-                    </TabsContent>
-                </Tabs>
-                <div className='mt-6'>
-                    <Label className="text-sm font-semibold">AI Analysis</Label>
+                        </TabsContent>
+                        <TabsContent value="import" className="mt-4">
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="import-file">Upload Image or PDF</Label>
+                                    <Input id="import-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" disabled={!isApiKeySet} />
+                                    <Button variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()} disabled={isLoadingImport || !isApiKeySet}>
+                                        <Upload className="w-4 h-4 mr-2" />
+                                        {isLoadingImport ? 'Importing...' : (filename || 'Choose a file')}
+                                    </Button>
+                                </div>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                </CardContent>
+            </Card>
+             <Card className="mt-8">
+                <CardHeader>
+                    <CardTitle>AI Analysis</CardTitle>
+                </CardHeader>
+                <CardContent>
                     <p className="text-sm text-muted-foreground mt-2">
                         {cardDetails.designDescription}
                     </p>
-                </div>
-            </CardContent>
-        </Card>
+                </CardContent>
+             </Card>
+        </div>
     );
 };
 

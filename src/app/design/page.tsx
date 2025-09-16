@@ -100,16 +100,21 @@ function DesignPageContents() {
                     <TabsList className="mx-auto mt-4">
                         <TabsTrigger value="editor">Editor</TabsTrigger>
                         <TabsTrigger value="preview">Preview</TabsTrigger>
+                        <TabsTrigger value="ai">AI Tools</TabsTrigger>
                     </TabsList>
                     <TabsContent value="editor" className="flex-1 overflow-auto">
                          <div className="p-6 space-y-8">
                             <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
-                            <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
                         </div>
                     </TabsContent>
-                    <TabsContent value="preview" className="flex-1 overflow-auto">
-                        <div className="flex items-center justify-center h-full p-8 bg-muted/30">
-                            <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                    <TabsContent value="preview" className="flex-1 overflow-auto bg-muted/30">
+                        <div className="flex items-center justify-center h-full p-8">
+                            <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="ai" className="flex-1 overflow-auto">
+                        <div className="p-6">
+                            <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
                         </div>
                     </TabsContent>
                 </Tabs>
@@ -121,19 +126,26 @@ function DesignPageContents() {
         <div className="flex flex-col h-screen overflow-hidden bg-background">
             <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
             <ResizablePanelGroup direction="horizontal" className="flex-1">
-                <ResizablePanel defaultSize={45} minSize={35}>
+                <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
                     <ScrollArea className="h-full">
                         <div className="p-6 space-y-8">
                             <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
-                            <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
                         </div>
                     </ScrollArea>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={55}>
+                <ResizablePanel defaultSize={50} minSize={30}>
                     <div className="flex items-center justify-center h-full p-8 bg-muted/30">
-                       <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                       <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
                     </div>
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
+                     <ScrollArea className="h-full">
+                        <div className="p-6">
+                            <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                        </div>
+                    </ScrollArea>
                 </ResizablePanel>
             </ResizablePanelGroup>
         </div>

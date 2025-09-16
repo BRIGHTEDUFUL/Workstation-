@@ -19,7 +19,7 @@ const CardFront = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
     fontFamily: cardDetails.font,
-    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor, 0.2),
+    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
     ...(cardDetails.backgroundImage && !cardDetails.pattern && {
       backgroundImage: `url(${cardDetails.backgroundImage})`,
       backgroundSize: 'cover',
@@ -88,7 +88,7 @@ const CardBack = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
     fontFamily: cardDetails.font,
-    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor, 0.2),
+    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
   };
 
   return (
@@ -119,7 +119,6 @@ CardBack.displayName = 'CardBack';
 // Main CardPreview Component
 interface CardPreviewProps {
   cardDetails: CardDetails;
-  setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
   cardFrontRef: React.RefObject<HTMLDivElement>;
   cardBackRef: React.RefObject<HTMLDivElement>;
 }
