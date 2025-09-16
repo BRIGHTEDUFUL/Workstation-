@@ -46,13 +46,16 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             // Wait a moment before starting the next download
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            // Export Back - Temporarily remove all rotations to capture correctly
-            const originalBackNodeClass = backNode.className;
+            // Export Back - Temporarily remove rotation from parent for capture
+            const backParent = backNode.parentElement;
+            if(!backParent) return;
+
+            const originalParentClass = backParent.className;
             
-            // Remove rotation from back node to capture it front-facing
-            backNode.classList.remove('rotate-y-180');
+            // By removing the preserve-3d, the back face becomes visible for capture
+            backParent.style.transformStyle = 'flat';
             
-            // Needed a short delay for the DOM to update the class change
+            // Needed a short delay for the DOM to update the style change
             await new Promise(resolve => setTimeout(resolve, 50));
 
             const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
@@ -61,8 +64,8 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             backLink.href = backDataUrl;
             backLink.click();
 
-            // Restore class immediately after capture
-            backNode.className = originalBackNodeClass;
+            // Restore styles
+            backParent.style.transformStyle = 'preserve-3d';
 
         } catch (err) {
             console.error(err);
