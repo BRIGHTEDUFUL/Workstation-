@@ -1,3 +1,4 @@
+
 'use client';
 
 import { ArrowRight, Brush, Library, PlusCircle } from 'lucide-react';
@@ -9,6 +10,8 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import placeholderImages from '@/lib/placeholder-images.json';
 import { cn } from '@/lib/utils';
+import CardFace from '@/components/design/card-face';
+import { getPatternStyle } from '@/lib/patterns';
 
 function RecentCards() {
   const [recentCards, setRecentCards] = useState<CardDetails[]>([]);
@@ -33,41 +36,27 @@ function RecentCards() {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {recentCards.map(card => (
-        <Link key={card.id} href={`/design?id=${card.id}`}>
-          <div
-            className="relative w-full overflow-hidden transition-all duration-300 ease-in-out border rounded-lg shadow-sm group aspect-video hover:shadow-lg hover:-translate-y-1"
-            style={{
-              backgroundColor: card.bgColor,
-              color: card.textColor,
-              fontFamily: card.font,
-              backgroundImage: card.backgroundImage
-                ? `url(${card.backgroundImage})`
-                : 'none',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          >
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-black/20">
-              {card.profilePicUrl && (
-                <Image
-                  src={card.profilePicUrl}
-                  alt={card.name}
-                  width={40}
-                  height={40}
-                  className="mb-2 rounded-full"
-                />
-              )}
-              <h3 className="font-bold" style={{ color: card.textColor }}>
-                {card.name}
-              </h3>
-              <p className="text-sm" style={{ color: card.accentColor }}>
-                {card.title}
-              </p>
+      {recentCards.map(card => {
+          const cardStyle: React.CSSProperties = {
+            ...getPatternStyle(card.pattern, card.accentColor),
+            backgroundColor: card.bgColor,
+          };
+           if (card.backgroundImage && !card.pattern) {
+            cardStyle.backgroundImage = `url(${card.backgroundImage})`;
+            cardStyle.backgroundSize = 'cover';
+            cardStyle.backgroundPosition = 'center';
+          }
+        return (
+            <Link key={card.id} href={`/design?id=${card.id}`}>
+            <div
+                className="relative w-full overflow-hidden transition-all duration-300 ease-in-out border rounded-lg shadow-sm group aspect-video hover:shadow-lg hover:-translate-y-1"
+                style={cardStyle}
+            >
+                <CardFace cardDetails={card} isPreview={false} />
             </div>
-          </div>
-        </Link>
-      ))}
+            </Link>
+        )
+      })}
     </div>
   );
 }
@@ -79,28 +68,42 @@ function TemplateSuggestions() {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {templates.map(template => (
-        <Card
-          key={template.id}
-          className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1"
-        >
-          <CardContent className="relative p-0 aspect-video">
-            <Image
-              src={template.imageUrl}
-              alt={template.description}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              data-ai-hint={template.imageHint}
-            />
-          </CardContent>
-          <CardHeader className="flex-row items-center justify-between p-4">
-            <p className="font-semibold">{template.description}</p>
-            <Button asChild size="sm">
-              <Link href={`/design?template=${template.id}`}>Use</Link>
-            </Button>
-          </CardHeader>
-        </Card>
-      ))}
+      {templates.map(template => {
+        const cardDetails = {
+            ...template.data,
+            id: template.id,
+            elements: [],
+            layoutId: 'center-aligned'
+        } as unknown as CardDetails;
+
+        const cardStyle: React.CSSProperties = {
+            ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
+            backgroundColor: cardDetails.bgColor,
+        };
+
+        if (cardDetails.backgroundImage && !cardDetails.pattern) {
+            cardStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
+            cardStyle.backgroundSize = 'cover';
+            cardStyle.backgroundPosition = 'center';
+        }
+
+        return (
+            <Card
+            key={template.id}
+            className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1"
+            >
+            <CardContent className="relative p-0 aspect-video" style={cardStyle}>
+                <CardFace cardDetails={cardDetails} isPreview={false} />
+            </CardContent>
+            <CardHeader className="flex-row items-center justify-between p-4">
+                <p className="font-semibold">{template.description}</p>
+                <Button asChild size="sm">
+                <Link href={`/design?template=${template.id}`}>Use</Link>
+                </Button>
+            </CardHeader>
+            </Card>
+        );
+      })}
     </div>
   );
 }

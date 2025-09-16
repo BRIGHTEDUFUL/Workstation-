@@ -2,11 +2,11 @@
 'use server';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import placeholderImages from '@/lib/placeholder-images.json';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import CardFace from '@/components/design/card-face';
 import { CardDetails } from '@/components/design/card-data';
+import { getPatternStyle } from '@/lib/patterns';
 
 export default async function Templates() {
   const templates = placeholderImages.placeholderImages.filter(img =>
@@ -69,12 +69,23 @@ export default async function Templates() {
                     layoutId: 'center-aligned' // Default, will be overridden by template data if present
                   } as unknown as CardDetails;
 
+                  const cardStyle: React.CSSProperties = {
+                    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
+                    backgroundColor: cardDetails.bgColor,
+                  };
+
+                  if (cardDetails.backgroundImage && !cardDetails.pattern) {
+                    cardStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
+                    cardStyle.backgroundSize = 'cover';
+                    cardStyle.backgroundPosition = 'center';
+                  }
+
                   return (
                     <Card
                       key={template.id}
                       className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1"
                     >
-                      <CardContent className="relative p-0 aspect-video">
+                      <CardContent className="relative p-0 aspect-video" style={cardStyle}>
                         <CardFace cardDetails={cardDetails} isPreview={false} />
                       </CardContent>
                       <CardFooter className="flex-wrap items-center justify-between p-4 bg-card">
