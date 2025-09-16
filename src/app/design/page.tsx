@@ -94,7 +94,7 @@ function DesignPageContents() {
             <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
 
             {/* Desktop: 3-panel layout */}
-            <div className="flex-1 hidden md:flex">
+            <div className="flex-1 hidden min-h-0 md:flex">
                 <ResizablePanelGroup direction="horizontal">
                     <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
                         <ScrollArea className="h-full">
