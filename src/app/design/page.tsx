@@ -103,7 +103,7 @@ function DesignPageContents() {
                     </ResizablePanel>
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={50} minSize={30}>
-                        <div className="flex items-center justify-center h-full p-8 bg-muted/30">
+                        <div className="flex items-center justify-center w-full h-full p-8 bg-muted/30">
                             <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
                         </div>
                     </ResizablePanel>
