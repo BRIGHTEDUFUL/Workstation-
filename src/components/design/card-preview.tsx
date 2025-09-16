@@ -11,14 +11,7 @@ import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 
 // CardBack Component
-const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
-  // IMPORTANT: The back of the card should ONLY use the background color.
-  // It must NOT use patterns or background images from the front.
-  const style: React.CSSProperties = {
-    backgroundColor: cardDetails.bgColor,
-    color: cardDetails.textColor, // Use text color for slogan
-  };
-
+const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails; style: React.CSSProperties }>(({ cardDetails, style }, ref) => {
   return (
     <div
       ref={ref}
@@ -46,7 +39,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
         ) : (
           <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse" />
         )}
-        <p className="mt-4 text-xs text-center px-4" style={{ fontFamily: cardDetails.font }}>
+        <p className="mt-4 text-xs text-center px-4" style={{ fontFamily: cardDetails.font, color: cardDetails.textColor }}>
           {cardDetails.slogan || 'Scan to connect'}
         </p>
       </div>
@@ -70,15 +63,19 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
   // This style is ONLY for the front of the card.
   const frontStyle: React.CSSProperties = {
     ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
+    backgroundColor: cardDetails.bgColor,
   };
 
   if (cardDetails.backgroundImage && !cardDetails.pattern) {
     frontStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
     frontStyle.backgroundSize = 'cover';
     frontStyle.backgroundPosition = 'center';
-  } else {
-    frontStyle.backgroundColor = cardDetails.bgColor;
   }
+
+  // This style is ONLY for the back of the card. It guarantees no inheritance.
+  const backStyle: React.CSSProperties = {
+    backgroundColor: cardDetails.bgColor,
+  };
 
   useEffect(() => {
     if (!is3D || !wrapperRef.current) return;
@@ -127,7 +124,7 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
               <CardFace cardDetails={cardDetails} isPreview={true} />
             </div>
             {/* Back Face Component */}
-            <CardBack cardDetails={cardDetails} ref={cardBackRef} />
+            <CardBack cardDetails={cardDetails} ref={cardBackRef} style={backStyle} />
           </div>
         </div>
       </div>
@@ -147,3 +144,4 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
 
 CardPreview.displayName = 'CardPreview';
 export default CardPreview;
+
