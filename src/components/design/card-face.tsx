@@ -13,22 +13,25 @@ interface CardFaceProps {
   cardDetails: CardDetails;
   isPreview?: boolean;
   className?: string;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ cardDetails, isPreview = false, className }, ref) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 
-  const baseStyle = {
+  const baseStyle: React.CSSProperties = {
     backgroundColor: cardDetails.bgColor,
     fontFamily: cardDetails.font,
     ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
-    ...(cardDetails.backgroundImage && !cardDetails.pattern && {
-      backgroundImage: `url(${cardDetails.backgroundImage})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    }),
   };
+
+  if (cardDetails.backgroundImage && !cardDetails.pattern) {
+      baseStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
+      baseStyle.backgroundSize = 'cover';
+      baseStyle.backgroundPosition = 'center';
+  }
+
 
   const nameElement = elements.find(e => e.component === 'name') || { fontSize: 2.2, fontWeight: 700 };
   const titleElement = elements.find(e => e.component === 'title') || { fontSize: 1.4, fontWeight: 400 };
@@ -37,7 +40,7 @@ const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ c
   const profilePicElement = elements.find(e => e.component === 'profilePic');
 
   // Use vw for scaling in preview, but fixed rem for thumbnails
-  const fontSize = (vw: number, rem: string) => isPreview ? `clamp(0.8rem, ${vw}vw, 2.5rem)` : rem;
+  const fontSize = (vw: number | undefined, rem: string) => isPreview ? `clamp(0.8rem, ${vw || 1}vw, 2.5rem)` : rem;
 
   if (layout.id.startsWith('split-')) {
       const isVertical = layout.id.includes('vertical');
@@ -92,10 +95,10 @@ const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ c
       );
   }
   
-  const containerStyle = {
+  const containerStyle: React.CSSProperties = {
     ...baseStyle,
     display: 'flex',
-    flexDirection: 'column' as 'column',
+    flexDirection: 'column',
     alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'),
     justifyContent: layout.justifyContent as any,
     textAlign: layout.textAlign as any,
@@ -107,7 +110,7 @@ const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ c
   return (
     <div
       ref={ref}
-      className={cn(isPreview && "rounded-lg", className)}
+      className={cn("w-full h-full", isPreview && "rounded-lg", className)}
       style={containerStyle}
     >
       {profilePicElement && cardDetails.profilePicUrl && (

@@ -20,7 +20,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
     <div
       ref={ref}
       className={cn("absolute w-full h-full rounded-lg backface-hidden", className)}
-      style={{ ...style }}
+      style={style}
     >
       <CardContent className="flex flex-col items-center justify-center w-full h-full p-4">
         {cardDetails.logoUrl && (
