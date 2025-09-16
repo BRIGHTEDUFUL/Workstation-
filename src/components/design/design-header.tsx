@@ -24,7 +24,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
     
     const handleExport = async () => {
         const frontNode = cardFrontRef.current;
-        const backNode = backNodeRef.current;
+        const backNode = cardBackRef.current;
 
         if (!frontNode || !backNode) {
             toast({
@@ -47,8 +47,12 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             await new Promise(resolve => setTimeout(resolve, 200));
 
             // Temporarily remove transform to capture back correctly
-            const originalTransform = backNode.style.transform;
-            backNode.style.transform = 'none';
+            const parentContainer = backNode.parentElement;
+            const originalParentTransform = parentContainer ? parentContainer.style.transform : '';
+            if (parentContainer) {
+                parentContainer.style.transform = 'none';
+            }
+
 
             // Export Back
             const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
@@ -58,7 +62,9 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             backLink.click();
 
             // Restore the transform
-            backNode.style.transform = originalTransform;
+            if (parentContainer) {
+                parentContainer.style.transform = originalParentTransform;
+            }
 
         } catch (err) {
             console.error(err);
@@ -67,9 +73,10 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                 title: 'Export Failed',
                 description: 'Could not export the card images.',
             });
-            // Ensure transform is restored even on error
-            if (backNode && backNode.style.transform === 'none') {
-                backNode.style.transform = 'rotateY(180deg)'; // Failsafe
+             // Ensure transform is restored even on error
+            const parentContainer = backNode.parentElement;
+            if (parentContainer && parentContainer.style.transform === 'none') {
+                parentContainer.style.transform = 'rotateY(180deg)'; // Failsafe
             }
         }
     };
