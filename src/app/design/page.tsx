@@ -1,5 +1,4 @@
 
-
 'use client'
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
@@ -11,14 +10,13 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import AiTools from '@/components/design/ai-tools';
 import CardPreview from '@/components/design/card-preview';
-import LayoutEditor from '@/components/design/layout-editor';
+import EditorPanel from '@/components/design/editor-panel';
 import { useSearchParams } from 'next/navigation';
 import placeholderImages from '@/lib/placeholder-images.json';
 import cardLayouts from '@/lib/card-layouts.json';
 import { v4 as uuidv4 } from 'uuid';
 import { CardDetails, DEFAULT_CARD_DETAILS } from '@/components/design/card-data';
 import DesignHeader from '@/components/design/design-header';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
@@ -27,8 +25,7 @@ function DesignPageContents() {
     const [cardDetails, setCardDetails] = useState<CardDetails>(DEFAULT_CARD_DETAILS);
     const cardFrontRef = useRef<HTMLDivElement>(null);
     const cardBackRef = useRef<HTMLDivElement>(null);
-    const isMobile = useIsMobile();
-
+    
     useEffect(() => {
         const getInitialCardDetails = (): CardDetails => {
             const templateId = searchParams.get('template');
@@ -92,21 +89,46 @@ function DesignPageContents() {
         };
     }, [cardDetails.id]);
 
-    if (isMobile) {
-        return (
-            <div className="flex flex-col h-screen overflow-hidden bg-background">
-                 <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
-                 <Tabs defaultValue="editor" className="flex flex-col flex-1 min-h-0">
+    return (
+        <div className="flex flex-col h-screen overflow-hidden bg-background">
+            <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
+
+            {/* Desktop: 3-panel layout */}
+            <div className="flex-1 hidden md:flex">
+                <ResizablePanelGroup direction="horizontal">
+                    <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
+                        <ScrollArea className="h-full">
+                            <EditorPanel cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                        </ScrollArea>
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={50} minSize={30}>
+                        <div className="flex items-center justify-center h-full p-8 bg-muted/30">
+                            <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
+                        </div>
+                    </ResizablePanel>
+                    <ResizableHandle withHandle />
+                    <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
+                        <ScrollArea className="h-full">
+                            <div className="p-6">
+                                <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                            </div>
+                        </ScrollArea>
+                    </ResizablePanel>
+                </ResizablePanelGroup>
+            </div>
+
+            {/* Mobile: Tab-based layout */}
+            <div className="flex flex-col flex-1 min-h-0 md:hidden">
+                <Tabs defaultValue="editor" className="flex flex-col flex-1 min-h-0">
                     <TabsList className="mx-auto mt-4">
                         <TabsTrigger value="editor">Editor</TabsTrigger>
                         <TabsTrigger value="preview">Preview</TabsTrigger>
                         <TabsTrigger value="ai">AI Tools</TabsTrigger>
                     </TabsList>
                     <TabsContent value="editor" className="flex-1 overflow-auto">
-                         <ScrollArea className="h-full">
-                            <div className="p-6 space-y-8">
-                                <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
-                            </div>
+                        <ScrollArea className="h-full">
+                           <EditorPanel cardDetails={cardDetails} setCardDetails={setCardDetails} />
                         </ScrollArea>
                     </TabsContent>
                     <TabsContent value="preview" className="flex-1 overflow-auto bg-muted/30">
@@ -123,35 +145,6 @@ function DesignPageContents() {
                     </TabsContent>
                 </Tabs>
             </div>
-        )
-    }
-
-    return (
-        <div className="flex flex-col h-screen overflow-hidden bg-background">
-            <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
-            <ResizablePanelGroup direction="horizontal" className="flex-1">
-                <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-                    <ScrollArea className="h-full">
-                        <div className="p-6 space-y-8">
-                            <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
-                        </div>
-                    </ScrollArea>
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={50} minSize={30}>
-                    <div className="flex items-center justify-center h-full p-8 bg-muted/30">
-                       <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
-                    </div>
-                </ResizablePanel>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-                     <ScrollArea className="h-full">
-                        <div className="p-6">
-                            <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
-                        </div>
-                    </ScrollArea>
-                </ResizablePanel>
-            </ResizablePanelGroup>
         </div>
     );
 };

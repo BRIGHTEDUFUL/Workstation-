@@ -26,13 +26,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import Image from 'next/image';
 import type { CardDetails } from '@/components/design/card-data';
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { getPatternStyle } from '@/lib/patterns';
-import cardLayouts from '@/lib/card-layouts.json';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
+import CardFace from '@/components/design/card-face';
 
 interface CardActionsProps {
     cards: CardDetails[];
@@ -41,126 +37,13 @@ interface CardActionsProps {
     handleShare: (card: CardDetails) => void;
 }
 
-
-const CardPreview = ({ card }: { card: CardDetails }) => {
-    const layout = cardLayouts.layouts.find(l => l.id === card.layoutId) || cardLayouts.layouts[0];
-    const elements = card.elements || [];
-    
-    const baseStyle = {
-        backgroundColor: card.bgColor,
-        fontFamily: card.font,
-        ...getPatternStyle(card.pattern, card.accentColor),
-        ...(card.backgroundImage && !card.pattern && {
-            backgroundImage: `url(${card.backgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-        }),
-    };
-
-    const nameElement = elements.find(e => e.component === 'name') || { fontSize: 2.2, fontWeight: 700 };
-    const titleElement = elements.find(e => e.component === 'title') || { fontSize: 1.4, fontWeight: 400 };
-    const companyElement = elements.find(e => e.component === 'company') || { fontSize: 1.1, fontWeight: 400 };
-    const logoElement = elements.find(e => e.component === 'logo');
-    const profilePicElement = elements.find(e => e.component === 'profilePic');
-
-
-    if (layout.id.startsWith('split-')) {
-        const isVertical = layout.id.includes('vertical');
-        const splitSectionStyle = {
-            backgroundColor: card.accentColor,
-            color: card.bgColor, // Invert color for contrast
-        };
-        const textSectionStyle = {
-            color: card.textColor,
-        };
-
-        const SplitSection = (
-            <div
-                className={cn("flex flex-col p-4", isVertical ? 'w-2/5' : 'h-2/5', 'items-center justify-center')}
-                 style={{...splitSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'), textAlign: layout.textAlign as any }}
-            >
-                {logoElement && card.logoUrl && (
-                    <Image src={card.logoUrl} alt="Company Logo" width={80} height={30} className="object-contain" />
-                )}
-            </div>
-        );
-
-        const TextSection = (
-            <div
-                className={cn("flex flex-col p-4", isVertical ? 'w-3/5' : 'h-3/5')}
-                style={{...textSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'), textAlign: layout.textAlign as any,}}
-            >
-                {profilePicElement && card.profilePicUrl && (
-                    <div className="mb-2">
-                        <Avatar className="w-12 h-12 border-2" style={{ borderColor: card.textColor }}>
-                            <AvatarImage src={card.profilePicUrl} />
-                            <AvatarFallback>{card.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                    </div>
-                )}
-                 <h3 className="font-bold" style={{ fontSize: '1.125rem', lineHeight: '1.75rem', color: card.textColor }}>
-                    {card.name}
-                </h3>
-                <p style={{ fontSize: '0.875rem', lineHeight: '1.25rem', color: card.accentColor }}>
-                    {card.title}
-                </p>
-                <p className="mt-1" style={{ fontSize: '0.75rem', lineHeight: '1rem', color: card.textColor }}>
-                    {card.company}
-                </p>
-            </div>
-        );
-
-        return (
-            <div className={cn("relative w-full overflow-hidden border-b aspect-video flex", isVertical ? 'flex-row' : 'flex-col')} style={baseStyle}>
-                {layout.id.endsWith('-reverse') ? <>{TextSection}{SplitSection}</> : <>{SplitSection}{TextSection}</>}
-            </div>
-        );
-    }
-    
-
-    const containerStyle = {
-        display: 'flex',
-        flexDirection: 'column' as 'column',
-        alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'),
-        justifyContent: layout.justifyContent as any,
-        textAlign: layout.textAlign as any,
-        height: '100%',
-        padding: '1rem',
-        color: card.textColor,
-    };
-
+const CardThumbnail = ({ card }: { card: CardDetails }) => {
     return (
-        <div className="relative w-full overflow-hidden border-b aspect-video" style={baseStyle}>
-            <div style={containerStyle}>
-                 {profilePicElement && card.profilePicUrl && (
-                    <div className="mb-2">
-                        <Avatar className="w-12 h-12 border-2" style={{ borderColor: card.accentColor }}>
-                            <AvatarImage src={card.profilePicUrl} />
-                            <AvatarFallback>{card.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                    </div>
-                )}
-                <div className="flex flex-col">
-                    <h3 className="font-bold" style={{ fontSize: '1.125rem', lineHeight: '1.75rem', color: card.textColor }}>
-                        {card.name}
-                    </h3>
-                    <p style={{ fontSize: '0.875rem', lineHeight: '1.25rem', color: card.accentColor }}>
-                        {card.title}
-                    </p>
-                    <p className="mt-1" style={{ fontSize: '0.75rem', lineHeight: '1rem', color: card.textColor }}>
-                        {card.company}
-                    </p>
-                </div>
-                 {logoElement && card.logoUrl && (
-                    <div className="mt-auto">
-                        <Image src={card.logoUrl} alt="Company Logo" width={80} height={20} className="object-contain h-5" />
-                    </div>
-                 )}
-            </div>
+        <div className="relative w-full overflow-hidden border-b aspect-video">
+            <CardFace cardDetails={card} />
         </div>
     )
 }
-
 
 export default function CardActions({ cards, handleDelete, handleDuplicate, handleShare }: CardActionsProps) {
 
@@ -187,7 +70,7 @@ export default function CardActions({ cards, handleDelete, handleDuplicate, hand
               <AlertDialog key={card.id}>
                 <Card className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
                 <Link href={`/design?id=${card.id}`}>
-                    <CardPreview card={card} />
+                    <CardThumbnail card={card} />
                 </Link>
                 <CardHeader className="flex-row items-center justify-between p-4">
                     <div>
