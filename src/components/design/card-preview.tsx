@@ -8,7 +8,6 @@ import { CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import type { CardDetails } from './card-data';
 import Image from 'next/image';
-import { getPatternStyle } from '@/lib/patterns';
 import CardFace from './card-face';
 
 // CardBack Component
@@ -16,13 +15,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
   const style = {
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
-    fontFamily: cardDetails.font,
-    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
-    ...(cardDetails.backgroundImage && !cardDetails.pattern && {
-        backgroundImage: `url(${cardDetails.backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-    })
+    fontFamily: cardDetails.font
   };
 
   return (
