@@ -52,11 +52,18 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                 throw new Error("Flippable container not found");
             }
             
+            const grandParentContainer = flippableContainer.parentElement;
+            if (!grandParentContainer) {
+                throw new Error("Grandparent container not found");
+            }
+
             // Store original classes to restore them later
-            const originalContainerClass = flippableContainer.className;
+            const originalGrandParentClass = grandParentContainer.className;
+            const originalFlippableContainerClass = flippableContainer.className;
             const originalBackNodeClass = backNode.className;
 
             // Remove rotation from parent and child before capture
+            grandParentContainer.classList.remove('rotate-y-180');
             flippableContainer.classList.remove('rotate-y-180');
             backNode.classList.remove('rotate-y-180');
             
@@ -67,7 +74,8 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             backLink.click();
 
             // Restore classes immediately after capture
-            flippableContainer.className = originalContainerClass;
+            grandParentContainer.className = originalGrandParentClass;
+            flippableContainer.className = originalFlippableContainerClass;
             backNode.className = originalBackNodeClass;
 
         } catch (err) {

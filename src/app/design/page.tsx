@@ -120,19 +120,14 @@ function DesignPageContents() {
 
             {/* Mobile: Tab-based layout */}
             <div className="flex flex-col flex-1 min-h-0 md:hidden">
-                <Tabs defaultValue="editor" className="flex flex-col flex-1 min-h-0">
-                    <TabsList className="mx-auto mt-4">
-                        <TabsTrigger value="editor">Editor</TabsTrigger>
-                        <TabsTrigger value="preview">Preview</TabsTrigger>
-                        <TabsTrigger value="ai">AI Tools</TabsTrigger>
-                    </TabsList>
+                <Tabs defaultValue="preview" className="flex flex-col flex-1 min-h-0">
                     <TabsContent value="editor" className="flex-1 overflow-auto">
                         <ScrollArea className="h-full">
                            <EditorPanel cardDetails={cardDetails} setCardDetails={setCardDetails} />
                         </ScrollArea>
                     </TabsContent>
                     <TabsContent value="preview" className="flex-1 overflow-auto bg-muted/30">
-                        <div className="flex items-center justify-center h-full p-8">
+                        <div className="flex flex-col items-center justify-center h-full p-8">
                             <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
                         </div>
                     </TabsContent>
@@ -143,6 +138,12 @@ function DesignPageContents() {
                             </div>
                         </ScrollArea>
                     </TabsContent>
+                    <TabsList className="grid w-full grid-cols-3 mt-auto border-t">
+                        <TabsTrigger value="editor" className="py-3 rounded-none">Editor</TabsTrigger>
+                        <TabsTrigger value="preview" className="py-3 rounded-none">Preview</TabsTrigger>
+
+                        <TabsTrigger value="ai" className="py-3 rounded-none">AI Tools</TabsTrigger>
+                    </TabsList>
                 </Tabs>
             </div>
         </div>
@@ -156,5 +157,3 @@ export default function DesignStudio() {
         </Suspense>
     )
 }
-
-    
