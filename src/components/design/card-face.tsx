@@ -12,26 +12,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 interface CardFaceProps {
   cardDetails: CardDetails;
   isPreview?: boolean;
-  className?: string;
-  ref?: React.RefObject<HTMLDivElement>;
 }
 
-const CardFace = ({ cardDetails, isPreview = false, className, ref }: CardFaceProps) => {
+const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 
   const baseStyle: React.CSSProperties = {
-    backgroundColor: cardDetails.bgColor,
     fontFamily: cardDetails.font,
-    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
   };
-
-  if (cardDetails.backgroundImage && !cardDetails.pattern) {
-      baseStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
-      baseStyle.backgroundSize = 'cover';
-      baseStyle.backgroundPosition = 'center';
-  }
-
 
   const nameElement = elements.find(e => e.component === 'name') || { fontSize: 2.2, fontWeight: 700 };
   const titleElement = elements.find(e => e.component === 'title') || { fontSize: 1.4, fontWeight: 400 };
@@ -89,7 +78,7 @@ const CardFace = ({ cardDetails, isPreview = false, className, ref }: CardFacePr
       );
 
       return (
-          <div ref={ref} className={cn("w-full h-full overflow-hidden flex", isVertical ? 'flex-row' : 'flex-col', isPreview && "rounded-lg", className)} style={baseStyle}>
+          <div className={cn("w-full h-full overflow-hidden flex", isVertical ? 'flex-row' : 'flex-col')} style={baseStyle}>
               {layout.id.endsWith('-reverse') ? <>{TextSection}{SplitSection}</> : <>{SplitSection}{TextSection}</>}
           </div>
       );
@@ -109,8 +98,7 @@ const CardFace = ({ cardDetails, isPreview = false, className, ref }: CardFacePr
 
   return (
     <div
-      ref={ref}
-      className={cn("w-full h-full", isPreview && "rounded-lg", className)}
+      className={cn("w-full h-full")}
       style={containerStyle}
     >
       {profilePicElement && cardDetails.profilePicUrl && (

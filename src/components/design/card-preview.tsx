@@ -12,18 +12,21 @@ import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 
 // CardBack Component
-const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails, className?: string }>(({ cardDetails, className }, ref) => {
+const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
+  // IMPORTANT: The back of the card should ONLY use the background color.
+  // It must NOT use patterns or background images from the front.
   const style = {
     backgroundColor: cardDetails.bgColor,
+    color: cardDetails.textColor, // Use text color for slogan
   };
 
   return (
     <div
       ref={ref}
-      className={cn("absolute w-full h-full rounded-lg backface-hidden", className)}
+      className={cn("absolute w-full h-full rounded-lg backface-hidden rotate-y-180")}
       style={style}
     >
-      <CardContent className="flex flex-col items-center justify-center w-full h-full p-4">
+      <div className="flex flex-col items-center justify-center w-full h-full p-4">
         {cardDetails.logoUrl && (
           <Image
             src={cardDetails.logoUrl}
@@ -44,10 +47,10 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
         ) : (
           <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse" />
         )}
-        <p className="mt-4 text-xs text-center px-4" style={{ color: cardDetails.textColor }}>
+        <p className="mt-4 text-xs text-center px-4">
           {cardDetails.slogan || 'Scan to connect'}
         </p>
-      </CardContent>
+      </div>
     </div>
   );
 }));
@@ -65,19 +68,19 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
   const is3D = cardDetails.category === '3D';
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const frontStyle: React.CSSProperties = {
-        fontFamily: cardDetails.font,
-        ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
-    };
+  // This style is ONLY for the front of the card.
+  const frontStyle: React.CSSProperties = {
+    fontFamily: cardDetails.font,
+    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
+  };
 
-    if (cardDetails.backgroundImage && !cardDetails.pattern) {
-        frontStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
-        frontStyle.backgroundSize = 'cover';
-        frontStyle.backgroundPosition = 'center';
-    } else {
-        frontStyle.backgroundColor = cardDetails.bgColor;
-    }
-
+  if (cardDetails.backgroundImage && !cardDetails.pattern) {
+    frontStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
+    frontStyle.backgroundSize = 'cover';
+    frontStyle.backgroundPosition = 'center';
+  } else {
+    frontStyle.backgroundColor = cardDetails.bgColor;
+  }
 
   useEffect(() => {
     if (!is3D || !wrapperRef.current) return;
@@ -117,14 +120,16 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
           )}
         >
           <div className={cn('absolute w-full h-full', is3D && 'card-3d')}>
-              <div 
-                ref={cardFrontRef} 
-                className="absolute w-full h-full rounded-lg backface-hidden"
-                style={frontStyle}
-                >
-                <CardFace cardDetails={cardDetails} isPreview={true} />
-              </div>
-            <CardBack cardDetails={cardDetails} ref={cardBackRef} className="rotate-y-180" />
+            {/* Front Face Container */}
+            <div 
+              ref={cardFrontRef} 
+              className="absolute w-full h-full rounded-lg backface-hidden"
+              style={frontStyle}
+            >
+              <CardFace cardDetails={cardDetails} isPreview={true} />
+            </div>
+            {/* Back Face Component */}
+            <CardBack cardDetails={cardDetails} ref={cardBackRef} />
           </div>
         </div>
       </div>
