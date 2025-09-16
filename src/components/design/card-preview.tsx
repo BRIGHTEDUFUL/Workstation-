@@ -11,12 +11,17 @@ import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 
 // CardBack Component
-const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails; style: React.CSSProperties }>(({ cardDetails, style }, ref) => {
+const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
+  // This style is ONLY for the back of the card.
+  const backStyle: React.CSSProperties = {
+    backgroundColor: cardDetails.bgColor,
+  };
+
   return (
     <div
       ref={ref}
       className={cn("absolute w-full h-full rounded-lg backface-hidden rotate-y-180")}
-      style={style}
+      style={backStyle}
     >
       <div className="flex flex-col items-center justify-center w-full h-full p-4">
         {cardDetails.logoUrl && (
@@ -72,11 +77,6 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
     frontStyle.backgroundPosition = 'center';
   }
 
-  // This style is ONLY for the back of the card. It guarantees no inheritance.
-  const backStyle: React.CSSProperties = {
-    backgroundColor: cardDetails.bgColor,
-  };
-
   useEffect(() => {
     if (!is3D || !wrapperRef.current) return;
     
@@ -125,7 +125,7 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
               <CardFace cardDetails={cardDetails} isPreview={true} />
             </div>
             {/* Back Face Component */}
-            <CardBack cardDetails={cardDetails} ref={cardBackRef} style={backStyle} />
+            <CardBack cardDetails={cardDetails} ref={cardBackRef} />
           </div>
         </div>
       </div>

@@ -46,26 +46,12 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             // Wait a moment before starting the next download
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            // Export Back - Temporarily remove rotation from parent for capture
-            const backParent = backNode.parentElement;
-            if(!backParent) return;
-
-            const originalParentClass = backParent.className;
-            
-            // By removing the preserve-3d, the back face becomes visible for capture
-            backParent.style.transformStyle = 'flat';
-            
-            // Needed a short delay for the DOM to update the style change
-            await new Promise(resolve => setTimeout(resolve, 50));
-
+            // Export Back
             const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
             const backLink = document.createElement('a');
             backLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`;
             backLink.href = backDataUrl;
             backLink.click();
-
-            // Restore styles
-            backParent.style.transformStyle = 'preserve-3d';
 
         } catch (err) {
             console.error(err);
