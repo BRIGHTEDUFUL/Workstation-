@@ -103,9 +103,11 @@ function DesignPageContents() {
                         <TabsTrigger value="ai">AI Tools</TabsTrigger>
                     </TabsList>
                     <TabsContent value="editor" className="flex-1 overflow-auto">
-                         <div className="p-6 space-y-8">
-                            <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
-                        </div>
+                         <ScrollArea className="h-full">
+                            <div className="p-6 space-y-8">
+                                <LayoutEditor cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                            </div>
+                        </ScrollArea>
                     </TabsContent>
                     <TabsContent value="preview" className="flex-1 overflow-auto bg-muted/30">
                         <div className="flex items-center justify-center h-full p-8">
@@ -113,9 +115,11 @@ function DesignPageContents() {
                         </div>
                     </TabsContent>
                     <TabsContent value="ai" className="flex-1 overflow-auto">
-                        <div className="p-6">
-                            <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
-                        </div>
+                        <ScrollArea className="h-full">
+                            <div className="p-6">
+                                <AiTools cardDetails={cardDetails} setCardDetails={setCardDetails} />
+                            </div>
+                        </ScrollArea>
                     </TabsContent>
                 </Tabs>
             </div>
