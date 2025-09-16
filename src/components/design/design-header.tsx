@@ -47,35 +47,21 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             await new Promise(resolve => setTimeout(resolve, 200));
 
             // Export Back - Temporarily remove all rotations to capture correctly
-            const flippableContainer = backNode.parentElement;
-            if (!flippableContainer) {
-                throw new Error("Flippable container not found");
-            }
-            
-            const grandParentContainer = flippableContainer.parentElement;
-            if (!grandParentContainer) {
-                throw new Error("Grandparent container not found");
-            }
-
-            // Store original classes to restore them later
-            const originalGrandParentClass = grandParentContainer.className;
-            const originalFlippableContainerClass = flippableContainer.className;
             const originalBackNodeClass = backNode.className;
-
-            // Remove rotation from parent and child before capture
-            grandParentContainer.classList.remove('rotate-y-180');
-            flippableContainer.classList.remove('rotate-y-180');
+            
+            // Remove rotation from back node to capture it front-facing
             backNode.classList.remove('rotate-y-180');
             
+            // Needed a short delay for the DOM to update the class change
+            await new Promise(resolve => setTimeout(resolve, 50));
+
             const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
             const backLink = document.createElement('a');
             backLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`;
             backLink.href = backDataUrl;
             backLink.click();
 
-            // Restore classes immediately after capture
-            grandParentContainer.className = originalGrandParentClass;
-            flippableContainer.className = originalFlippableContainerClass;
+            // Restore class immediately after capture
             backNode.className = originalBackNodeClass;
 
         } catch (err) {

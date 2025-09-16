@@ -31,7 +31,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
       className="absolute w-full h-full rounded-lg backface-hidden rotate-y-180"
       style={{ ...style }}
     >
-      <CardContent className="flex flex-col items-center justify-center p-0 w-full h-full">
+      <div className="flex flex-col items-center justify-center p-0 w-full h-full">
         {cardDetails.qrUrl ? (
           <Image
             src={cardDetails.qrUrl}
@@ -44,7 +44,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
           <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse" />
         )}
         <p className="mt-4 text-xs text-center px-4">{cardDetails.slogan || 'Scan to connect'}</p>
-      </CardContent>
+      </div>
     </div>
   );
 }));
