@@ -483,8 +483,70 @@
         "font": "'Source Code Pro', monospace",
         "pattern": "grid"
       }
+    },
+    {
+      "id": "template-21",
+      "description": "Two-Tone Mint",
+      "category": "Business",
+      "imageUrl": "https://picsum.photos/seed/tt-mint/500/281",
+      "imageHint": "mint two-tone",
+      "data": {
+        "name": "Eva Chen",
+        "title": "Marketing Manager",
+        "company": "Fresh Ideas Co.",
+        "bgColor": "#F0FFF4",
+        "textColor": "#004D40",
+        "accentColor": "#98FB98",
+        "font": "'Inter', sans-serif"
+      }
+    },
+    {
+      "id": "template-22",
+      "description": "Two-Tone Ocean",
+      "category": "Personal",
+      "imageUrl": "https://picsum.photos/seed/tt-ocean/500/281",
+      "imageHint": "ocean two-tone",
+      "data": {
+        "name": "Finnley Blue",
+        "title": "Marine Photographer",
+        "company": "Deep Blue Visuals",
+        "bgColor": "#E0F7FA",
+        "textColor": "#001F3F",
+        "accentColor": "#80DEEA",
+        "font": "'Inter', sans-serif"
+      }
+    },
+    {
+      "id": "template-23",
+      "description": "Three-Tone Sunset",
+      "category": "Creative",
+      "imageUrl": "https://picsum.photos/seed/ttt-sunset/500/281",
+      "imageHint": "sunset three-tone",
+      "data": {
+        "name": "Solara Day",
+        "title": "Digital Nomad",
+        "company": "Wanderlust Creative",
+        "bgColor": "#FFF8E1",
+        "textColor": "#E65100",
+        "accentColor": "#FF7043",
+        "font": "Georgia, serif"
+      }
+    },
+    {
+      "id": "template-24",
+      "description": "Three-Tone Plum",
+      "category": "Creative",
+      "imageUrl": "https://picsum.photos/seed/ttt-plum/500/281",
+      "imageHint": "plum three-tone",
+      "data": {
+        "name": "Damson Blackwood",
+        "title": "Novelist",
+        "company": "Midnight Press",
+        "bgColor": "#F3E5F5",
+        "textColor": "#4A148C",
+        "accentColor": "#AB47BC",
+        "font": "'Times New Roman', serif"
+      }
     }
   ]
 }
-
-    
