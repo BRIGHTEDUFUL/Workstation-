@@ -22,7 +22,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
       className={cn("absolute w-full h-full rounded-lg backface-hidden", className)}
       style={{ ...style }}
     >
-      <CardContent className="flex flex-col items-center justify-center p-4 w-full h-full">
+      <CardContent className="flex flex-col items-center justify-center w-full h-full p-4">
         {cardDetails.logoUrl && (
           <Image
             src={cardDetails.logoUrl}
@@ -123,4 +123,3 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
 
 CardPreview.displayName = 'CardPreview';
 export default CardPreview;
-
