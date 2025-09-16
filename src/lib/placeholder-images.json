@@ -354,6 +354,135 @@
         "accentColor": "#00FFFF",
         "font": "'Inter', sans-serif"
       }
+    },
+    {
+      "id": "template-3d-01",
+      "description": "Deep Purple Professional",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3d-template-1/500/281",
+      "imageHint": "3d render",
+      "data": {
+        "name": "Keeley Rosemood",
+        "title": "Senior Consultant",
+        "company": "CARD.CO Solutions",
+        "bgColor": "#190019",
+        "textColor": "#FBE4D8",
+        "accentColor": "#854F6C",
+        "font": "Georgia, serif"
+      }
+    },
+    {
+      "id": "template-3d-02",
+      "description": "Creative Corporate",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3d-template-2/500/281",
+      "imageHint": "perspective view",
+      "data": {
+        "name": "Arquedi Creative",
+        "title": "hello@arquedi.com",
+        "company": "STUDIO",
+        "bgColor": "#FBE4D8",
+        "textColor": "#190019",
+        "accentColor": "#854F6C",
+        "font": "'Inter', sans-serif"
+      }
+    },
+    {
+      "id": "template-3d-03",
+      "description": "Modern Minimalist 3D",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3d-template-3/500/281",
+      "imageHint": "clean minimal",
+      "data": {
+        "name": "Movel Smith",
+        "title": "Product Designer",
+        "company": "",
+        "bgColor": "#FFFFFF",
+        "textColor": "#190019",
+        "accentColor": "#DFB6B2",
+        "font": "'Inter', sans-serif"
+      }
+    },
+    {
+      "id": "template-3d-04",
+      "description": "Fintech Violet",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3d-template-4/500/281",
+      "imageHint": "fintech card",
+      "data": {
+        "name": "Circula",
+        "title": "Rethink your expenses.",
+        "company": "Available for sale",
+        "bgColor": "#2B124C",
+        "textColor": "#FBE4D8",
+        "accentColor": "#DFB6B2",
+        "font": "'Source Code Pro', monospace"
+      }
+    },
+    {
+      "id": "template-3d-05",
+      "description": "Elegant Emboss",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3d-template-5/500/281",
+      "imageHint": "embossed card",
+      "data": {
+        "name": "Eleonor Vance",
+        "title": "Luxury Real Estate",
+        "company": "CARD.CO Properties",
+        "bgColor": "#3A253B",
+        "textColor": "#DFB6B2",
+        "accentColor": "#FBE4D8",
+        "font": "Georgia, serif"
+      }
+    },
+    {
+      "id": "template-3d-06",
+      "description": "Pastel Perspective",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3d-template-6/500/281",
+      "imageHint": "3d pastel",
+      "data": {
+        "name": "Chloe Bennet",
+        "title": "Brand Strategist",
+        "company": "CARD.CO",
+        "bgColor": "#DFB6B2",
+        "textColor": "#3A253B",
+        "accentColor": "#FFFFFF",
+        "font": "'Inter', sans-serif"
+      }
+    },
+    {
+      "id": "template-3d-07",
+      "description": "Vertical Violet",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3d-template-7/500/281",
+      "imageHint": "vertical card",
+      "data": {
+        "name": "J. Morrison",
+        "title": "Art Director",
+        "company": "Design Division",
+        "bgColor": "#854F6C",
+        "textColor": "#FFFFFF",
+        "accentColor": "#FBE4D8",
+        "font": "'Source Code Pro', monospace"
+      }
+    },
+    {
+      "id": "template-3d-08",
+      "description": "Dark Tech",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3d-template-8/500/281",
+      "imageHint": "dark tech",
+      "data": {
+        "name": "CARD.CO",
+        "title": "Digital Solutions",
+        "company": "Secure / Fast / Reliable",
+        "bgColor": "#190019",
+        "textColor": "#DFB6B2",
+        "accentColor": "#854F6C",
+        "font": "'Source Code Pro', monospace",
+        "pattern": "grid"
+      }
     }
   ]
 }
