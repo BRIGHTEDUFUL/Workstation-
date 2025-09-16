@@ -23,7 +23,7 @@ const CardFront = forwardRef<HTMLDivElement, CardFrontProps>(({ cardDetails }, r
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
     fontFamily: cardDetails.font,
-    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
+    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor, 0.1),
     ...(cardDetails.backgroundImage && !cardDetails.pattern && {
       backgroundImage: `url(${cardDetails.backgroundImage})`,
       backgroundSize: 'cover',
@@ -155,11 +155,13 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
     fontFamily: cardDetails.font,
+    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor, 0.1),
   };
 
   return (
     <div
-      className="absolute w-full h-full p-6 shadow-lg rounded-lg"
+      ref={ref}
+      className="absolute w-full h-full p-6 shadow-lg rounded-lg backface-hidden rotate-y-180"
       style={{ ...style }}
     >
       <CardContent className="flex flex-col items-center justify-center p-0 w-full h-full">
@@ -174,12 +176,13 @@ const CardBack = forwardRef<HTMLDivElement, CardBackProps>(({ cardDetails }, ref
         ) : (
           <div className="w-32 h-32 bg-gray-200 rounded-lg animate-pulse" />
         )}
-        <p className="mt-4 text-xs text-center whitespace-nowrap">{cardDetails.slogan || 'Scan to connect'}</p>
+        <p className="mt-4 text-xs text-center px-4">{cardDetails.slogan || 'Scan to connect'}</p>
       </CardContent>
     </div>
   );
 });
 CardBack.displayName = 'CardBack';
+
 
 // Main CardPreview Component
 interface CardPreviewProps {
@@ -194,21 +197,21 @@ const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProp
 
   return (
     <div className="w-full max-w-lg">
-        <div className="relative w-full aspect-[1.7/1] perspective-1000">
-            <div
-            className={cn(
-                'relative w-full h-full transition-transform duration-700 preserve-3d',
-                { 'rotate-y-180': isFlipped }
-            )}
-            >
-            <div ref={cardFrontRef} className="absolute w-full h-full backface-hidden">
-                <CardFront cardDetails={cardDetails} />
-            </div>
-            <div ref={cardBackRef} className="absolute w-full h-full backface-hidden rotate-y-180">
-                <CardBack cardDetails={cardDetails} />
-            </div>
-            </div>
+      <div className="relative w-full aspect-[1.7/1] perspective-1000">
+        <div
+          className={cn(
+            'relative w-full h-full transition-transform duration-700 preserve-3d',
+            { 'rotate-y-180': isFlipped }
+          )}
+        >
+          <div ref={cardFrontRef} className="absolute w-full h-full backface-hidden">
+            <CardFront cardDetails={cardDetails} />
+          </div>
+          <div ref={cardBackRef} className="absolute w-full h-full backface-hidden rotate-y-180">
+            <CardBack cardDetails={cardDetails} />
+          </div>
         </div>
+      </div>
 
       <div className="flex justify-center mt-6">
         <Button
