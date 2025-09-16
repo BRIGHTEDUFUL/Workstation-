@@ -12,7 +12,7 @@ import { getPatternStyle } from '@/lib/patterns';
 import CardFace from './card-face';
 
 // CardBack Component
-const CardBack = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
+const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const style = {
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
@@ -47,7 +47,7 @@ const CardBack = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(
       </CardContent>
     </div>
   );
-});
+}));
 CardBack.displayName = 'CardBack';
 
 // Main CardPreview Component
@@ -57,7 +57,7 @@ interface CardPreviewProps {
   cardBackRef: React.RefObject<HTMLDivElement>;
 }
 
-const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProps) => {
+const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
@@ -85,6 +85,9 @@ const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProp
       </div>
     </div>
   );
-};
+});
 
+CardPreview.displayName = 'CardPreview';
 export default CardPreview;
+
+    

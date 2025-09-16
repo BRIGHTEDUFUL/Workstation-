@@ -46,24 +46,6 @@ const CardThumbnail = ({ card }: { card: CardDetails }) => {
 }
 
 export default function CardActions({ cards, handleDelete, handleDuplicate, handleShare }: CardActionsProps) {
-
-    if (cards.length === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed rounded-lg border-border bg-muted/20">
-                <h2 className="text-xl font-semibold">No Cards Yet</h2>
-                <p className="mt-2 text-muted-foreground">
-                Get started by creating a new card design.
-                </p>
-                <Link href="/design" className="mt-4">
-                <Button>
-                    <PlusCircle className="w-4 h-4 mr-2" />
-                    Create New Card
-                </Button>
-                </Link>
-            </div>
-        );
-    }
-
     return (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {cards.map((card) => (
@@ -120,3 +102,5 @@ export default function CardActions({ cards, handleDelete, handleDuplicate, hand
         </div>
     )
 };
+
+    

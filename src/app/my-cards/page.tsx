@@ -1,5 +1,4 @@
 
-
 'use client';
 import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -17,10 +16,10 @@ export default function MyCards() {
     const { toast } = useToast();
 
      useEffect(() => {
-        setIsMounted(true);
         // On client mount, read from localStorage to hydrate the state
         const savedCards = JSON.parse(localStorage.getItem('savedCards') || '[]');
         setCards(savedCards);
+        setIsMounted(true);
     }, []);
 
     const handleDelete = (cardId: string) => {
@@ -60,26 +59,27 @@ export default function MyCards() {
         }
     };
 
-    if (!isMounted) {
+    const renderContent = () => {
+      if (!isMounted) {
+        return <p>Loading cards...</p>;
+      }
+      if (cards.length === 0) {
         return (
-          <div className="flex flex-col h-screen">
-            <header className="flex flex-col items-start justify-between gap-4 p-6 border-b sm:flex-row sm:items-center shrink-0 border-border">
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight">My Cards</h1>
-                <p className="text-muted-foreground">Manage your saved card designs.</p>
-              </div>
-              <Link href="/design">
-                <Button>
+          <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed rounded-lg border-border bg-muted/20">
+              <h2 className="text-xl font-semibold">No Cards Yet</h2>
+              <p className="mt-2 text-muted-foreground">
+              Get started by creating a new card design.
+              </p>
+              <Link href="/design" className="mt-4">
+              <Button>
                   <PlusCircle className="w-4 h-4 mr-2" />
-                  New Card
-                </Button>
+                  Create New Card
+              </Button>
               </Link>
-            </header>
-            <main className="flex-1 p-6 overflow-auto">
-              <p>Loading cards...</p>
-            </main>
           </div>
-        )
+        );
+      }
+      return <CardActions cards={cards} handleDelete={handleDelete} handleDuplicate={handleDuplicate} handleShare={handleShare} />;
     }
 
   return (
@@ -100,8 +100,10 @@ export default function MyCards() {
       </header>
 
       <main className="flex-1 p-6 overflow-auto">
-        <CardActions cards={cards} handleDelete={handleDelete} handleDuplicate={handleDuplicate} handleShare={handleShare} />
+        {renderContent()}
       </main>
     </div>
   );
 };
+
+    

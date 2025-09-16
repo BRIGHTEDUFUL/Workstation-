@@ -36,7 +36,7 @@ interface EditorPanelProps {
     setCardDetails: React.Dispatch<React.SetStateAction<CardDetails>>;
 }
 
-const EditorPanel = ({ cardDetails, setCardDetails }: EditorPanelProps) => {
+const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProps) => {
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const logoInputRef = useRef<HTMLInputElement>(null);
     const [qrPrompt, setQrPrompt] = useState(cardDetails.qrDesignPrompt || '');
@@ -44,6 +44,11 @@ const EditorPanel = ({ cardDetails, setCardDetails }: EditorPanelProps) => {
     const { toast } = useToast();
 
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setCardDetails(prev => ({ ...prev, [name]: value }));
+    }, [setCardDetails]);
+
+    const handleInputBlur = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setCardDetails(prev => ({ ...prev, [name]: value }));
     }, [setCardDetails]);
@@ -138,21 +143,21 @@ const EditorPanel = ({ cardDetails, setCardDetails }: EditorPanelProps) => {
                             <CardContent className="space-y-6 pt-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Name</Label>
-                                    <Input id="name" name="name" value={cardDetails.name} onChange={handleInputChange} placeholder="e.g. Jane Doe" />
+                                    <Input id="name" name="name" defaultValue={cardDetails.name} onBlur={handleInputBlur} placeholder="e.g. Jane Doe" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="title">Title / Position</Label>
-                                    <Input id="title" name="title" value={cardDetails.title} onChange={handleInputChange} placeholder="e.g. Software Engineer" />
+                                    <Input id="title" name="title" defaultValue={cardDetails.title} onBlur={handleInputBlur} placeholder="e.g. Software Engineer" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="company">Company / Organization</Label>
-                                    <Input id="company" name="company" value={cardDetails.company} onChange={handleInputChange} placeholder="e.g. Acme Inc." />
+                                    <Input id="company" name="company" defaultValue={cardDetails.company} onBlur={handleInputBlur} placeholder="e.g. Acme Inc." />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="website">Website URL (for QR Code)</Label>
                                     <div className="relative">
                                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="website" name="website" value={cardDetails.website || ''} onChange={handleInputChange} placeholder="https://your-website.com" className="pl-10" />
+                                        <Input id="website" name="website" defaultValue={cardDetails.website || ''} onBlur={handleInputBlur} placeholder="https://your-website.com" className="pl-10" />
                                     </div>
                                 </div>
                                 
@@ -176,7 +181,7 @@ const EditorPanel = ({ cardDetails, setCardDetails }: EditorPanelProps) => {
 
                                 <div className="space-y-2">
                                     <Label htmlFor="slogan">Footer Slogan (Back of Card)</Label>
-                                    <Input id="slogan" name="slogan" value={cardDetails.slogan || ''} onChange={handleInputChange} placeholder="e.g. Creating the future." />
+                                    <Input id="slogan" name="slogan" defaultValue={cardDetails.slogan || ''} onBlur={handleInputBlur} placeholder="e.g. Creating the future." />
                                 </div>
                             </CardContent>
                         </Card>
@@ -289,6 +294,9 @@ const EditorPanel = ({ cardDetails, setCardDetails }: EditorPanelProps) => {
             </Accordion>
         </div>
     );
-};
+});
 
+EditorPanel.displayName = 'EditorPanel';
 export default EditorPanel;
+
+    

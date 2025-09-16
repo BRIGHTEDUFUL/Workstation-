@@ -14,7 +14,7 @@ interface CardFaceProps {
   isPreview?: boolean;
 }
 
-const CardFace = React.forwardRef<HTMLDivElement, CardFaceProps>(({ cardDetails, isPreview = false }, ref) => {
+const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ cardDetails, isPreview = false }, ref) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 
@@ -137,7 +137,9 @@ const CardFace = React.forwardRef<HTMLDivElement, CardFaceProps>(({ cardDetails,
       </div>
     </div>
   );
-});
+}));
 
 CardFace.displayName = 'CardFace';
 export default CardFace;
+
+    
