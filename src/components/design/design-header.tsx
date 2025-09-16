@@ -46,7 +46,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             // Wait a moment before starting the next download
             await new Promise(resolve => setTimeout(resolve, 200));
 
-            // Temporarily remove transform to capture back correctly
+            // Temporarily remove transform from the parent container to capture back correctly
             const parentContainer = backNode.parentElement;
             const originalParentTransform = parentContainer ? parentContainer.style.transform : '';
             if (parentContainer) {
@@ -76,7 +76,10 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
              // Ensure transform is restored even on error
             const parentContainer = backNode.parentElement;
             if (parentContainer && parentContainer.style.transform === 'none') {
-                parentContainer.style.transform = 'rotateY(180deg)'; // Failsafe
+                // Failsafe: Re-apply the original or a default state if needed.
+                // In this case, the original transform style should be reapplied from the variable.
+                const originalParentTransform = parentContainer.dataset.originalTransform || '';
+                parentContainer.style.transform = originalParentTransform;
             }
         }
     };
