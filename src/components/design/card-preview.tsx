@@ -11,7 +11,7 @@ import Image from 'next/image';
 import CardFace from './card-face';
 
 // CardBack Component
-const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
+const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails, className?: string }>(({ cardDetails, className }, ref) => {
   const style = {
     backgroundColor: cardDetails.bgColor,
     color: cardDetails.textColor,
@@ -21,7 +21,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
   return (
     <div
       ref={ref}
-      className="absolute w-full h-full rounded-lg backface-hidden rotate-y-180"
+      className={cn("absolute w-full h-full rounded-lg", className)}
       style={{ ...style }}
     >
       <CardContent className="flex flex-col items-center justify-center p-0 w-full h-full">
@@ -93,8 +93,8 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
           )}
         >
           <div className={cn('absolute w-full h-full', is3D && 'card-3d')}>
-            <CardFace cardDetails={cardDetails} ref={cardFrontRef} isPreview={true} />
-            <CardBack cardDetails={cardDetails} ref={cardBackRef} />
+            <CardFace cardDetails={cardDetails} ref={cardFrontRef} isPreview={true} className="backface-hidden" />
+            <CardBack cardDetails={cardDetails} ref={cardBackRef} className="backface-hidden rotate-y-180" />
           </div>
         </div>
       </div>

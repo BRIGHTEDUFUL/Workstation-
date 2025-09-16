@@ -12,9 +12,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 interface CardFaceProps {
   cardDetails: CardDetails;
   isPreview?: boolean;
+  className?: string;
 }
 
-const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ cardDetails, isPreview = false }, ref) => {
+const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ cardDetails, isPreview = false, className }, ref) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 
@@ -85,7 +86,7 @@ const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ c
       );
 
       return (
-          <div ref={ref} className={cn("absolute w-full h-full backface-hidden overflow-hidden flex", isVertical ? 'flex-row' : 'flex-col', isPreview && "rounded-lg")} style={baseStyle}>
+          <div ref={ref} className={cn("w-full h-full overflow-hidden flex", isVertical ? 'flex-row' : 'flex-col', isPreview && "rounded-lg", className)} style={baseStyle}>
               {layout.id.endsWith('-reverse') ? <>{TextSection}{SplitSection}</> : <>{SplitSection}{TextSection}</>}
           </div>
       );
@@ -104,7 +105,7 @@ const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ c
   return (
     <div
       ref={ref}
-      className={cn("absolute w-full h-full backface-hidden", isPreview && "rounded-lg")}
+      className={cn("w-full h-full", isPreview && "rounded-lg", className)}
       style={{ ...baseStyle }}
     >
       <div style={containerStyle}>
@@ -141,5 +142,3 @@ const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ c
 
 CardFace.displayName = 'CardFace';
 export default CardFace;
-
-    
