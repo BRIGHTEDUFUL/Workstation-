@@ -93,49 +93,49 @@ const CardFace = React.memo(React.forwardRef<HTMLDivElement, CardFaceProps>(({ c
   }
   
   const containerStyle = {
+    ...baseStyle,
     display: 'flex',
     flexDirection: 'column' as 'column',
     alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'),
     justifyContent: layout.justifyContent as any,
     textAlign: layout.textAlign as any,
     height: '100%',
+    width: '100%',
     padding: isPreview ? '1.5rem' : '1rem',
   };
 
   return (
     <div
       ref={ref}
-      className={cn("w-full h-full", isPreview && "rounded-lg", className)}
-      style={{ ...baseStyle }}
+      className={cn(isPreview && "rounded-lg", className)}
+      style={containerStyle}
     >
-      <div style={containerStyle}>
-        {profilePicElement && cardDetails.profilePicUrl && (
-          <div className="mb-4">
-            <Avatar className={cn("border-2", isPreview ? "w-20 h-20" : "w-12 h-12")} style={{ borderColor: cardDetails.accentColor }}>
-              <AvatarImage src={cardDetails.profilePicUrl} />
-              <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-          </div>
-        )}
-        
-        <div className="flex flex-col">
-          <h2 className="font-bold" style={{ fontSize: fontSize(nameElement.fontSize, '1.125rem'), fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
-            {cardDetails.name}
-          </h2>
-          <p style={{ fontSize: fontSize(titleElement.fontSize, '0.875rem'), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
-            {cardDetails.title}
-          </p>
-          <p className="mt-2" style={{ fontSize: fontSize(companyElement.fontSize, '0.75rem'), fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
-            {cardDetails.company}
-          </p>
+      {profilePicElement && cardDetails.profilePicUrl && (
+        <div className="mb-4">
+          <Avatar className={cn("border-2", isPreview ? "w-20 h-20" : "w-12 h-12")} style={{ borderColor: cardDetails.accentColor }}>
+            <AvatarImage src={cardDetails.profilePicUrl} />
+            <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
+          </Avatar>
         </div>
-
-        {logoElement && cardDetails.logoUrl && (
-          <div className="mt-auto">
-            <Image src={cardDetails.logoUrl} alt="Company Logo" width={isPreview ? 100 : 80} height={isPreview ? 25 : 20} className={cn("object-contain", isPreview ? "h-6" : "h-5")} />
-          </div>
-        )}
+      )}
+      
+      <div className="flex flex-col">
+        <h2 className="font-bold" style={{ fontSize: fontSize(nameElement.fontSize, '1.125rem'), fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
+          {cardDetails.name}
+        </h2>
+        <p style={{ fontSize: fontSize(titleElement.fontSize, '0.875rem'), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
+          {cardDetails.title}
+        </p>
+        <p className="mt-2" style={{ fontSize: fontSize(companyElement.fontSize, '0.75rem'), fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
+          {cardDetails.company}
+        </p>
       </div>
+
+      {logoElement && cardDetails.logoUrl && (
+        <div className="mt-auto">
+          <Image src={cardDetails.logoUrl} alt="Company Logo" width={isPreview ? 100 : 80} height={isPreview ? 25 : 20} className={cn("object-contain", isPreview ? "h-6" : "h-5")} />
+        </div>
+      )}
     </div>
   );
 }));

@@ -93,7 +93,7 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
           )}
         >
           <div className={cn('absolute w-full h-full', is3D && 'card-3d')}>
-            <CardFace cardDetails={cardDetails} ref={cardFrontRef} isPreview={true} className="backface-hidden" />
+            <CardFace cardDetails={cardDetails} ref={cardFrontRef} isPreview={true} className="absolute w-full h-full backface-hidden" />
             <CardBack cardDetails={cardDetails} ref={cardBackRef} className="backface-hidden rotate-y-180" />
           </div>
         </div>
