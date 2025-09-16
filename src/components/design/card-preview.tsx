@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -130,7 +129,7 @@ const CardPreview = ({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProp
 
   return (
     <div className="w-full max-w-lg">
-      <div className="relative w-full aspect-[1.7/1] perspective-1000">
+       <div className="relative w-full aspect-[1.7/1] perspective-1000">
         <div
           className={cn(
             'relative w-full h-full transition-transform duration-700 preserve-3d',
