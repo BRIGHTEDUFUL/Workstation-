@@ -322,6 +322,38 @@
           "font": "'Source Code Pro', monospace",
           "pattern": "zig-zag"
         }
+    },
+    {
+      "id": "template-19",
+      "description": "3D Glass Prism",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/3dprism-theme/500/281",
+      "imageHint": "3d prism",
+      "data": {
+        "name": "Orion Starfield",
+        "title": "Dimension Architect",
+        "company": "Prismatica",
+        "bgColor": "#000000",
+        "textColor": "#FFFFFF",
+        "accentColor": "#FF00FF",
+        "font": "'Source Code Pro', monospace"
+      }
+    },
+    {
+      "id": "template-20",
+      "description": "Floating Orbs",
+      "category": "3D",
+      "imageUrl": "https://picsum.photos/seed/floatingorbs-theme/500/281",
+      "imageHint": "3d orbs",
+      "data": {
+        "name": "Seraphina Volt",
+        "title": "Quantum Futurist",
+        "company": "Aether Dynamics",
+        "bgColor": "#101020",
+        "textColor": "#E0E0FF",
+        "accentColor": "#00FFFF",
+        "font": "'Inter', sans-serif"
+      }
     }
   ]
 }

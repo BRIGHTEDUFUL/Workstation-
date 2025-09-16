@@ -26,6 +26,7 @@ export default async function Templates() {
     'Business',
     'Personal',
     'Creative',
+    '3D',
     'Event',
     'Membership',
     'Student',
