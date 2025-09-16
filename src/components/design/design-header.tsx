@@ -24,7 +24,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
     
     const handleExport = async () => {
         const frontNode = cardFrontRef.current;
-        const backNode = cardBackRef.current;
+        const backNode = backNodeRef.current;
 
         if (!frontNode || !backNode) {
             toast({
@@ -46,12 +46,19 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             // Wait a moment before starting the next download
             await new Promise(resolve => setTimeout(resolve, 200));
 
+            // Temporarily remove transform to capture back correctly
+            const originalTransform = backNode.style.transform;
+            backNode.style.transform = 'none';
+
             // Export Back
             const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
             const backLink = document.createElement('a');
             backLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`;
             backLink.href = backDataUrl;
             backLink.click();
+
+            // Restore the transform
+            backNode.style.transform = originalTransform;
 
         } catch (err) {
             console.error(err);
@@ -60,6 +67,10 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                 title: 'Export Failed',
                 description: 'Could not export the card images.',
             });
+            // Ensure transform is restored even on error
+            if (backNode && backNode.style.transform === 'none') {
+                backNode.style.transform = 'rotateY(180deg)'; // Failsafe
+            }
         }
     };
 
