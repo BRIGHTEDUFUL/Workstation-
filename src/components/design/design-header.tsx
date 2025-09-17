@@ -24,7 +24,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
     
     const downloadImage = async (node: HTMLDivElement, filename: string) => {
       try {
-        const blob = await toBlob(node, { cacheBust: true, pixelRatio: 2 });
+        const blob = await toBlob(node, { cacheBust: true, pixelRatio: 2, skipAutoScale: true });
         if (!blob) {
           throw new Error('Failed to create blob.');
         }
