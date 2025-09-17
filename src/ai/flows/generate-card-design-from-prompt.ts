@@ -7,7 +7,7 @@
  * - GenerateCardDesignFromPromptOutput - The return type for the generateCardDesignFromPrompt function.
  */
 
-import {ai} from '@/ai/config';
+import {ai} from '@/ai/server';
 import {z} from 'genkit';
 import { DesignPlanSchema } from '@/ai/schema';
 import { getCompanyInfo } from '../tools/get-company-info';

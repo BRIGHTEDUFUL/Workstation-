@@ -1,5 +1,5 @@
 'use server';
-import {ai} from '@/ai/config';
+import {ai} from '@/ai/server';
 import {z} from 'genkit';
 
 export const CompanyInfoSchema = z.object({
