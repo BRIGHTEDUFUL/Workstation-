@@ -57,7 +57,7 @@ const generateQrCodeDesignFlow = ai.defineFlow(
     });
     const baseQrCodeDataUri = `data:image/png;base64,${qrCodeBuffer.toString('base64')}`;
 
-    if (!prompt) {
+    if (!prompt || prompt === 'default-qr') {
       return { qrCodeDataUri: baseQrCodeDataUri };
     }
 

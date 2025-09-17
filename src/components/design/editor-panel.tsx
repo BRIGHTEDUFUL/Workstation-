@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,7 +20,6 @@ import cardLayouts from '@/lib/card-layouts.json';
 import PatternSelector from './pattern-selector';
 import { generateQrCodeDesignAction } from '@/ai/flows/generate-qr-code-design';
 import { useToast } from '@/hooks/use-toast';
-import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 
 const qrStyleSuggestions = [
@@ -51,10 +50,13 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
         setCardDetails(prev => ({ ...prev, [name]: value }));
     }, [setCardDetails]);
 
-    const handleInputBlur = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputBlur = useCallback((e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setCardDetails(prev => ({ ...prev, [name]: value }));
-    }, [setCardDetails]);
+        // Trigger QR generation on website URL change
+        if (name === 'website') {
+            generateQrCode(value, qrPrompt);
+        }
+    }, [setCardDetails, qrPrompt]);
 
     const handleSelectChange = useCallback((name: string, value: string) => {
         setCardDetails(prev => ({ ...prev, [name]: value as any }));
@@ -82,59 +84,59 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
             };
             reader.readAsDataURL(file);
         }
-        // Reset file input
         if(event.target) {
             event.target.value = '';
         }
     };
     
-    const handleGenerateQrCode = async () => {
-        if (!cardDetails.website) {
-            toast({
-                variant: 'destructive',
-                title: 'Missing Website URL',
-                description: 'Please enter a website URL to generate a QR code.',
-            });
+    const generateQrCode = useCallback(async (url: string, prompt: string) => {
+        if (!url) {
+            setCardDetails(prev => ({ ...prev, qrUrl: '', qrDesignPrompt: prompt }));
             return;
         }
 
         setIsGeneratingQr(true);
         try {
-            const result = await generateQrCodeDesignAction({
-                url: cardDetails.website,
-                prompt: qrPrompt,
-            });
-
+            const result = await generateQrCodeDesignAction({ url, prompt });
             setCardDetails(prev => ({
                 ...prev,
                 qrUrl: result.qrCodeDataUri,
-                qrDesignPrompt: qrPrompt,
+                qrDesignPrompt: prompt,
             }));
-
-            toast({
-                title: 'QR Code Generated!',
-                description: 'Your custom QR code has been created.',
-            });
-
+            if (prompt && prompt !== 'default-qr') {
+                toast({
+                    title: 'AI QR Code Styled!',
+                    description: 'Your custom QR code has been updated.',
+                });
+            }
         } catch (error) {
             console.error('Failed to generate QR code:', error);
             toast({
                 variant: 'destructive',
                 title: 'Generation Failed',
-                description: 'Could not generate the QR code design. Please try again.',
+                description: 'Could not generate the QR code design. Please check your API key and try again.',
             });
         } finally {
             setIsGeneratingQr(false);
         }
-    };
+    }, [setCardDetails, toast]);
     
     const handleQrSelectChange = (value: string) => {
-      if (value === 'default-qr') {
-        setQrPrompt('');
-      } else {
-        setQrPrompt(value);
-      }
+      const newPrompt = value === 'default-qr' ? '' : value;
+      setQrPrompt(newPrompt);
+      generateQrCode(cardDetails.website || '', newPrompt);
     };
+
+    const handleCustomQrPromptUpdate = () => {
+        generateQrCode(cardDetails.website || '', qrPrompt);
+    };
+
+    // Effect to generate QR code when component loads with a website url
+    useEffect(() => {
+        if (cardDetails.website && !cardDetails.qrUrl) {
+            generateQrCode(cardDetails.website, cardDetails.qrDesignPrompt || '');
+        }
+    }, [cardDetails.website, cardDetails.qrUrl]);
 
     return (
         <div className="p-6 space-y-8">
@@ -146,28 +148,23 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                             <CardContent className="space-y-6 pt-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Name</Label>
-                                    <Input id="name" name="name" defaultValue={cardDetails.name} onBlur={handleInputBlur} placeholder="e.g. Jane Doe" />
+                                    <Input id="name" name="name" defaultValue={cardDetails.name} onChange={handleInputChange} placeholder="e.g. Jane Doe" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="title">Title / Position</Label>
-                                    <Input id="title" name="title" defaultValue={cardDetails.title} onBlur={handleInputBlur} placeholder="e.g. Software Engineer" />
+                                    <Input id="title" name="title" defaultValue={cardDetails.title} onChange={handleInputChange} placeholder="e.g. Software Engineer" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="company">Company / Organization</Label>
-                                    <Input id="company" name="company" defaultValue={cardDetails.company} onBlur={handleInputBlur} placeholder="e.g. Acme Inc." />
+                                    <Input id="company" name="company" defaultValue={cardDetails.company} onChange={handleInputChange} placeholder="e.g. Acme Inc." />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="website">Website URL (for QR Code)</Label>
                                     <div className="relative">
                                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="website" name="website" defaultValue={cardDetails.website || ''} onBlur={handleInputBlur} placeholder="https://your-website.com" className="pl-10" />
+                                        <Input id="website" name="website" defaultValue={cardDetails.website || ''} onChange={handleInputChange} onBlur={handleInputBlur} placeholder="https://your-website.com" className="pl-10" />
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="slogan">Footer Slogan (Back of Card)</Label>
-                                    <Input id="slogan" name="slogan" defaultValue={cardDetails.slogan || ''} onBlur={handleInputBlur} placeholder="e.g. Innovative Solutions" />
-                                </div>
-                                
                                 <div className="space-y-2">
                                     <Label>Profile Picture</Label>
                                     <Input id="profilePicUrl" type="file" className="hidden" ref={profilePicInputRef} onChange={(e) => handleFileChange(e, 'profilePicUrl')} accept="image/*" />
@@ -176,7 +173,6 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                         Upload Profile Picture
                                     </Button>
                                 </div>
-
                                 <div className="space-y-2">
                                     <Label>Company Logo</Label>
                                     <Input id="logoUrl" type="file" className="hidden" ref={logoInputRef} onChange={(e) => handleFileChange(e, 'logoUrl')} accept="image/*" />
@@ -184,6 +180,10 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                         <Upload className="w-4 h-4 mr-2" />
                                         Upload Logo
                                     </Button>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="slogan">Footer Slogan (Back of Card)</Label>
+                                    <Input id="slogan" name="slogan" defaultValue={cardDetails.slogan || ''} onChange={handleInputChange} placeholder="e.g. Innovative Solutions" />
                                 </div>
                             </CardContent>
                         </Card>
@@ -208,6 +208,7 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                             <SelectItem value="Event">Event</SelectItem>
                                             <SelectItem value="Membership">Membership</SelectItem>
                                             <SelectItem value="Student">Student</SelectItem>
+                                            <SelectItem value="3D">3D</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -269,7 +270,7 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                 <div className="space-y-2">
                                     <Label htmlFor="qrStyle">AI Design Style</Label>
                                     <Select value={qrPrompt || 'default-qr'} onValueChange={handleQrSelectChange}>
-                                        <SelectTrigger id="qrStyle">
+                                        <SelectTrigger id="qrStyle" disabled={isGeneratingQr}>
                                             <SelectValue placeholder="Select a style" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -279,9 +280,19 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <Button onClick={handleGenerateQrCode} disabled={isGeneratingQr || !cardDetails.website} className="w-full">
+                                <div className="space-y-2">
+                                    <Label htmlFor="qrPrompt">Custom AI Prompt (Optional)</Label>
+                                    <Textarea
+                                        id="qrPrompt"
+                                        value={qrPrompt}
+                                        onChange={(e) => setQrPrompt(e.target.value)}
+                                        placeholder="Or describe your own style..."
+                                        disabled={isGeneratingQr}
+                                    />
+                                </div>
+                                <Button onClick={handleCustomQrPromptUpdate} disabled={isGeneratingQr || !cardDetails.website} className="w-full">
                                     <Sparkles className="w-4 h-4 mr-2" />
-                                    {isGeneratingQr ? 'Generating QR Code...' : 'Generate AI QR Code'}
+                                    {isGeneratingQr ? 'Updating QR Code...' : 'Update QR Code'}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -294,3 +305,4 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
 
 EditorPanel.displayName = 'EditorPanel';
 export default EditorPanel;
+
