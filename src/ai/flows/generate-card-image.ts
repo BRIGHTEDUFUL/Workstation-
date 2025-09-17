@@ -1,4 +1,4 @@
-'use server';
+
 /**
  * @fileOverview Generates a card image on the server using Puppeteer.
  *

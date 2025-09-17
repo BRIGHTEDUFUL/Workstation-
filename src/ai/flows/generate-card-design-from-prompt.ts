@@ -1,4 +1,4 @@
-'use server';
+
 /**
  * @fileOverview Orchestrates the AI-powered generation of a card design plan from a text prompt.
  *
