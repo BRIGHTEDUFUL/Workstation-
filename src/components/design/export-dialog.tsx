@@ -64,7 +64,7 @@ const ExportDialog = ({
             width: `${width}px`,
             height: `${height}px`,
         },
-        pixelRatio: 1, // We are controlling size via width/height, so pixelRatio should be 1
+        pixelRatio: 1, 
     };
 
     if (fileType === 'png') {
@@ -89,14 +89,13 @@ const ExportDialog = ({
     }
 
     setIsExporting(true);
-    onOpenChange(true); // Keep parent informed about exporting state
+    onOpenChange(true); 
 
     const dpi = quality === 'print' ? 300 : 72;
     const filenameBase = cardDetails.name.replace(/\s+/g, '-').toLowerCase();
 
     try {
       if (format === 'pdf') {
-        // PDF Export
         const frontImage = await generateImage(frontNode, dpi, 'jpeg');
         const backImage = await generateImage(backNode, dpi, 'jpeg');
         
@@ -106,23 +105,20 @@ const ExportDialog = ({
           format: [3.5, 2],
         });
 
-        // Page 1: Front
         pdf.addImage(frontImage, 'JPEG', 0, 0, 3.5, 2);
         
-        // Page 2: Back
         pdf.addPage();
         pdf.addImage(backImage, 'JPEG', 0, 0, 3.5, 2);
 
         pdf.save(`${filenameBase}.pdf`);
 
       } else {
-        // PNG or JPG Export
         const fileType = format === 'png' ? 'png' : 'jpeg';
         const frontImage = await generateImage(frontNode, dpi, fileType);
         const backImage = await generateImage(backNode, dpi, fileType);
 
         downloadDataUrl(frontImage, `${filenameBase}-front.${format}`);
-        await new Promise(resolve => setTimeout(resolve, 500)); // Stagger downloads
+        await new Promise(resolve => setTimeout(resolve, 500)); 
         downloadDataUrl(backImage, `${filenameBase}-back.${format}`);
       }
 
@@ -151,51 +147,51 @@ const ExportDialog = ({
     link.click();
   };
   
-  const content = (
+  const dialogContent = (
     <>
-        <DialogHeader>
-            <DialogTitle>Export Card Design</DialogTitle>
-            <DialogDescription>
-                Choose the format and quality for your export. Print quality (300 DPI) is recommended for physical cards.
-            </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="format" className="text-right">
-                    Format
-                </Label>
-                <Select value={format} onValueChange={(v) => setFormat(v as Format)}>
-                    <SelectTrigger id="format" className="col-span-3">
-                        <SelectValue placeholder="Select a format" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="png">PNG</SelectItem>
-                        <SelectItem value="jpg">JPG</SelectItem>
-                        <SelectItem value="pdf">PDF (2 Pages)</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="quality" className="text-right">
-                    Quality
-                </Label>
-                 <Select value={quality} onValueChange={(v) => setQuality(v as Quality)}>
-                    <SelectTrigger id="quality" className="col-span-3">
-                        <SelectValue placeholder="Select a quality" />
-                    </Trigger>
-                    <SelectContent>
-                        <SelectItem value="print">Print (300 DPI)</SelectItem>
-                        <SelectItem value="web">Web (72 DPI)</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
+      <DialogHeader>
+        <DialogTitle>Export Card Design</DialogTitle>
+        <DialogDescription>
+          Choose the format and quality for your export. Print quality (300 DPI) is recommended for physical cards.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="grid gap-4 py-4">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="format" className="text-right">
+            Format
+          </Label>
+          <Select value={format} onValueChange={(v) => setFormat(v as Format)}>
+            <SelectTrigger id="format" className="col-span-3">
+              <SelectValue placeholder="Select a format" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="png">PNG</SelectItem>
+              <SelectItem value="jpg">JPG</SelectItem>
+              <SelectItem value="pdf">PDF (2 Pages)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <DialogFooter>
-            <Button onClick={handleExport} disabled={isExporting}>
-                <Download className="w-4 h-4 mr-2" />
-                {isExporting ? 'Exporting...' : 'Export'}
-            </Button>
-        </DialogFooter>
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="quality" className="text-right">
+            Quality
+          </Label>
+          <Select value={quality} onValueChange={(v) => setQuality(v as Quality)}>
+            <SelectTrigger id="quality" className="col-span-3">
+              <SelectValue placeholder="Select a quality" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="print">Print (300 DPI)</SelectItem>
+              <SelectItem value="web">Web (72 DPI)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <DialogFooter>
+        <Button onClick={handleExport} disabled={isExporting}>
+          <Download className="w-4 h-4 mr-2" />
+          {isExporting ? 'Exporting...' : 'Export'}
+        </Button>
+      </DialogFooter>
     </>
   );
 
@@ -206,7 +202,7 @@ const ExportDialog = ({
                 {children}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-                {content}
+                {dialogContent}
             </DialogContent>
         </Dialog>
     );
@@ -216,7 +212,7 @@ const ExportDialog = ({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        {content}
+        {dialogContent}
       </DialogContent>
     </Dialog>
   );
