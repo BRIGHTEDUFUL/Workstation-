@@ -6,7 +6,6 @@ import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { CardDetails } from './card-data';
-import Image from 'next/image';
 import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 
