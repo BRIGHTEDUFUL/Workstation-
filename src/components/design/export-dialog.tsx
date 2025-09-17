@@ -182,7 +182,7 @@ const ExportDialog = ({
                  <Select value={quality} onValueChange={(v) => setQuality(v as Quality)}>
                     <SelectTrigger id="quality" className="col-span-3">
                         <SelectValue placeholder="Select a quality" />
-                    </SelectTrigger>
+                    </Trigger>
                     <SelectContent>
                         <SelectItem value="print">Print (300 DPI)</SelectItem>
                         <SelectItem value="web">Web (72 DPI)</SelectItem>
