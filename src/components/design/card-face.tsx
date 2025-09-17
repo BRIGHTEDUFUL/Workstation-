@@ -8,19 +8,8 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
-interface CardFaceProps {
-  cardDetails: CardDetails;
-  isPreview?: boolean;
-  isExport?: boolean;
-}
 
-const getProxiedUrl = (url: string | undefined) => {
-    if (!url) return '';
-    if (url.startsWith('data:')) return url;
-    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
-};
-
-const CardFace = ({ cardDetails, isPreview = false, isExport = false }: CardFaceProps) => {
+const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 
@@ -35,9 +24,6 @@ const CardFace = ({ cardDetails, isPreview = false, isExport = false }: CardFace
 
   const renderImage = (url: string | undefined, alt: string, isLogo: boolean = false) => {
     if (!url) return null;
-    if (isExport) {
-        return <img src={getProxiedUrl(url)} alt={alt} style={{ objectFit: 'contain', height: isLogo ? '1.5rem' : 'auto', maxHeight: '1.5rem', width: 'auto', maxWidth: isLogo ? '6rem' : '100%' }} />;
-    }
     const width = isLogo ? (isPreview ? 100 : 80) : (isPreview ? 80 : 48);
     const height = isLogo ? (isPreview ? 25 : 20) : (isPreview ? 80 : 48);
     return <Image src={url} alt={alt} width={width} height={height} className={cn("object-contain", isLogo ? (isPreview ? "h-6" : "h-5") : "")} crossOrigin="anonymous" />;
@@ -45,10 +31,6 @@ const CardFace = ({ cardDetails, isPreview = false, isExport = false }: CardFace
 
   const renderAvatar = (url: string | undefined, name: string) => {
     if (!url) return null;
-
-    if (isExport) {
-        return <img src={getProxiedUrl(url)} alt={name} style={{ width: '4rem', height: '4rem', borderRadius: '50%', objectFit: 'cover', border: `2px solid ${cardDetails.accentColor}` }} />;
-    }
 
     const sizeClass = isPreview ? "w-20 h-20" : "w-12 h-12";
     return (
@@ -127,7 +109,7 @@ const CardFace = ({ cardDetails, isPreview = false, isExport = false }: CardFace
       style={containerStyle}
     >
       {profilePicElement && cardDetails.profilePicUrl && (
-        <div className={cn(isExport ? "" : "mb-4")}>
+        <div className={cn("mb-4")}>
           {renderAvatar(cardDetails.profilePicUrl, cardDetails.name)}
         </div>
       )}
@@ -145,7 +127,7 @@ const CardFace = ({ cardDetails, isPreview = false, isExport = false }: CardFace
       </div>
 
       {logoElement && cardDetails.logoUrl && (
-        <div className={cn(isExport ? "" : "mt-auto")}>
+        <div className={cn("mt-auto")}>
           {renderImage(cardDetails.logoUrl, "Company Logo", true)}
         </div>
       )}
@@ -154,4 +136,9 @@ const CardFace = ({ cardDetails, isPreview = false, isExport = false }: CardFace
 };
 
 CardFace.displayName = 'CardFace';
+
+export interface CardFaceProps {
+  cardDetails: CardDetails;
+  isPreview?: boolean;
+}
 export default CardFace;

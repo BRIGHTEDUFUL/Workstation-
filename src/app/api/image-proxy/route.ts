@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Use a specific user-agent to avoid being blocked by some image hosts.
     const response = await fetch(imageUrl, {
       headers: {
         'User-Agent': 'CardHub-Image-Proxy/1.0',
@@ -30,6 +31,7 @@ export async function GET(request: NextRequest) {
       response.headers.get('content-type') || 'application/octet-stream';
     const imageBuffer = await response.arrayBuffer();
 
+    // Set cache headers to tell browser it can cache the image.
     return new NextResponse(imageBuffer, {
       headers: {
         'Content-Type': contentType,

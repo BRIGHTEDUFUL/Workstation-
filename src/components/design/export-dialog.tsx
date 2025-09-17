@@ -25,8 +25,8 @@ import type { CardDetails } from './card-data';
 import { toPng, toJpeg, toSvg, toCanvas } from 'html-to-image';
 import jsPDF from 'jspdf';
 import { Download } from 'lucide-react';
-import CardFace from './card-face';
-import { getPatternStyle } from '@/lib/patterns';
+import ExportableCard from './exportable-card';
+
 
 interface DownloadDialogProps {
   cardFrontRef: React.RefObject<HTMLDivElement>;
@@ -39,98 +39,6 @@ interface DownloadDialogProps {
 
 type Format = 'png' | 'jpg' | 'svg' | 'pdf';
 type Quality = 'web' | 'print';
-
-
-const getProxiedUrl = (url: string | undefined) => {
-    if (!url) return '';
-    if (url.startsWith('data:')) return url;
-    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
-};
-
-
-const ExportableCard = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails; face: 'front' | 'back' }>(({ cardDetails, face }, ref) => {
-    // Standard business card: 3.5 x 2 inches. At 96 DPI, this is 336x192 px.
-    const baseWidth = 336;
-    const baseHeight = 192;
-    
-    const cardStyle: React.CSSProperties = {
-        width: `${baseWidth}px`,
-        height: `${baseHeight}px`,
-        fontFamily: cardDetails.font.replace(/var\((--font-.*?)\)/, (match, p1) => p1.replace('--font-', '').replace(/-/g, ' ')),
-        position: 'relative',
-        overflow: 'hidden',
-    };
-
-    const renderFront = () => {
-        const frontStyle: React.CSSProperties = {
-            ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
-            backgroundColor: cardDetails.bgColor,
-            width: '100%',
-            height: '100%',
-            position: 'relative',
-        };
-
-        if (cardDetails.backgroundImage && !cardDetails.pattern) {
-            frontStyle.backgroundImage = `url(${getProxiedUrl(cardDetails.backgroundImage)})`;
-            frontStyle.backgroundSize = 'cover';
-            frontStyle.backgroundPosition = 'center';
-        }
-        
-        return (
-            <div style={frontStyle}>
-                <CardFace cardDetails={cardDetails} isExport={true} />
-            </div>
-        );
-    };
-
-    const renderBack = () => {
-        const backStyle: React.CSSProperties = {
-            backgroundColor: cardDetails.bgColor,
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '1rem',
-            boxSizing: 'border-box'
-        };
-
-        return (
-            <div style={backStyle}>
-                {cardDetails.logoUrl && (
-                    <img
-                        src={getProxiedUrl(cardDetails.logoUrl)}
-                        alt="Company Logo"
-                        style={{ maxHeight: '2rem', maxWidth: '5rem', objectFit: 'contain', marginBottom: '1rem' }}
-                    />
-                )}
-                {cardDetails.website && cardDetails.qrUrl ? (
-                    <img
-                        src={cardDetails.qrUrl} // QR is a data URI, no proxy needed
-                        alt="QR Code"
-                        style={{ width: '6rem', height: '6rem', borderRadius: '0.25rem' }}
-                    />
-                ) : (
-                    <div style={{ width: '6rem', height: '6rem' }}></div>
-                )}
-                {cardDetails.slogan && (
-                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.65rem', color: cardDetails.textColor }}>
-                        {cardDetails.slogan}
-                    </p>
-                )}
-            </div>
-        );
-    };
-
-    return (
-      <div ref={ref} style={cardStyle}>
-        {face === 'front' ? renderFront() : renderBack()}
-      </div>
-    );
-});
-ExportableCard.displayName = 'ExportableCard';
-
 
 const DownloadDialog = ({
   cardDetails,
@@ -165,9 +73,11 @@ const DownloadDialog = ({
           width: `${cardWidthInches * 96}px`,
           height: `${cardHeightInches * 96}px`,
         },
-        fontEmbedCSS: `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro&display=swap');`,
+        // Embed fonts to ensure they render correctly in the output image.
+        fontEmbedCSS: `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400&family=Georgia&family=Times+New+Roman&display=swap');`,
       };
       
+    // Add a timeout to prevent the process from hanging indefinitely.
     const timeoutPromise = new Promise<string>((_, reject) =>
         setTimeout(() => reject(new Error('Image generation timed out after 10 seconds')), 10000)
     );
@@ -216,6 +126,7 @@ const DownloadDialog = ({
           format: [3.5, 2],
         });
 
+        // Add the front image, then add a new page for the back image.
         pdf.addImage(frontCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 3.5, 2);
         pdf.addPage();
         pdf.addImage(backCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 3.5, 2);
@@ -223,11 +134,14 @@ const DownloadDialog = ({
         pdf.save(`${filenameBase}.pdf`);
 
       } else {
+        // Generate and download the front of the card.
         const frontImage = await generateImage(frontNode, dpi, format as 'png' | 'jpeg' | 'svg') as string;
         downloadDataUrl(frontImage, `${filenameBase}-front.${format}`);
 
+        // Wait a moment before starting the next download to avoid browser issues.
         await new Promise(resolve => setTimeout(resolve, 500)); 
         
+        // Generate and download the back of the card.
         const backImage = await generateImage(backNode, dpi, format as 'png' | 'jpeg' | 'svg') as string;
         downloadDataUrl(backImage, `${filenameBase}-back.${format}`);
       }
@@ -305,7 +219,7 @@ const DownloadDialog = ({
           {isDownloading ? 'Downloading...' : 'Download'}
         </Button>
       </DialogFooter>
-      {/* Off-screen container for rendering exportable cards */}
+      {/* Off-screen container for rendering exportable cards. This is what gets captured. */}
       <div className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none">
           <ExportableCard cardDetails={cardDetails} face="front" ref={cardFrontRef} />
           <ExportableCard cardDetails={cardDetails} face="back" ref={cardBackRef} />
