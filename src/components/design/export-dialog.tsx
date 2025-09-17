@@ -59,7 +59,9 @@ const ExportDialog = ({
 
     // The filter function helps to avoid issues with complex elements during rendering.
     const filter = (node: HTMLElement) => {
-        return node.tagName !== 'PICTURE'; // Next/Image renders a <picture> tag internally which can cause issues.
+        // We need to exclude the <picture> element that next/image renders internally,
+        // as it can cause canvas tainting or rendering failures with html-to-image.
+        return node.tagName !== 'PICTURE';
     };
 
     const canvas = await toCanvas(node, {
@@ -75,6 +77,7 @@ const ExportDialog = ({
     if (fileType === 'png') {
         return canvas.toDataURL('image/png');
     }
+    // For JPG, quality is a number between 0 and 1.
     return canvas.toDataURL('image/jpeg', 0.95);
   };
 
@@ -93,36 +96,41 @@ const ExportDialog = ({
     }
 
     setIsExporting(true);
-    onOpenChange(true); 
+    onOpenChange(true); // Keep parent aware of state
 
     const dpi = quality === 'print' ? 300 : 72;
     const filenameBase = cardDetails.name.replace(/\s+/g, '-').toLowerCase() || 'card';
 
     try {
       if (format === 'pdf') {
+        // Use JPEG for PDF to keep file size reasonable.
         const frontImage = await generateImage(frontNode, dpi, 'jpeg');
         const backImage = await generateImage(backNode, dpi, 'jpeg');
         
         const pdf = new jsPDF({
           orientation: 'landscape',
           unit: 'in',
-          format: [3.5, 2],
+          format: [3.5, 2], // Standard business card size
         });
 
+        // Add front image to the first page
         pdf.addImage(frontImage, 'JPEG', 0, 0, 3.5, 2);
         
+        // Add a new page for the back
         pdf.addPage();
         pdf.addImage(backImage, 'JPEG', 0, 0, 3.5, 2);
 
         pdf.save(`${filenameBase}.pdf`);
 
       } else {
+        // Handle PNG and JPG exports
         const fileType = format === 'png' ? 'png' : 'jpeg';
         const frontImage = await generateImage(frontNode, dpi, fileType);
         const backImage = await generateImage(backNode, dpi, fileType);
 
+        // Download front and back images sequentially
         downloadDataUrl(frontImage, `${filenameBase}-front.${format}`);
-        await new Promise(resolve => setTimeout(resolve, 500)); 
+        await new Promise(resolve => setTimeout(resolve, 500)); // Brief pause to allow the first download to initiate
         downloadDataUrl(backImage, `${filenameBase}-back.${format}`);
       }
 
