@@ -1,0 +1,19 @@
+diff --git a/node_modules/@genkit-ai/googleai/package.json b/node_modules/@genkit-ai/googleai/package.json
+index 515a81e592723141477433f84883b27670732387..868158f918e69818816c721c5f87b8979c4a45a1 100644
+--- a/node_modules/@genkit-ai/googleai/package.json
++++ b/node_modules/@genkit-ai/googleai/package.json
+@@ -6,6 +6,13 @@
+   "license": "Apache-2.0",
+   "main": "lib/index.js",
+   "types": "lib/index.d.ts",
++  "exports": {
++    ".": {
++      "node": "./lib/index.js",
++      "default": "./lib/index.js"
++    },
++    "./lib/server*": "./lib/server.js"
++  },
+   "dependencies": {
+     "@google-ai/generativelanguage": "^2.1.2",
+     "@google-auth/google-auth-library": "^9.0.0",
+

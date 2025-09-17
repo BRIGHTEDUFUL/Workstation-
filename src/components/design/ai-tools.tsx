@@ -1,13 +1,10 @@
-
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
   generateCardDesignAction,
-} from '@/ai/flows/generate-card-design-from-prompt';
-import {
   importCardDesignAction,
-} from '@/ai/flows/import-card-design-from-image';
+} from '@/ai';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

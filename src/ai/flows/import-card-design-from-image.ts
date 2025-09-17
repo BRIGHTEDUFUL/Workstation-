@@ -7,7 +7,7 @@
  * - ImportCardDesignFromImageOutput - The return type for the importCardDesignFromImage function.
  */
 
-import {ai} from '@/ai';
+import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import { DesignPlanSchema } from '@/ai/schema';
 

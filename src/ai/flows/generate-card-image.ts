@@ -5,7 +5,7 @@
  * - generateCardImageAction - A server action that takes card details and returns an image data URI.
  */
 import { z } from 'genkit';
-import { ai } from '@/ai';
+import { ai } from '@/ai/config';
 import { CardDetailsSchema } from '../schema';
 import * as puppeteer from 'puppeteer';
 import { getPatternStyle } from '@/lib/patterns';

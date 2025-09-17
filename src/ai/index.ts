@@ -1,7 +1,9 @@
-import {genkit} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
+'use server';
 
-export const ai = genkit({
-  plugins: [googleAI()],
-  model: 'googleai/gemini-1.5-flash',
-});
+export {
+  generateCardDesignAction,
+} from './flows/generate-card-design-from-prompt';
+export { generateCardImageAction } from './flows/generate-card-image';
+export {
+  importCardDesignAction,
+} from './flows/import-card-design-from-image';
