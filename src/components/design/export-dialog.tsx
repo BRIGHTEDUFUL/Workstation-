@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
-import { toPng, toJpeg } from 'html-to-image';
+import { toCanvas } from 'html-to-image';
 import jsPDF from 'jspdf';
 import { Download } from 'lucide-react';
 
@@ -51,27 +51,31 @@ const ExportDialog = ({
     onOpenChange(open);
   };
 
-  const generateImage = async (node: HTMLElement, dpi: number, fileType: 'png' | 'jpeg') => {
+  const generateImage = async (node: HTMLElement, dpi: number, fileType: 'png' | 'jpeg'): Promise<string> => {
     const cardWidthInches = 3.5;
     const cardHeightInches = 2;
     const width = cardWidthInches * dpi;
     const height = cardHeightInches * dpi;
 
-    const options = {
-        width,
-        height,
-        style: {
-            width: `${width}px`,
-            height: `${height}px`,
-        },
-        pixelRatio: 1, 
+    // The filter function helps to avoid issues with complex elements during rendering.
+    const filter = (node: HTMLElement) => {
+        return node.tagName !== 'PICTURE'; // Next/Image renders a <picture> tag internally which can cause issues.
     };
 
+    const canvas = await toCanvas(node, {
+        width,
+        height,
+        pixelRatio: 1, // We are handling resolution via width/height, so pixelRatio should be 1.
+        filter,
+        // The following props improve reliability
+        skipAutoScale: true,
+        cacheBust: true,
+    });
+    
     if (fileType === 'png') {
-        return toPng(node, options);
-    } else {
-        return toJpeg(node, { ...options, quality: 0.95 });
+        return canvas.toDataURL('image/png');
     }
+    return canvas.toDataURL('image/jpeg', 0.95);
   };
 
 
@@ -92,7 +96,7 @@ const ExportDialog = ({
     onOpenChange(true); 
 
     const dpi = quality === 'print' ? 300 : 72;
-    const filenameBase = cardDetails.name.replace(/\s+/g, '-').toLowerCase();
+    const filenameBase = cardDetails.name.replace(/\s+/g, '-').toLowerCase() || 'card';
 
     try {
       if (format === 'pdf') {
@@ -132,7 +136,7 @@ const ExportDialog = ({
       toast({
         variant: 'destructive',
         title: 'Export Failed',
-        description: 'An unexpected error occurred while generating the file(s).',
+        description: 'An unexpected error occurred. Please try again.',
       });
     } finally {
       setIsExporting(false);
@@ -144,7 +148,9 @@ const ExportDialog = ({
     const link = document.createElement('a');
     link.href = dataUrl;
     link.download = filename;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   };
   
   const dialogContent = (
@@ -198,7 +204,7 @@ const ExportDialog = ({
   if (isMobile) {
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-            <DialogTrigger asChild onClick={() => handleOpenChange(true)}>
+            <DialogTrigger asChild onClick={(e) => { e.preventDefault(); handleOpenChange(true); }}>
                 {children}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
