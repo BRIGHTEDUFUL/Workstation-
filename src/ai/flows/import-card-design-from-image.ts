@@ -1,4 +1,6 @@
 
+'use server';
+
 /**
  * @fileOverview Imports an existing card design from an image or PDF file and recreates it as an editable design.
  *
