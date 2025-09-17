@@ -20,7 +20,7 @@ import { toCanvas } from 'html-to-image';
 import jsPDF from 'jspdf';
 import { Download } from 'lucide-react';
 
-interface ExportDialogProps {
+interface DownloadDialogProps {
   cardFrontRef: React.RefObject<HTMLDivElement>;
   cardBackRef: React.RefObject<HTMLDivElement>;
   cardDetails: CardDetails;
@@ -32,14 +32,14 @@ interface ExportDialogProps {
 type Format = 'png' | 'jpg' | 'pdf';
 type Quality = 'web' | 'print';
 
-const ExportDialog = ({
+const DownloadDialog = ({
   cardFrontRef,
   cardBackRef,
   cardDetails,
   children,
   onOpenChange,
   isMobile = false,
-}: ExportDialogProps) => {
+}: DownloadDialogProps) => {
   const [format, setFormat] = useState<Format>('png');
   const [quality, setQuality] = useState<Quality>('print');
   const [isOpen, setIsOpen] = useState(false);
@@ -51,20 +51,22 @@ const ExportDialog = ({
     onOpenChange(open);
   };
 
-  const generateImage = async (node: HTMLElement, dpi: number, fileType: 'png' | 'jpeg'): Promise<string> => {
+  const generateImage = async (node: HTMLElement, dpi: number): Promise<string> => {
     const cardWidthInches = 3.5;
     const cardHeightInches = 2;
     const width = cardWidthInches * dpi;
     const height = cardHeightInches * dpi;
 
-    // The filter function helps to avoid issues with complex elements during rendering.
-    const filter = (node: HTMLElement) => {
-        // We need to exclude the <picture> element that next/image renders internally,
-        // as it can cause canvas tainting or rendering failures with html-to-image.
-        return node.tagName !== 'PICTURE';
-    };
+    // By passing the node to a filter function, we can screenshot the node.
+    const filter = (n: HTMLElement) => {
+        if (n.contains && n.contains(node)) {
+            return true;
+        }
+        return n === node;
+    }
 
-    const canvas = await toCanvas(node, {
+    // Since we are using a filter, we should use document.body to get the whole page.
+    const canvas = await toCanvas(document.body, {
         width,
         height,
         pixelRatio: 1, // We are handling resolution via width/height, so pixelRatio should be 1.
@@ -72,13 +74,26 @@ const ExportDialog = ({
         // The following props improve reliability
         skipAutoScale: true,
         cacheBust: true,
+        // The canvas background should be transparent.
+        backgroundColor: 'rgba(0,0,0,0)',
     });
     
-    if (fileType === 'png') {
-        return canvas.toDataURL('image/png');
+    // We create a new canvas to draw the background color.
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = width;
+    finalCanvas.height = height;
+    const ctx = finalCanvas.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = node.style.backgroundColor || '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(canvas, 0, 0);
+    }
+    
+    if (format === 'png') {
+        return finalCanvas.toDataURL('image/png');
     }
     // For JPG, quality is a number between 0 and 1.
-    return canvas.toDataURL('image/jpeg', 0.95);
+    return finalCanvas.toDataURL('image/jpeg', 0.95);
   };
 
 
@@ -104,8 +119,8 @@ const ExportDialog = ({
     try {
       if (format === 'pdf') {
         // Use JPEG for PDF to keep file size reasonable.
-        const frontImage = await generateImage(frontNode, dpi, 'jpeg');
-        const backImage = await generateImage(backNode, dpi, 'jpeg');
+        const frontImage = await generateImage(frontNode, dpi);
+        const backImage = await generateImage(backNode, dpi);
         
         const pdf = new jsPDF({
           orientation: 'landscape',
@@ -124,9 +139,8 @@ const ExportDialog = ({
 
       } else {
         // Handle PNG and JPG downloads
-        const fileType = format === 'png' ? 'png' : 'jpeg';
-        const frontImage = await generateImage(frontNode, dpi, fileType);
-        const backImage = await generateImage(backNode, dpi, fileType);
+        const frontImage = await generateImage(frontNode, dpi);
+        const backImage = await generateImage(backNode, dpi);
 
         // Download front and back images sequentially
         downloadDataUrl(frontImage, `${filenameBase}-front.${format}`);
@@ -232,4 +246,4 @@ const ExportDialog = ({
   );
 };
 
-export default ExportDialog;
+export default DownloadDialog;

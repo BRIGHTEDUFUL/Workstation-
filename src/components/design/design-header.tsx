@@ -9,7 +9,7 @@ import type { CardDetails } from './card-data';
 import { useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
-import ExportDialog from './export-dialog';
+import DownloadDialog from './export-dialog';
 
 interface DesignHeaderProps {
     cardDetails: CardDetails;
@@ -83,7 +83,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             <Button variant="outline" onClick={() => handleSave(true)} disabled={!cardDetails.website}>
                 <Share2 className="w-4 h-4 mr-2" /> Share
             </Button>
-            <ExportDialog
+            <DownloadDialog
                 cardFrontRef={cardFrontRef}
                 cardBackRef={cardBackRef}
                 cardDetails={cardDetails}
@@ -93,7 +93,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                     <Download className="w-4 h-4 mr-2" /> 
                     {isDownloading ? 'Downloading...' : 'Download'}
                 </Button>
-            </ExportDialog>
+            </DownloadDialog>
         </>
     )
 
@@ -116,7 +116,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                             <Share2 className="w-4 h-4 mr-2" /> Share
                         </DropdownMenuItem>
                         <DropdownMenuItem onSelect={() => setIsDownloading(true)}>
-                             <ExportDialog
+                             <DownloadDialog
                                 cardFrontRef={cardFrontRef}
                                 cardBackRef={cardBackRef}
                                 cardDetails={cardDetails}
@@ -126,7 +126,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                                 <div className='flex items-center'>
                                     <Download className="w-4 h-4 mr-2" /> Download
                                 </div>
-                            </ExportDialog>
+                            </DownloadDialog>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
