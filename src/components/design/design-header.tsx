@@ -13,11 +13,9 @@ import DownloadDialog from './export-dialog';
 
 interface DesignHeaderProps {
     cardDetails: CardDetails;
-    cardFrontRef: React.RefObject<HTMLDivElement>;
-    cardBackRef: React.RefObject<HTMLDivElement>;
 }
 
-const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderProps) => {
+const DesignHeader = ({ cardDetails }: DesignHeaderProps) => {
     const { toast } = useToast();
     const [isSaving, setIsSaving] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
@@ -84,8 +82,6 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                 <Share2 className="w-4 h-4 mr-2" /> Share
             </Button>
             <DownloadDialog
-                cardFrontRef={cardFrontRef}
-                cardBackRef={cardBackRef}
                 cardDetails={cardDetails}
                 onOpenChange={setIsDownloading}
             >
@@ -115,15 +111,13 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                         <DropdownMenuItem onClick={() => handleSave(true)} disabled={!cardDetails.website}>
                             <Share2 className="w-4 h-4 mr-2" /> Share
                         </DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setIsDownloading(true)}>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                              <DownloadDialog
-                                cardFrontRef={cardFrontRef}
-                                cardBackRef={cardBackRef}
                                 cardDetails={cardDetails}
                                 onOpenChange={setIsDownloading}
                                 isMobile={true}
                             >
-                                <div className='flex items-center'>
+                                <div className='flex items-center w-full text-left'>
                                     <Download className="w-4 h-4 mr-2" /> Download
                                 </div>
                             </DownloadDialog>

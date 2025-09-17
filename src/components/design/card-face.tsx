@@ -8,8 +8,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
-
-const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
+const CardFace = ({ cardDetails }: CardFaceProps) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 
@@ -20,19 +19,19 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
   const profilePicElement = elements.find(e => e.component === 'profilePic');
 
   // Use vw for scaling in preview, but fixed rem for thumbnails
-  const fontSize = (vw: number | undefined, rem: string) => isPreview ? `clamp(0.8rem, ${vw || 1}vw, 2.5rem)` : rem;
+  const fontSize = (vw: number | undefined) => `clamp(0.8rem, ${vw || 1}vw, 2.5rem)`;
 
   const renderImage = (url: string | undefined, alt: string, isLogo: boolean = false) => {
     if (!url) return null;
-    const width = isLogo ? (isPreview ? 100 : 80) : (isPreview ? 80 : 48);
-    const height = isLogo ? (isPreview ? 25 : 20) : (isPreview ? 80 : 48);
-    return <Image src={url} alt={alt} width={width} height={height} className={cn("object-contain", isLogo ? (isPreview ? "h-6" : "h-5") : "")} crossOrigin="anonymous" />;
+    const width = isLogo ? 100 : 80;
+    const height = isLogo ? 25 : 80;
+    return <Image src={url} alt={alt} width={width} height={height} className={cn("object-contain", isLogo ? "h-6" : "")} crossOrigin="anonymous" />;
   }
 
   const renderAvatar = (url: string | undefined, name: string) => {
     if (!url) return null;
 
-    const sizeClass = isPreview ? "w-20 h-20" : "w-12 h-12";
+    const sizeClass = "w-20 h-20";
     return (
         <Avatar className={cn("border-2", sizeClass)} style={{ borderColor: cardDetails.accentColor }}>
             <AvatarImage src={url} crossOrigin="anonymous" />
@@ -72,13 +71,13 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
                       {renderAvatar(cardDetails.profilePicUrl, cardDetails.name)}
                   </div>
               )}
-              <h2 className="font-bold" style={{ fontSize: fontSize(nameElement.fontSize, '1.125rem'), fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
+              <h2 className="font-bold" style={{ fontSize: fontSize(nameElement.fontSize), fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
                   {cardDetails.name}
               </h2>
-              <p style={{ fontSize: fontSize(titleElement.fontSize, '0.875rem'), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
+              <p style={{ fontSize: fontSize(titleElement.fontSize), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
                   {cardDetails.title}
               </p>
-              <p className="mt-2" style={{ fontSize: fontSize(companyElement.fontSize, '0.75rem'), fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
+              <p className="mt-2" style={{ fontSize: fontSize(companyElement.fontSize), fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
                   {cardDetails.company}
               </p>
           </div>
@@ -100,7 +99,7 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
     textAlign: layout.textAlign as any,
     height: '100%',
     width: '100%',
-    padding: isPreview ? '1.5rem' : '1rem',
+    padding: '1.5rem',
   };
 
   return (
@@ -115,13 +114,13 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
       )}
       
       <div className="flex flex-col">
-        <h2 className="font-bold" style={{ fontSize: fontSize(nameElement.fontSize, '1.125rem'), fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
+        <h2 className="font-bold" style={{ fontSize: fontSize(nameElement.fontSize), fontWeight: nameElement.fontWeight, color: cardDetails.textColor }}>
           {cardDetails.name}
         </h2>
-        <p style={{ fontSize: fontSize(titleElement.fontSize, '0.875rem'), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
+        <p style={{ fontSize: fontSize(titleElement.fontSize), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor }}>
           {cardDetails.title}
         </p>
-        <p className="mt-2" style={{ fontSize: fontSize(companyElement.fontSize, '0.75rem'), fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
+        <p className="mt-2" style={{ fontSize: fontSize(companyElement.fontSize), fontWeight: companyElement.fontWeight, color: cardDetails.textColor }}>
           {cardDetails.company}
         </p>
       </div>
@@ -139,6 +138,5 @@ CardFace.displayName = 'CardFace';
 
 export interface CardFaceProps {
   cardDetails: CardDetails;
-  isPreview?: boolean;
 }
 export default CardFace;

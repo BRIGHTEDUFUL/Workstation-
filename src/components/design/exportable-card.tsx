@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { CardDetails } from './card-data';
 import cardLayouts from '@/lib/card-layouts.json';
 import { getPatternStyle } from '@/lib/patterns';
@@ -18,9 +18,15 @@ const getProxiedUrl = (url: string | undefined) => {
 // Helper to parse font family from CSS variable
 const getFontFamily = (font: string | undefined): string => {
     if (!font) return 'Inter, sans-serif';
-    if (font.includes('--font-inter')) return 'Inter, sans-serif';
-    if (font.includes('--font-source-code-pro')) return "'Source Code Pro', monospace";
-    return font;
+    if (font.startsWith('var(--font-')) {
+        const fontName = font.match(/--font-([^)]+)/)?.[1];
+        switch(fontName) {
+            case 'inter': return 'Inter, sans-serif';
+            case 'source-code-pro': return "'Source Code Pro', monospace";
+            default: return 'sans-serif';
+        }
+    }
+    return font.replace(/'/g, "");
 };
 
 // Simplified renderer for just the content on the card front.
@@ -96,12 +102,22 @@ const ExportableCardFace = ({ cardDetails }: { cardDetails: CardDetails }) => {
     );
 };
 
+interface ExportableCardProps {
+  cardDetails: CardDetails;
+  face: 'front' | 'back';
+  onRendered?: () => void;
+}
 
 /**
  * A component designed specifically for off-screen rendering to generate images.
  * It uses simple `<img>` tags and proxied URLs to ensure `html-to-image` can capture it cleanly.
  */
-const ExportableCard = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails; face: 'front' | 'back' }>(({ cardDetails, face }, ref) => {
+const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ cardDetails, face, onRendered }, ref) => {
+    useEffect(() => {
+        // Signal that the component has mounted
+        onRendered?.();
+    }, [onRendered]);
+
     // Standard business card dimensions at 96 DPI: 3.5in x 2in = 336x192px
     const cardStyle: React.CSSProperties = {
         width: `336px`, height: `192px`,

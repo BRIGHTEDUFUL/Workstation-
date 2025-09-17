@@ -15,7 +15,7 @@ const getProxiedUrl = (url: string | undefined) => {
 };
 
 // CardFront Component
-const CardFront = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
+const CardFront = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const frontStyle: React.CSSProperties = {
     ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
     backgroundColor: cardDetails.bgColor,
@@ -32,7 +32,7 @@ const CardFront = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Car
       className="absolute w-full h-full rounded-lg backface-hidden"
       style={frontStyle}
     >
-      <CardFace cardDetails={cardDetails} isPreview={true} />
+      <CardFace cardDetails={cardDetails} />
     </div>
   );
 }));
@@ -93,15 +93,17 @@ CardBack.displayName = 'CardBack';
 // Main CardPreview Component
 interface CardPreviewProps {
   cardDetails: CardDetails;
-  cardFrontRef: React.RefObject<HTMLDivElement>;
-  cardBackRef: React.RefObject<HTMLDivElement>;
 }
 
-const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProps) => {
+const CardPreview = React.memo(({ cardDetails }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const is3D = cardDetails.category === '3D';
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [transformStyle, setTransformStyle] = useState({});
+
+  const cardFrontRef = useRef<HTMLDivElement>(null);
+  const cardBackRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     if (!is3D || !wrapperRef.current) {

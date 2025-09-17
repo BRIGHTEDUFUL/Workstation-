@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -24,15 +24,13 @@ import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
 import { toPng, toJpeg, toSvg, toCanvas } from 'html-to-image';
 import jsPDF from 'jspdf';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import ExportableCard from './exportable-card';
 
 
 interface DownloadDialogProps {
-  cardFrontRef: React.RefObject<HTMLDivElement>;
-  cardBackRef: React.RefObject<HTMLDivElement>;
-  cardDetails: CardDetails;
   children: React.ReactNode;
+  cardDetails: CardDetails;
   onOpenChange: (open: boolean) => void;
   isMobile?: boolean;
 }
@@ -50,15 +48,37 @@ const DownloadDialog = ({
   const [quality, setQuality] = useState<Quality>('print');
   const [isOpen, setIsOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isRendering, setIsRendering] = useState(false);
   const { toast } = useToast();
 
   const cardFrontRef = useRef<HTMLDivElement>(null);
   const cardBackRef = useRef<HTMLDivElement>(null);
 
+  // State to track if components are rendered
+  const [rendered, setRendered] = useState({ front: false, back: false });
+  const isReady = rendered.front && rendered.back;
+
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     onOpenChange(open);
+    // Reset render status when dialog is closed
+    if (!open) {
+      setTimeout(() => setRendered({ front: false, back: false }), 200);
+      setIsRendering(false);
+    } else {
+      setIsRendering(true);
+    }
   };
+
+  const handleRendered = useCallback((face: 'front' | 'back') => {
+    setRendered(prev => {
+        const newState = { ...prev, [face]: true };
+        if (newState.front && newState.back) {
+            setIsRendering(false);
+        }
+        return newState;
+    });
+  }, []);
   
   const generateImage = async (node: HTMLElement, dpi: number, format: 'png' | 'jpeg' | 'svg' | 'canvas'): Promise<string | HTMLCanvasElement> => {
     const cardWidthInches = 3.5;
@@ -73,32 +93,34 @@ const DownloadDialog = ({
           width: `${cardWidthInches * 96}px`,
           height: `${cardHeightInches * 96}px`,
         },
-        // Embed fonts to ensure they render correctly in the output image.
-        fontEmbedCSS: `@font-face {
-          font-family: 'Inter';
-          src: url('https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19') format('woff2');
-          font-weight: 400;
-        }
-        @font-face {
-          font-family: 'Inter';
-          src: url('https://rsms.me/inter/font-files/Inter-SemiBold.woff2?v=3.19') format('woff2');
-          font-weight: 600;
-        }
-        @font-face {
-          font-family: 'Inter';
-          src: url('https://rsms.me/inter/font-files/Inter-Bold.woff2?v=3.19') format('woff2');
-          font-weight: 700;
-        }
-        @font-face {
-          font-family: 'Source Code Pro';
-          src: url('https://fonts.gstatic.com/s/sourcecodepro/v23/HI_diYsKILxRpg3hIP6sJ7fM7Pqt8gg.woff2') format('woff2');
-          font-weight: 400;
-        }
+        fontEmbedCSS: `
+            @font-face {
+              font-family: 'Inter';
+              src: url('/fonts/Inter-Regular.woff2') format('woff2');
+              font-weight: 400;
+              font-style: normal;
+            }
+            @font-face {
+              font-family: 'Inter';
+              src: url('/fonts/Inter-Bold.woff2') format('woff2');
+              font-weight: 700;
+              font-style: normal;
+            }
+            @font-face {
+                font-family: 'Source Code Pro';
+                src: url('/fonts/SourceCodePro-Regular.woff2') format('woff2');
+                font-weight: 400;
+                font-style: normal;
+            }
         `,
+        // Fetch images with a credentials flag to handle CORS.
+        fetchRequestInit: {
+            mode: 'cors' as RequestMode,
+            credentials: 'omit' as RequestCredentials,
+        },
       };
       
-    // Add a timeout to prevent the process from hanging indefinitely.
-    const timeoutPromise = new Promise<string>((_, reject) =>
+    const timeoutPromise = new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error('Image generation timed out after 10 seconds')), 10000)
     );
 
@@ -113,14 +135,11 @@ const DownloadDialog = ({
         imagePromise = toCanvas(node, options);
     }
 
-    return Promise.race([imagePromise, timeoutPromise]) as Promise<string | HTMLCanvasElement>;
+    return Promise.race([imagePromise, timeoutPromise]);
   };
 
 
   const handleDownload = async () => {
-    // Add a short delay to ensure the off-screen elements are rendered.
-    await new Promise(resolve => setTimeout(resolve, 100));
-
     const frontNode = cardFrontRef.current;
     const backNode = cardBackRef.current;
     
@@ -149,7 +168,6 @@ const DownloadDialog = ({
           format: [3.5, 2],
         });
 
-        // Add the front image, then add a new page for the back image.
         pdf.addImage(frontCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 3.5, 2);
         pdf.addPage();
         pdf.addImage(backCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 3.5, 2);
@@ -157,14 +175,11 @@ const DownloadDialog = ({
         pdf.save(`${filenameBase}.pdf`);
 
       } else {
-        // Generate and download the front of the card.
         const frontImage = await generateImage(frontNode, dpi, format as 'png' | 'jpeg' | 'svg') as string;
         downloadDataUrl(frontImage, `${filenameBase}-front.${format}`);
 
-        // Wait a moment before starting the next download to avoid browser issues.
         await new Promise(resolve => setTimeout(resolve, 500)); 
         
-        // Generate and download the back of the card.
         const backImage = await generateImage(backNode, dpi, format as 'png' | 'jpeg' | 'svg') as string;
         downloadDataUrl(backImage, `${filenameBase}-back.${format}`);
       }
@@ -179,7 +194,7 @@ const DownloadDialog = ({
       toast({
         variant: 'destructive',
         title: 'Download Failed',
-        description: error.message || 'An unexpected error occurred. Please try again.',
+        description: error.message || 'An unexpected error occurred while generating the file. Please check the console for details and try again.',
       });
     } finally {
       setIsDownloading(false);
@@ -237,16 +252,16 @@ const DownloadDialog = ({
         </div>
       </div>
       <DialogFooter>
-        <Button onClick={handleDownload} disabled={isDownloading}>
-          <Download className="w-4 h-4 mr-2" />
-          {isDownloading ? 'Downloading...' : 'Download'}
+        <Button onClick={handleDownload} disabled={isDownloading || isRendering}>
+            {isDownloading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+            {isRendering ? 'Preparing...' : (isDownloading ? 'Downloading...' : 'Download')}
         </Button>
       </DialogFooter>
       {/* Off-screen container for rendering exportable cards. This is what gets captured. */}
       {isOpen && (
         <div className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none">
-            <ExportableCard cardDetails={cardDetails} face="front" ref={cardFrontRef} />
-            <ExportableCard cardDetails={cardDetails} face="back" ref={cardBackRef} />
+            <ExportableCard cardDetails={cardDetails} face="front" ref={cardFrontRef} onRendered={() => handleRendered('front')} />
+            <ExportableCard cardDetails={cardDetails} face="back" ref={cardBackRef} onRendered={() => handleRendered('back')} />
         </div>
       )}
     </>

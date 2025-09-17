@@ -1,7 +1,7 @@
 
 'use client'
 
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -23,8 +23,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 function DesignPageContents() {
     const searchParams = useSearchParams();
     const [cardDetails, setCardDetails] = useState<CardDetails>(DEFAULT_CARD_DETAILS);
-    const cardFrontRef = useRef<HTMLDivElement>(null);
-    const cardBackRef = useRef<HTMLDivElement>(null);
     
     useEffect(() => {
         const getInitialCardDetails = (): CardDetails => {
@@ -91,7 +89,7 @@ function DesignPageContents() {
 
     return (
         <div className="flex flex-col h-screen overflow-hidden bg-background">
-            <DesignHeader cardDetails={cardDetails} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
+            <DesignHeader cardDetails={cardDetails} />
 
             {/* Desktop: 3-panel layout */}
             <div className="flex-1 hidden min-h-0 md:flex">
@@ -104,7 +102,7 @@ function DesignPageContents() {
                     <ResizableHandle withHandle />
                     <ResizablePanel defaultSize={50} minSize={30}>
                         <div className="flex items-center justify-center w-full h-full p-8 bg-muted/30">
-                            <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
+                            <CardPreview cardDetails={cardDetails} />
                         </div>
                     </ResizablePanel>
                     <ResizableHandle withHandle />
@@ -128,7 +126,7 @@ function DesignPageContents() {
                     </TabsContent>
                     <TabsContent value="preview" className="flex-1 overflow-auto bg-muted/30">
                         <div className="flex flex-col items-center justify-center h-full p-8">
-                            <CardPreview cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} cardDetails={cardDetails} />
+                            <CardPreview cardDetails={cardDetails} />
                         </div>
                     </TabsContent>
                     <TabsContent value="ai" className="flex-1 overflow-auto">
