@@ -57,35 +57,18 @@ const DownloadDialog = ({
     const width = cardWidthInches * dpi;
     const height = cardHeightInches * dpi;
 
+    // Use toCanvas for better reliability
     const canvas = await toCanvas(node, {
       width,
       height,
       pixelRatio: 1, // We control DPI via width/height, so pixelRatio is 1
       cacheBust: true,
-      // The canvas background should be transparent.
-      backgroundColor: 'rgba(0,0,0,0)',
+      backgroundColor: node.style.backgroundColor || '#ffffff',
     });
     
-    // Create a new canvas to draw the node's background color, then the generated canvas.
-    // This is because html-to-image doesn't always capture the parent background.
-    const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = width;
-    finalCanvas.height = height;
-    const ctx = finalCanvas.getContext('2d');
-    
-    if (ctx) {
-      // Use the node's actual background style
-      ctx.fillStyle = node.style.backgroundColor || '#ffffff';
-      ctx.fillRect(0, 0, width, height);
-      // Draw the captured content on top
-      ctx.drawImage(canvas, 0, 0);
-    }
-    
-    if (format === 'png') {
-        return finalCanvas.toDataURL('image/png');
-    }
     // For JPG, quality is a number between 0 and 1.
-    return finalCanvas.toDataURL('image/jpeg', 0.95);
+    const dataUrl = canvas.toDataURL(format === 'jpg' ? 'image/jpeg' : 'image/png', 0.95);
+    return dataUrl;
   };
 
 

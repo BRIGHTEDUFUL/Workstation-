@@ -45,9 +45,9 @@ const designPlanPrompt = ai.definePrompt({
   output: {schema: DesignPlanSchema},
   tools: [getCompanyInfo],
   model: 'googleai/gemini-1.5-flash',
-  prompt: `You are a professional business card designer. Your task is to create a design plan based on the user's request.
+  prompt: `You are a professional business card designer. Your task is to create a design plan that complements the user's provided details and prompt.
 
-Analyze the user's prompt and details to create a cohesive and professional design plan. The plan should include a category, a style description, appropriate colors, a font, and optionally a background pattern.
+Analyze the user's prompt and the card content (name, title, company) to create a cohesive and professional design plan. The plan must include a category, a style description, appropriate colors, a font, and optionally a background pattern.
 
 If the user provides a website URL, use the getCompanyInfo tool to retrieve information about the company. Use this information (like brand colors or description) to heavily influence your design choices to ensure the card is on-brand.
 
@@ -81,3 +81,4 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     };
   }
 );
+

@@ -65,7 +65,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
 
             setCardDetails(prev => ({
                 ...prev,
-                designDescription: `AI-generated design: ${result.designPlan.styleDescription}`,
+                designDescription: `AI-Generated Design: ${result.designPlan.styleDescription}`,
                 bgColor: result.designPlan.bgColor,
                 textColor: result.designPlan.textColor,
                 accentColor: result.designPlan.accentColor,
@@ -121,7 +121,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             const result = await importCardDesignAction({ fileDataUri });
             setCardDetails(prev => ({
                 ...prev,
-                designDescription: result.analysis,
+                designDescription: `Imported Design: ${result.designPlan.styleDescription}`,
                 bgColor: result.designPlan.bgColor,
                 textColor: result.designPlan.textColor,
                 accentColor: result.designPlan.accentColor,
@@ -222,7 +222,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             </Card>
              <Card className="mt-8">
                 <CardHeader>
-                    <CardTitle>AI Analysis</CardTitle>
+                    <CardTitle>AI-Generated Description</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-sm text-muted-foreground mt-2">
