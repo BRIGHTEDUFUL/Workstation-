@@ -72,13 +72,13 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
             crossOrigin="anonymous"
           />
         ) : (
-          <div className="w-32 h-32 flex items-center justify-center text-center p-2">
+          <div className="flex items-center justify-center w-32 h-32 p-2 text-center">
              <span className="text-xs text-muted-foreground"></span>
           </div>
         )}
          {cardDetails.slogan && (
             <p 
-                className="mt-4 text-center text-sm"
+                className="mt-4 text-sm text-center"
                 style={{ color: cardDetails.textColor, fontFamily: cardDetails.font }}
             >
                 {cardDetails.slogan}

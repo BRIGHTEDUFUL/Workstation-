@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import type { CardDetails, CardElement } from './card-data';
+import type { CardDetails } from './card-data';
 import cardLayouts from '@/lib/card-layouts.json';
 import { getPatternStyle } from '@/lib/patterns';
 
@@ -17,12 +17,8 @@ const getProxiedUrl = (url: string | undefined) => {
 
 // Helper to parse font family from CSS variable
 const getFontFamily = (font: string): string => {
-    if (font.startsWith('var(--font-')) {
-        return font
-            .replace('var(--font-', '')
-            .replace(')', '')
-            .replace(/-/g, ' ');
-    }
+    if (font.startsWith('var(--font-inter)')) return 'Inter, sans-serif';
+    if (font.startsWith('var(--font-source-code-pro)')) return "'Source Code Pro', monospace";
     return font;
 };
 
@@ -37,7 +33,7 @@ const ExportableCardFace = ({ cardDetails }: { cardDetails: CardDetails }) => {
     const logoElement = elements.find(e => e.component === 'logo');
     const profilePicElement = elements.find(e => e.component === 'profilePic');
 
-    const fontSize = (vw: number | undefined) => `clamp(0.8rem, ${vw || 1}vw, 2.5rem)`;
+    const fontSize = (vw: number | undefined, rem: string) => `clamp(${rem}, ${vw || 1}vw, 2.5rem)`;
 
     const renderImage = (url: string | undefined, alt: string, styles: React.CSSProperties) => {
         if (!url) return null;
@@ -66,9 +62,9 @@ const ExportableCardFace = ({ cardDetails }: { cardDetails: CardDetails }) => {
         const TextSection = (
             <div style={textSectionStyle}>
                 {profilePicElement && cardDetails.profilePicUrl && <div style={{ marginBottom: '1rem' }}>{renderAvatar(cardDetails.profilePicUrl, cardDetails.name)}</div>}
-                <h2 style={{ fontSize: fontSize(nameElement.fontSize), fontWeight: nameElement.fontWeight, color: cardDetails.textColor, margin: 0 }}>{cardDetails.name}</h2>
-                <p style={{ fontSize: fontSize(titleElement.fontSize), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor, margin: 0 }}>{cardDetails.title}</p>
-                <p style={{ fontSize: fontSize(companyElement.fontSize), fontWeight: companyElement.fontWeight, color: cardDetails.textColor, marginTop: '0.5rem', margin: 0 }}>{cardDetails.company}</p>
+                <h2 style={{ fontSize: fontSize(nameElement.fontSize, '1.125rem'), fontWeight: nameElement.fontWeight, color: cardDetails.textColor, margin: 0, padding: 0 }}>{cardDetails.name}</h2>
+                <p style={{ fontSize: fontSize(titleElement.fontSize, '0.875rem'), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor, margin: 0, padding: 0 }}>{cardDetails.title}</p>
+                <p style={{ fontSize: fontSize(companyElement.fontSize, '0.75rem'), fontWeight: companyElement.fontWeight, color: cardDetails.textColor, marginTop: '0.5rem', margin: 0, padding: 0 }}>{cardDetails.company}</p>
             </div>
         );
 
@@ -90,9 +86,9 @@ const ExportableCardFace = ({ cardDetails }: { cardDetails: CardDetails }) => {
         <div style={containerStyle}>
             {profilePicElement && cardDetails.profilePicUrl && <div style={{ marginBottom: '1rem' }}>{renderAvatar(cardDetails.profilePicUrl, cardDetails.name)}</div>}
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <h2 style={{ fontSize: fontSize(nameElement.fontSize), fontWeight: nameElement.fontWeight, color: cardDetails.textColor, margin: 0 }}>{cardDetails.name}</h2>
-                <p style={{ fontSize: fontSize(titleElement.fontSize), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor, margin: 0 }}>{cardDetails.title}</p>
-                <p style={{ fontSize: fontSize(companyElement.fontSize), fontWeight: companyElement.fontWeight, color: cardDetails.textColor, marginTop: '0.5rem', margin: 0 }}>{cardDetails.company}</p>
+                <h2 style={{ fontSize: fontSize(nameElement.fontSize, '1.125rem'), fontWeight: nameElement.fontWeight, color: cardDetails.textColor, margin: 0, padding: 0 }}>{cardDetails.name}</h2>
+                <p style={{ fontSize: fontSize(titleElement.fontSize, '0.875rem'), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor, margin: 0, padding: 0 }}>{cardDetails.title}</p>
+                <p style={{ fontSize: fontSize(companyElement.fontSize, '0.75rem'), fontWeight: companyElement.fontWeight, color: cardDetails.textColor, marginTop: '0.5rem', margin: 0, padding: 0 }}>{cardDetails.company}</p>
             </div>
             {logoElement && cardDetails.logoUrl && <div style={{ marginTop: 'auto' }}>{renderImage(cardDetails.logoUrl, "Company Logo", { objectFit: 'contain', height: '1.5rem', maxHeight: '1.5rem', width: 'auto', maxWidth: '6rem' })}</div>}
         </div>
@@ -160,7 +156,7 @@ const ExportableCard = React.forwardRef<HTMLDivElement, { cardDetails: CardDetai
                     <div style={{ width: '6rem', height: '6rem' }}></div>
                 )}
                 {cardDetails.slogan && (
-                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.65rem', color: cardDetails.textColor, margin: 0 }}>
+                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.65rem', color: cardDetails.textColor, margin: 0, padding: 0 }}>
                         {cardDetails.slogan}
                     </p>
                 )}

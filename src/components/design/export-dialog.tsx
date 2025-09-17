@@ -74,7 +74,27 @@ const DownloadDialog = ({
           height: `${cardHeightInches * 96}px`,
         },
         // Embed fonts to ensure they render correctly in the output image.
-        fontEmbedCSS: `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400&family=Georgia&family=Times+New+Roman&display=swap');`,
+        fontEmbedCSS: `@font-face {
+          font-family: 'Inter';
+          src: url('https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.19') format('woff2');
+          font-weight: 400;
+        }
+        @font-face {
+          font-family: 'Inter';
+          src: url('https://rsms.me/inter/font-files/Inter-SemiBold.woff2?v=3.19') format('woff2');
+          font-weight: 600;
+        }
+        @font-face {
+          font-family: 'Inter';
+          src: url('https://rsms.me/inter/font-files/Inter-Bold.woff2?v=3.19') format('woff2');
+          font-weight: 700;
+        }
+        @font-face {
+          font-family: 'Source Code Pro';
+          src: url('https://fonts.gstatic.com/s/sourcecodepro/v23/HI_diYsKILxRpg3hIP6sJ7fM7Pqt8gg.woff2') format('woff2');
+          font-weight: 400;
+        }
+        `,
       };
       
     // Add a timeout to prevent the process from hanging indefinitely.
