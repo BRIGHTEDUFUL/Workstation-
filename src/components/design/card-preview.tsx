@@ -10,6 +10,31 @@ import Image from 'next/image';
 import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 
+// CardFront Component
+const CardFront = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
+  const frontStyle: React.CSSProperties = {
+    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
+    backgroundColor: cardDetails.bgColor,
+  };
+  if (cardDetails.backgroundImage && !card.pattern) {
+    frontStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
+    frontStyle.backgroundSize = 'cover';
+    frontStyle.backgroundPosition = 'center';
+  }
+
+  return (
+    <div
+      ref={ref}
+      className="absolute w-full h-full rounded-lg backface-hidden"
+      style={frontStyle}
+    >
+      <CardFace cardDetails={cardDetails} isPreview={true} />
+    </div>
+  );
+}));
+CardFront.displayName = 'CardFront';
+
+
 // CardBack Component
 const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   // The back of the card should only ever have a solid background color.
@@ -66,17 +91,6 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
   const [isFlipped, setIsFlipped] = useState(false);
   const is3D = cardDetails.category === '3D';
   const wrapperRef = useRef<HTMLDivElement>(null);
-
-  // Style for the front of the card, including patterns and images.
-  const frontStyle: React.CSSProperties = {
-    ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
-    backgroundColor: cardDetails.bgColor,
-  };
-  if (cardDetails.backgroundImage && !cardDetails.pattern) {
-    frontStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
-    frontStyle.backgroundSize = 'cover';
-    frontStyle.backgroundPosition = 'center';
-  }
   
   useEffect(() => {
     if (!is3D || !wrapperRef.current) return;
@@ -117,15 +131,7 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
         >
           {/* This container holds both faces as siblings */}
           <div className={cn('absolute w-full h-full', is3D && 'card-3d')}>
-            {/* Front Face Container */}
-            <div 
-              ref={cardFrontRef} 
-              className="absolute w-full h-full rounded-lg backface-hidden"
-              style={frontStyle}
-            >
-              <CardFace cardDetails={cardDetails} isPreview={true} />
-            </div>
-            {/* Back Face Component - Sibling to the front face container */}
+            <CardFront cardDetails={cardDetails} ref={cardFrontRef} />
             <CardBack cardDetails={cardDetails} ref={cardBackRef} />
           </div>
         </div>
