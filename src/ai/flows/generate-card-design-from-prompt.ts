@@ -48,7 +48,7 @@ const designPlanPrompt = ai.definePrompt({
   input: {schema: GenerateCardDesignFromPromptInputSchema},
   output: {schema: DesignPlanSchema},
   tools: [getCompanyInfo],
-  model: 'gemini-pro',
+  model: 'gemini-1.5-flash',
   prompt: `You are a professional business card designer. Your task is to create a design plan based on the user's request.
 
 Analyze the user's prompt and details to create a cohesive and professional design plan. The plan should include a category, a style description for an image generator, appropriate colors, a font, and optionally a background pattern from the provided list.
