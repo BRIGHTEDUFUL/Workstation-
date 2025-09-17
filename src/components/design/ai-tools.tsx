@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Sparkles, Upload } from 'lucide-react';
+import { Globe, Sparkles, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
 import Link from 'next/link';
@@ -34,6 +34,7 @@ interface AiToolsProps {
 const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const { toast } = useToast();
     const [prompt, setPrompt] = useState('');
+    const [websiteUrl, setWebsiteUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('generate');
     const [filename, setFilename] = useState('');
@@ -79,8 +80,9 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
         setIsLoading(true);
         setActiveTab('generate');
         try {
-            const result = await generateCardDesignAction({ 
-                prompt, 
+            const result = await generateCardDesignAction({
+                prompt,
+                websiteUrl: websiteUrl || undefined,
                 name: cardDetails.name,
                 title: cardDetails.title,
                 company: cardDetails.company
@@ -205,6 +207,21 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                         onChange={(e) => setPrompt(e.target.value)}
                                         disabled={!isApiKeySet}
                                     />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="websiteUrl">Company Website (Optional)</Label>
+                                    <div className="relative">
+                                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                                        <Input
+                                            id="websiteUrl"
+                                            placeholder="https://example.com"
+                                            value={websiteUrl}
+                                            onChange={(e) => setWebsiteUrl(e.target.value)}
+                                            disabled={!isApiKeySet}
+                                            className='pl-10'
+                                        />
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">The AI will visit this site to better inform the design.</p>
                                 </div>
                                 <div className="space-y-2">
                                     <Label className="text-sm text-muted-foreground">Suggestions for '{cardDetails.category}'</Label>
