@@ -118,6 +118,9 @@ const DownloadDialog = ({
 
 
   const handleDownload = async () => {
+    // Add a short delay to ensure the off-screen elements are rendered.
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     const frontNode = cardFrontRef.current;
     const backNode = cardBackRef.current;
     
@@ -240,10 +243,12 @@ const DownloadDialog = ({
         </Button>
       </DialogFooter>
       {/* Off-screen container for rendering exportable cards. This is what gets captured. */}
-      <div className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none">
-          <ExportableCard cardDetails={cardDetails} face="front" ref={cardFrontRef} />
-          <ExportableCard cardDetails={cardDetails} face="back" ref={cardBackRef} />
-      </div>
+      {isOpen && (
+        <div className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none">
+            <ExportableCard cardDetails={cardDetails} face="front" ref={cardFrontRef} />
+            <ExportableCard cardDetails={cardDetails} face="back" ref={cardBackRef} />
+        </div>
+      )}
     </>
   );
 
