@@ -37,7 +37,7 @@ CardFront.displayName = 'CardFront';
 
 // CardBack Component
 const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
-  // The back of the card should only ever have a solid background color.
+  // The back of the card should only ever have a solid background color, and never inherit the front's image or pattern.
   const backStyle: React.CSSProperties = {
     backgroundColor: cardDetails.bgColor,
   };
