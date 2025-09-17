@@ -1,7 +1,7 @@
 
-'use client'
+'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -13,28 +13,31 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
-import { toCanvas } from 'html-to-image';
+import { toPng, toJpeg, toSvg } from 'html-to-image';
 import jsPDF from 'jspdf';
 import { Download } from 'lucide-react';
+import ExportableCard from './exportable-card';
 
 interface DownloadDialogProps {
-  cardFrontRef: React.RefObject<HTMLDivElement>;
-  cardBackRef: React.RefObject<HTMLDivElement>;
   cardDetails: CardDetails;
   children: React.ReactNode;
   onOpenChange: (open: boolean) => void;
   isMobile?: boolean;
 }
 
-type Format = 'png' | 'jpg' | 'pdf';
+type Format = 'png' | 'jpg' | 'svg' | 'pdf';
 type Quality = 'web' | 'print';
 
 const DownloadDialog = ({
-  cardFrontRef,
-  cardBackRef,
   cardDetails,
   children,
   onOpenChange,
@@ -46,36 +49,57 @@ const DownloadDialog = ({
   const [isDownloading, setIsDownloading] = useState(false);
   const { toast } = useToast();
 
+  const cardFrontRef = useRef<HTMLDivElement>(null);
+  const cardBackRef = useRef<HTMLDivElement>(null);
+
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     onOpenChange(open);
   };
-
-  const generateImage = async (node: HTMLElement, dpi: number): Promise<string> => {
+  
+  const generateImage = async (node: HTMLElement, dpi: number, format: 'png' | 'jpeg' | 'svg'): Promise<string> => {
     const cardWidthInches = 3.5;
     const cardHeightInches = 2;
-    const width = cardWidthInches * dpi;
-    const height = cardHeightInches * dpi;
+    const pixelRatio = dpi / 96; // 96 is the standard browser DPI
 
-    // Use toCanvas for better reliability
-    const canvas = await toCanvas(node, {
-      width,
-      height,
-      pixelRatio: 1, // We control DPI via width/height, so pixelRatio is 1
-      cacheBust: true,
-      backgroundColor: node.style.backgroundColor || '#ffffff',
-    });
-    
-    // For JPG, quality is a number between 0 and 1.
-    const dataUrl = canvas.toDataURL(format === 'jpg' ? 'image/jpeg' : 'image/png', 0.95);
-    return dataUrl;
+    const options = {
+        width: cardWidthInches * dpi,
+        height: cardHeightInches * dpi,
+        pixelRatio: 1, // We manually adjust width/height for DPI
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+          width: `${cardWidthInches * 96}px`,
+          height: `${cardHeightInches * 96}px`,
+        },
+        // A hack to make sure fonts are loaded.
+        fontEmbedCSS: `
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap');
+        `,
+      };
+      
+    // Set a timeout to prevent hangs
+    const timeoutPromise = new Promise<string>((_, reject) =>
+        setTimeout(() => reject(new Error('Image generation timed out')), 10000)
+    );
+
+    let imagePromise;
+    if (format === 'png') {
+        imagePromise = toPng(node, options);
+    } else if (format === 'jpeg') {
+        imagePromise = toJpeg(node, { ...options, quality: 0.95 });
+    } else { // svg
+        imagePromise = toSvg(node, options);
+    }
+
+    return Promise.race([imagePromise, timeoutPromise]);
   };
 
 
   const handleDownload = async () => {
     const frontNode = cardFrontRef.current;
     const backNode = cardBackRef.current;
-
+    
     if (!frontNode || !backNode) {
       toast({
         variant: 'destructive',
@@ -86,40 +110,35 @@ const DownloadDialog = ({
     }
 
     setIsDownloading(true);
-    onOpenChange(true); // Keep parent aware of state
+    onOpenChange(true);
 
     const dpi = quality === 'print' ? 300 : 72;
-    const filenameBase = cardDetails.name.replace(/\s+/g, '-').toLowerCase() || 'card';
+    const filenameBase = `cardhub-${cardDetails.name.replace(/\s+/g, '-').toLowerCase() || 'card'}`;
 
     try {
       if (format === 'pdf') {
-        // Use JPEG for PDF to keep file size reasonable.
-        const frontImage = await generateImage(frontNode, dpi);
-        const backImage = await generateImage(backNode, dpi);
+        const frontImage = await generateImage(frontNode, dpi, 'jpeg');
+        const backImage = await generateImage(backNode, dpi, 'jpeg');
         
         const pdf = new jsPDF({
           orientation: 'landscape',
           unit: 'in',
-          format: [3.5, 2], // Standard business card size
+          format: [3.5, 2],
         });
 
-        // Add front image to the first page
         pdf.addImage(frontImage, 'JPEG', 0, 0, 3.5, 2);
-        
-        // Add a new page for the back
         pdf.addPage();
         pdf.addImage(backImage, 'JPEG', 0, 0, 3.5, 2);
 
         pdf.save(`${filenameBase}.pdf`);
 
       } else {
-        // Handle PNG and JPG downloads
-        const frontImage = await generateImage(frontNode, dpi);
-        const backImage = await generateImage(backNode, dpi);
-
-        // Download front and back images sequentially
+        const frontImage = await generateImage(frontNode, dpi, format as 'png' | 'jpeg' | 'svg');
         downloadDataUrl(frontImage, `${filenameBase}-front.${format}`);
-        await new Promise(resolve => setTimeout(resolve, 500)); // Brief pause to allow the first download to initiate
+
+        await new Promise(resolve => setTimeout(resolve, 500)); 
+        
+        const backImage = await generateImage(backNode, dpi, format as 'png' | 'jpeg' | 'svg');
         downloadDataUrl(backImage, `${filenameBase}-back.${format}`);
       }
 
@@ -128,12 +147,12 @@ const DownloadDialog = ({
         description: `Your card has been downloaded as ${format.toUpperCase()}.`,
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Download failed:', error);
       toast({
         variant: 'destructive',
         title: 'Download Failed',
-        description: 'An unexpected error occurred. Please try again.',
+        description: error.message || 'An unexpected error occurred. Please try again.',
       });
     } finally {
       setIsDownloading(false);
@@ -170,6 +189,7 @@ const DownloadDialog = ({
             <SelectContent>
               <SelectItem value="png">PNG</SelectItem>
               <SelectItem value="jpg">JPG</SelectItem>
+              <SelectItem value="svg">SVG</SelectItem>
               <SelectItem value="pdf">PDF (2 Pages)</SelectItem>
             </SelectContent>
           </Select>
@@ -195,6 +215,11 @@ const DownloadDialog = ({
           {isDownloading ? 'Downloading...' : 'Download'}
         </Button>
       </DialogFooter>
+      {/* Off-screen container for rendering exportable cards */}
+      <div className="absolute -left-[9999px] top-0">
+          <ExportableCard cardDetails={cardDetails} face="front" ref={cardFrontRef} />
+          <ExportableCard cardDetails={cardDetails} face="back" ref={cardBackRef} />
+      </div>
     </>
   );
 

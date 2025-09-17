@@ -26,37 +26,17 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
   // Use vw for scaling in preview, but fixed rem for thumbnails
   const fontSize = (vw: number | undefined, rem: string) => isPreview ? `clamp(0.8rem, ${vw || 1}vw, 2.5rem)` : rem;
 
-  const getImageUrl = (url: string | undefined) => {
-    if (!url) return '';
-    if (isPreview) {
-      // Use the proxy for screenshots
-      return `/api/image-proxy?url=${encodeURIComponent(url)}`;
-    }
-    return url;
-  }
-
   const renderImage = (url: string | undefined, alt: string, isLogo: boolean = false) => {
     if (!url) return null;
     const width = isLogo ? (isPreview ? 100 : 80) : (isPreview ? 80 : 48);
     const height = isLogo ? (isPreview ? 25 : 20) : (isPreview ? 80 : 48);
 
-    if (isPreview) {
-      return <img src={getImageUrl(url)} alt={alt} width={width} height={height} className={cn("object-contain", isLogo ? (isPreview ? "h-6" : "h-5") : "")} crossOrigin="anonymous" />;
-    }
     return <Image src={url} alt={alt} width={width} height={height} className={cn("object-contain", isLogo ? (isPreview ? "h-6" : "h-5") : "")} crossOrigin="anonymous" />;
   }
 
   const renderAvatar = (url: string | undefined, name: string) => {
     if (!url) return null;
     const sizeClass = isPreview ? "w-20 h-20" : "w-12 h-12";
-    
-    if (isPreview) {
-        return (
-             <div className={cn("rounded-full overflow-hidden border-2", sizeClass)} style={{ borderColor: cardDetails.accentColor }}>
-                <img src={getImageUrl(url)} alt={name} className="w-full h-full object-cover" crossOrigin="anonymous" />
-             </div>
-        )
-    }
 
     return (
         <Avatar className={cn("border-2", sizeClass)} style={{ borderColor: cardDetails.accentColor }}>

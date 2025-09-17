@@ -10,7 +10,7 @@ import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 
 // CardFront Component
-const CardFront = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails, isPreview?: boolean }>(({ cardDetails, isPreview = false }, ref) => {
+const CardFront = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const frontStyle: React.CSSProperties = {
     ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
     backgroundColor: cardDetails.bgColor,
@@ -27,7 +27,7 @@ const CardFront = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Car
       className="absolute w-full h-full rounded-lg backface-hidden"
       style={frontStyle}
     >
-      <CardFace cardDetails={cardDetails} isPreview={isPreview} />
+      <CardFace cardDetails={cardDetails} isPreview={true} />
     </div>
   );
 }));
@@ -35,20 +35,10 @@ CardFront.displayName = 'CardFront';
 
 
 // CardBack Component
-const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails, isPreview?: boolean }>(({ cardDetails, isPreview = false }, ref) => {
-  // The back of the card should only ever have a solid background color, and never inherit the front's image or pattern.
+const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const backStyle: React.CSSProperties = {
     backgroundColor: cardDetails.bgColor,
   };
-
-  const getImageUrl = (url: string | undefined) => {
-    if (!url) return '';
-    if (isPreview) {
-      // Use the proxy for screenshots
-      return `/api/image-proxy?url=${encodeURIComponent(url)}`;
-    }
-    return url;
-  }
 
   return (
     <div
@@ -59,7 +49,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
       <div className="flex flex-col items-center justify-center w-full h-full p-4">
         {cardDetails.logoUrl && (
            <img
-            src={getImageUrl(cardDetails.logoUrl)}
+            src={cardDetails.logoUrl}
             alt="Company Logo"
             width={100}
             height={40}
@@ -100,10 +90,9 @@ interface CardPreviewProps {
   cardDetails: CardDetails;
   cardFrontRef: React.RefObject<HTMLDivElement>;
   cardBackRef: React.RefObject<HTMLDivElement>;
-  isPreview?: boolean;
 }
 
-const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef, isPreview = false }: CardPreviewProps) => {
+const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: CardPreviewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const is3D = cardDetails.category === '3D';
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -158,8 +147,8 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef, isPrev
             'relative w-full h-full transition-transform duration-700 preserve-3d',
             { 'rotate-y-180': isFlipped },
           )}>
-            <CardFront cardDetails={cardDetails} ref={cardFrontRef} isPreview={isPreview} />
-            <CardBack cardDetails={cardDetails} ref={cardBackRef} isPreview={isPreview} />
+            <CardFront cardDetails={cardDetails} ref={cardFrontRef} />
+            <CardBack cardDetails={cardDetails} ref={cardBackRef} />
           </div>
         </div>
       </div>
