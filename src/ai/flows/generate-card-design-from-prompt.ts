@@ -48,7 +48,7 @@ const designPlanPrompt = ai.definePrompt({
   input: {schema: GenerateCardDesignFromPromptInputSchema},
   output: {schema: DesignPlanSchema},
   tools: [getCompanyInfo],
-  model: 'gemini-1.5-flash',
+  model: 'googleai/gemini-1.5-flash',
   prompt: `You are a professional business card designer. Your task is to create a design plan based on the user's request.
 
 Analyze the user's prompt and details to create a cohesive and professional design plan. The plan should include a category, a style description for an image generator, appropriate colors, a font, and optionally a background pattern from the provided list.
@@ -86,11 +86,8 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
         try {
             console.log(`Generating image with prompt: ${designPlan.styleDescription}`);
             const {media} = await ai.generate({
-                model: 'googleai/gemini-2.5-flash-image-preview',
+                model: 'googleai/imagen-4.0-fast-generate-001',
                 prompt: `A professional, high-resolution business card background image: ${designPlan.styleDescription}. 8k, photorealistic, no text.`,
-                config: {
-                  responseModalities: ['TEXT', 'IMAGE'],
-                }
             });
             backgroundImageDataUri = media?.url || '';
         } catch (error) {

@@ -42,6 +42,7 @@ const prompt = ai.definePrompt({
   name: 'importCardDesignFromImagePrompt',
   input: {schema: ImportCardDesignFromImageInputSchema},
   output: {schema: DesignPlanSchema},
+  model: 'googleai/gemini-1.5-flash',
   prompt: `You are an AI assistant specialized in analyzing business card designs from images.
 
 You will receive a card design as an image. Analyze its layout, colors, fonts, and background patterns.
