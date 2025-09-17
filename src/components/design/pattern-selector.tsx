@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { patterns, getPatternStyle } from '@/lib/patterns';
-import { CardDetails } from './card-data';
+import { CardDetails } from '@/ai/schema';
 import { cn } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
 import { X } from 'lucide-react';
