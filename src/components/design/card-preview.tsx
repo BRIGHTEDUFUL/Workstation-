@@ -12,7 +12,6 @@ import { getPatternStyle } from '@/lib/patterns';
 
 // CardBack Component
 const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
-  // This style is ONLY for the back of the card.
   const backStyle: React.CSSProperties = {
     backgroundColor: cardDetails.bgColor,
   };
@@ -65,7 +64,6 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
   const is3D = cardDetails.category === '3D';
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // This style is ONLY for the front of the card.
   const frontStyle: React.CSSProperties = {
     ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
     backgroundColor: cardDetails.bgColor,
@@ -124,7 +122,7 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
             >
               <CardFace cardDetails={cardDetails} isPreview={true} />
             </div>
-            {/* Back Face Component */}
+            {/* Back Face Component - Sibling to the front face container */}
             <CardBack cardDetails={cardDetails} ref={cardBackRef} />
           </div>
         </div>
