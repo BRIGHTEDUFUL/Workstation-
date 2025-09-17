@@ -178,11 +178,6 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                         Upload Logo
                                     </Button>
                                 </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="slogan">Footer Slogan (Back of Card)</Label>
-                                    <Input id="slogan" name="slogan" defaultValue={cardDetails.slogan || ''} onBlur={handleInputBlur} placeholder="e.g. Creating the future." />
-                                </div>
                             </CardContent>
                         </Card>
                     </AccordionContent>
