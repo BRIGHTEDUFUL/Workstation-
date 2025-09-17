@@ -4,12 +4,12 @@
 
 import { Download, Share2, Save, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toPng } from 'html-to-image';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
 import { useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import ExportDialog from './export-dialog';
 
 interface DesignHeaderProps {
     cardDetails: CardDetails;
@@ -20,65 +20,9 @@ interface DesignHeaderProps {
 const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderProps) => {
     const { toast } = useToast();
     const [isSaving, setIsSaving] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
     const isMobile = useIsMobile();
     
-    const downloadImage = async (node: HTMLDivElement, filename: string) => {
-        try {
-            const dataUrl = await toPng(node, {
-                cacheBust: true,
-                pixelRatio: 2,
-                skipAutoScale: true,
-                filter: (node) => {
-                    // Exclude Next.js Image components which can cause issues
-                    if (node.tagName === 'IMG' && node.parentElement?.tagName === 'PICTURE') {
-                        return false;
-                    }
-                    return true;
-                }
-            });
-
-            const link = document.createElement('a');
-            link.download = filename;
-            link.href = dataUrl;
-            link.click();
-        } catch (error) {
-           console.error(`Failed to export ${filename}:`, error);
-           throw error; // re-throw to be caught by the main handler
-        }
-    };
-
-    const handleExport = async () => {
-        const frontNode = cardFrontRef.current;
-        const backNode = cardBackRef.current;
-
-        if (!frontNode || !backNode) {
-            toast({
-                variant: 'destructive',
-                title: 'Export Failed',
-                description: 'Card elements not found.',
-            });
-            return;
-        }
-
-        try {
-            // Export Front
-            await downloadImage(frontNode, `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-front.png`);
-            
-            // Wait a moment before starting the next download to prevent browser issues
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Export Back
-            await downloadImage(backNode, `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`);
-
-        } catch (err) {
-            toast({
-                variant: 'destructive',
-                title: 'Export Failed',
-                description: 'An error occurred while generating the card images.',
-            });
-        }
-    };
-
     const handleSave = (share: boolean = false) => {
         setIsSaving(true);
         try {
@@ -139,9 +83,17 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
             <Button variant="outline" onClick={() => handleSave(true)} disabled={!cardDetails.website}>
                 <Share2 className="w-4 h-4 mr-2" /> Share
             </Button>
-            <Button onClick={handleExport}>
-                <Download className="w-4 h-4 mr-2" /> Export
-            </Button>
+            <ExportDialog
+                cardFrontRef={cardFrontRef}
+                cardBackRef={cardBackRef}
+                cardDetails={cardDetails}
+                onOpenChange={setIsExporting}
+            >
+                <Button disabled={isExporting}>
+                    <Download className="w-4 h-4 mr-2" /> 
+                    {isExporting ? 'Exporting...' : 'Export'}
+                </Button>
+            </ExportDialog>
         </>
     )
 
@@ -163,8 +115,18 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                         <DropdownMenuItem onClick={() => handleSave(true)} disabled={!cardDetails.website}>
                             <Share2 className="w-4 h-4 mr-2" /> Share
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={handleExport}>
-                            <Download className="w-4 h-4 mr-2" /> Export
+                        <DropdownMenuItem onSelect={() => setIsExporting(true)}>
+                             <ExportDialog
+                                cardFrontRef={cardFrontRef}
+                                cardBackRef={cardBackRef}
+                                cardDetails={cardDetails}
+                                onOpenChange={setIsExporting}
+                                isMobile={true}
+                            >
+                                <div className='flex items-center'>
+                                    <Download className="w-4 h-4 mr-2" /> Export
+                                </div>
+                            </ExportDialog>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
