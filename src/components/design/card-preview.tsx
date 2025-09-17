@@ -98,22 +98,31 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
   const [isFlipped, setIsFlipped] = useState(false);
   const is3D = cardDetails.category === '3D';
   const wrapperRef = useRef<HTMLDivElement>(null);
-  
+  const [transformStyle, setTransformStyle] = useState({});
+
   useEffect(() => {
-    if (!is3D || !wrapperRef.current) return;
+    if (!is3D || !wrapperRef.current) {
+        setTransformStyle({});
+        return;
+    }
     
     const el = wrapperRef.current;
+    
     const handleMouseMove = (e: MouseEvent) => {
       const { left, top, width, height } = el.getBoundingClientRect();
       const x = (e.clientX - left) / width;
       const y = (e.clientY - top) / height;
       const rotateX = (y - 0.5) * -15; // -7.5 to 7.5 deg
       const rotateY = (x - 0.5) * 15;  // -7.5 to 7.5 deg
-      el.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      setTransformStyle({
+          transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
+      });
     };
 
     const handleMouseLeave = () => {
-      el.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      setTransformStyle({
+          transform: 'rotateX(0deg) rotateY(0deg)'
+      });
     };
 
     el.addEventListener('mousemove', handleMouseMove);
@@ -129,15 +138,20 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
     <div className="w-full max-w-lg">
        <div className={cn("relative w-full aspect-[1.7/1] perspective-1000", is3D && 'p-4')}>
         <div 
-          ref={is3D ? wrapperRef : null}
+          ref={wrapperRef}
           className={cn(
+            'relative w-full h-full transition-transform duration-300',
+            is3D ? "card-3d-wrapper" : ""
+          )}
+          style={transformStyle}
+        >
+          <div className={cn(
             'relative w-full h-full transition-transform duration-700 preserve-3d',
             { 'rotate-y-180': isFlipped },
-            is3D && "card-3d-wrapper"
-          )}
-        >
+          )}>
             <CardFront cardDetails={cardDetails} ref={cardFrontRef} />
             <CardBack cardDetails={cardDetails} ref={cardBackRef} />
+          </div>
         </div>
       </div>
 
