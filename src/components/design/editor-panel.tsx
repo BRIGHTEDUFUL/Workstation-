@@ -160,6 +160,10 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                         <Input id="website" name="website" defaultValue={cardDetails.website || ''} onBlur={handleInputBlur} placeholder="https://your-website.com" className="pl-10" />
                                     </div>
                                 </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="slogan">Footer Slogan (Back of Card)</Label>
+                                    <Input id="slogan" name="slogan" defaultValue={cardDetails.slogan || ''} onBlur={handleInputBlur} placeholder="e.g. Innovative Solutions" />
+                                </div>
                                 
                                 <div className="space-y-2">
                                     <Label>Profile Picture</Label>
@@ -293,5 +297,3 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
 
 EditorPanel.displayName = 'EditorPanel';
 export default EditorPanel;
-
-    

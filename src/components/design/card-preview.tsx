@@ -71,6 +71,14 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
              <span className="text-xs text-muted-foreground"></span>
           </div>
         )}
+         {cardDetails.slogan && (
+            <p 
+                className="mt-4 text-center text-sm"
+                style={{ color: cardDetails.textColor, fontFamily: cardDetails.font }}
+            >
+                {cardDetails.slogan}
+            </p>
+        )}
       </div>
     </div>
   );
