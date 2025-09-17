@@ -47,3 +47,7 @@ This application is built using a modern, type-safe, and performant technology s
 2.  Go to the **Design Studio** or the **Templates** page to start creating your first card.
 3.  Use the **AI Tools** panel in the Design Studio to generate or import designs.
 4.  Save your creations to your **My Cards** collection.
+
+## Local Development
+
+For instructions on how to set up and run this project on your local machine for development, please see the **[Local Setup Guide](./src/docs/local-setup.md)**.
