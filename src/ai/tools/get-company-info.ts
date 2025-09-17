@@ -1,6 +1,4 @@
 
-'use server';
-
 import {ai} from '@/ai/config';
 import {z} from 'genkit';
 
