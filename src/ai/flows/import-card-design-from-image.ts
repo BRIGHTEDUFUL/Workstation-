@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview Imports an existing card design from an image or PDF file and recreates it as an editable design.
@@ -8,7 +7,7 @@
  * - ImportCardDesignFromImageOutput - The return type for the importCardDesignFromImage function.
  */
 
-import {ai} from '@/ai/config';
+import {ai} from '@/ai';
 import {z} from 'genkit';
 import { DesignPlanSchema } from '@/ai/schema';
 

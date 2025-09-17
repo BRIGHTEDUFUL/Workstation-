@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview Orchestrates the AI-powered generation of a card design plan from a text prompt.
@@ -8,7 +7,7 @@
  * - GenerateCardDesignFromPromptOutput - The return type for the generateCardDesignFromPrompt function.
  */
 
-import {ai} from '@/ai/config';
+import {ai} from '@/ai';
 import {z} from 'genkit';
 import { DesignPlanSchema } from '@/ai/schema';
 import { getCompanyInfo } from '../tools/get-company-info';
@@ -81,4 +80,3 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     };
   }
 );
-
