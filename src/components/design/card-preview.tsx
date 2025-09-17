@@ -54,7 +54,6 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
             width={100}
             height={40}
             className="object-contain h-10 mb-4"
-            crossOrigin="anonymous"
           />
         )}
         {cardDetails.website && cardDetails.qrUrl ? (
@@ -64,7 +63,6 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
             width={128}
             height={128}
             className="rounded-lg aspect-square"
-            crossOrigin="anonymous"
           />
         ) : (
           <div className="flex items-center justify-center w-32 h-32 p-2 text-center">

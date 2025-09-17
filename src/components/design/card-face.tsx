@@ -10,9 +10,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface CardFaceProps {
   cardDetails: CardDetails;
+  isPreview?: boolean;
 }
 
-const CardFace = ({ cardDetails }: CardFaceProps) => {
+const CardFace = ({ cardDetails, isPreview = true }: CardFaceProps) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 
@@ -28,7 +29,7 @@ const CardFace = ({ cardDetails }: CardFaceProps) => {
     if (!url) return null;
     const width = isLogo ? 100 : 80;
     const height = isLogo ? 25 : 80;
-    return <Image src={url} alt={alt} width={width} height={height} className={cn("object-contain", isLogo ? "h-6" : "")} crossOrigin="anonymous" />;
+    return <Image src={url} alt={alt} width={width} height={height} className={cn("object-contain", isLogo ? "h-6" : "")} />;
   }
 
   const renderAvatar = (url: string | undefined, name: string) => {
@@ -36,7 +37,7 @@ const CardFace = ({ cardDetails }: CardFaceProps) => {
     const sizeClass = "w-20 h-20";
     return (
         <Avatar className={cn("border-2", sizeClass)} style={{ borderColor: cardDetails.accentColor }}>
-            <AvatarImage src={url} crossOrigin="anonymous" />
+            <AvatarImage src={url} />
             <AvatarFallback>{name.charAt(0)}</AvatarFallback>
         </Avatar>
     );

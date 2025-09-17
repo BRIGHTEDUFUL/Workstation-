@@ -12,3 +12,39 @@ export const DesignPlanSchema = z.object({
 });
 
 export type DesignPlan = z.infer<typeof DesignPlanSchema>;
+
+export const CardElementSchema = z.object({
+    id: z.string(),
+    component: z.enum(['name', 'title', 'company', 'logo', 'profilePic', 'slogan']),
+    x: z.number().optional(),
+    y: z.number().optional(),
+    text: z.string().optional(),
+    fontSize: z.number().optional(),
+    fontWeight: z.number().optional(),
+    color: z.string().optional(),
+    width: z.number().optional(),
+    height: z.number().optional(),
+    imageUrl: z.string().optional(),
+});
+
+export const CardDetailsSchema = z.object({
+    id:z.string(),
+    name: z.string(),
+    title:z.string(),
+    company: z.string(),
+    qrUrl: z.string(),
+    bgColor: z.string(),
+    textColor: z.string(),
+    accentColor: z.string(),
+    font: z.string(),
+    elements: z.array(CardElementSchema),
+    layoutId: z.string(),
+    designDescription: z.string(),
+    logoUrl: z.string().optional(),
+    slogan: z.string().optional(),
+    category: z.string(),
+    backgroundImage: z.string().optional(),
+    pattern: z.string().optional(),
+    profilePicUrl: z.string().optional(),
+    website: z.string().optional(),
+});
