@@ -54,6 +54,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
         const fetchSuggestions = async () => {
             if (!isApiKeySet || !cardDetails.category) return;
             setSuggestionsLoading(true);
+            setSuggestions([]); // Clear old suggestions
             try {
                 const result = await generateDesignSuggestionsAction({ category: cardDetails.category });
                 setSuggestions(result.suggestions);
@@ -226,7 +227,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                 <div className="space-y-2">
                                     <Label className="text-sm text-muted-foreground">Suggestions for '{cardDetails.category}'</Label>
                                     <div className="flex flex-wrap gap-2">
-                                        {suggestionsLoading ? (
+                                        {suggestionsLoading && isApiKeySet ? (
                                             <>
                                                 <Skeleton className="h-6 w-48" />
                                                 <Skeleton className="h-6 w-40" />
@@ -238,11 +239,14 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                                     key={p}
                                                     variant="outline"
                                                     className="cursor-pointer"
-                                                    onClick={() => setPrompt(p)}
+                                                    onClick={() => isApiKeySet && setPrompt(p)}
                                                 >
                                                     {p}
                                                 </Badge>
                                             ))
+                                        )}
+                                         {!isApiKeySet && (
+                                            <p className="text-xs text-muted-foreground">Enable AI features in settings to see suggestions.</p>
                                         )}
                                     </div>
                                 </div>
@@ -256,7 +260,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="import-file">Upload Image or PDF</Label>
-                                    <Input id="import-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" disabled={!isApiKeySet} />
+                                    <Input id="import-file" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="image/*,.pdf" disabled={!isApiKeySet || isLoadingImport} />
                                     <Button variant="outline" className="w-full" onClick={() => fileInputRef.current?.click()} disabled={isLoadingImport || !isApiKeySet}>
                                         <Upload className="w-4 h-4 mr-2" />
                                         {isLoadingImport ? 'Importing...' : (filename || 'Choose a file')}

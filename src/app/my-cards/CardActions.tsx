@@ -80,7 +80,7 @@ export default function CardActions({ cards, handleDelete, handleDuplicate, hand
                                     <DropdownMenuSeparator />
                                     <AlertDialogTrigger asChild>
                                         <DropdownMenuItem
-                                            variant="destructive"
+                                            className='text-destructive focus:bg-destructive focus:text-destructive-foreground'
                                         >
                                             <Trash className="w-4 h-4 mr-2"/>Delete
                                         </DropdownMenuItem>
