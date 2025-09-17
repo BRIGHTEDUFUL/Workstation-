@@ -11,6 +11,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectSeparator,
+  SelectGroup,
+  SelectLabel,
 } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import type { CardDetails } from './card-data';
@@ -22,8 +25,13 @@ import { generateQrCodeDesignAction } from '@/ai/flows/generate-qr-code-design';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '../ui/textarea';
 
-const qrStyleSuggestions = [
-    { name: 'Default', prompt: 'default-qr' },
+const staticQrCodeStyles = [
+    { name: 'Classic Invert', prompt: 'static-invert' },
+    { name: 'Ocean Blue', prompt: 'static-ocean' },
+    { name: 'Forest Green', prompt: 'static-forest' },
+];
+
+const aiQrCodeStyleSuggestions = [
     { name: 'Vintage', prompt: 'A vintage, sepia-toned QR code with ornate, classic patterns integrated into the design.' },
     { name: 'Futuristic', prompt: 'A futuristic, glowing neon blue QR code on a dark circuit board background.' },
     { name: 'Floral', prompt: 'A QR code with delicate, watercolor floral patterns integrated into the dark modules, using soft pastel colors.' },
@@ -103,7 +111,7 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                 qrUrl: result.qrCodeDataUri,
                 qrDesignPrompt: prompt,
             }));
-            if (prompt && prompt !== 'default-qr') {
+            if (prompt && prompt !== 'default-qr' && !prompt.startsWith('static-')) {
                 toast({
                     title: 'AI QR Code Styled!',
                     description: 'Your custom QR code has been updated.',
@@ -134,7 +142,7 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
     // Effect to generate QR code when component loads with a website url
     useEffect(() => {
         if (cardDetails.website && !cardDetails.qrUrl) {
-            generateQrCode(cardDetails.website, cardDetails.qrDesignPrompt || '');
+            generateQrCode(cardDetails.website, cardDetails.qrDesignPrompt || 'default-qr');
         }
     }, [cardDetails.website, cardDetails.qrUrl]);
 
@@ -268,15 +276,25 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                         <Card className="border-0 shadow-none">
                             <CardContent className="space-y-6 pt-6">
                                 <div className="space-y-2">
-                                    <Label htmlFor="qrStyle">AI Design Style</Label>
+                                    <Label htmlFor="qrStyle">Design Style</Label>
                                     <Select value={qrPrompt || 'default-qr'} onValueChange={handleQrSelectChange}>
                                         <SelectTrigger id="qrStyle" disabled={isGeneratingQr}>
                                             <SelectValue placeholder="Select a style" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {qrStyleSuggestions.map(s => (
-                                                <SelectItem key={s.name} value={s.prompt}>{s.name}</SelectItem>
-                                            ))}
+                                            <SelectItem value="default-qr">Default</SelectItem>
+                                            <SelectGroup>
+                                                <SelectLabel>Static Styles</SelectLabel>
+                                                {staticQrCodeStyles.map(s => (
+                                                    <SelectItem key={s.name} value={s.prompt}>{s.name}</SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                            <SelectGroup>
+                                                <SelectLabel>AI Styles</SelectLabel>
+                                                {aiQrCodeStyleSuggestions.map(s => (
+                                                    <SelectItem key={s.name} value={s.prompt}>{s.name}</SelectItem>
+                                                ))}
+                                            </SelectGroup>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -305,4 +323,3 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
 
 EditorPanel.displayName = 'EditorPanel';
 export default EditorPanel;
-

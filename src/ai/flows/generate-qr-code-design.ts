@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview Generates a custom-styled QR code using AI.
+ * @fileOverview Generates a custom-styled QR code using AI or predefined static styles.
  *
  * - generateQrCodeDesignAction - A server action that takes a URL and a design prompt to create a styled QR code.
  * - GenerateQrCodeDesignInput - The input type for the QR code generation function.
@@ -14,7 +14,7 @@ import QRCode from 'qrcode';
 
 const GenerateQrCodeDesignInputSchema = z.object({
   url: z.string().url().describe('The URL the QR code should point to.'),
-  prompt: z.string().describe('A text prompt describing the desired QR code style.'),
+  prompt: z.string().describe('A text prompt describing the desired QR code style or a key for a static style.'),
 });
 export type GenerateQrCodeDesignInput = z.infer<
   typeof GenerateQrCodeDesignInputSchema
@@ -31,6 +31,13 @@ export type GenerateQrCodeDesignOutput = z.infer<
   typeof GenerateQrCodeDesignOutputSchema
 >;
 
+// Define static styles that can be applied without AI
+const staticStyles: Record<string, {dark: string; light: string}> = {
+    'static-invert': { dark: '#FFFFFF', light: '#000000' },
+    'static-ocean': { dark: '#004d40', light: '#e0f7fa' },
+    'static-forest': { dark: '#ffffff', light: '#004d40' },
+};
+
 export async function generateQrCodeDesignAction(
   input: GenerateQrCodeDesignInput
 ): Promise<GenerateQrCodeDesignOutput> {
@@ -45,18 +52,33 @@ const generateQrCodeDesignFlow = ai.defineFlow(
     outputSchema: GenerateQrCodeDesignOutputSchema,
   },
   async ({ url, prompt }) => {
-    // 1. Generate a standard, high-quality QR code as a buffer
-    const qrCodeBuffer = await QRCode.toBuffer(url, {
-      errorCorrectionLevel: 'H', // High error correction to improve scannability after stylization
-      scale: 10,
-      margin: 2,
-      color: {
-        dark: '#000000FF',
-        light: '#FFFFFFFF',
-      },
-    });
-    const baseQrCodeDataUri = `data:image/png;base64,${qrCodeBuffer.toString('base64')}`;
+    // Default QR Code options
+    let qrCodeOptions: QRCode.QRCodeToBufferOptions = {
+        errorCorrectionLevel: 'H',
+        scale: 10,
+        margin: 2,
+        color: {
+            dark: '#000000FF',
+            light: '#FFFFFFFF',
+        },
+    };
+    
+    // Check if a static style is requested
+    if (prompt.startsWith('static-') && staticStyles[prompt]) {
+        qrCodeOptions.color = staticStyles[prompt];
+        const qrCodeBuffer = await QRCode.toBuffer(url, qrCodeOptions);
+        const staticQrCodeDataUri = `data:image/png;base64,${qrCodeBuffer.toString('base64')}`;
+        return { qrCodeDataUri: staticQrCodeDataUri };
+    }
 
+    // Generate the base QR for AI stylization or default usage
+    const baseQrCodeBuffer = await QRCode.toBuffer(url, {
+        ...qrCodeOptions,
+        color: { dark: '#000000FF', light: '#FFFFFFFF' } // AI works best with a standard b&w QR
+    });
+    const baseQrCodeDataUri = `data:image/png;base64,${baseQrCodeBuffer.toString('base64')}`;
+
+    // If no prompt or default prompt, return the standard QR code
     if (!prompt || prompt === 'default-qr') {
       return { qrCodeDataUri: baseQrCodeDataUri };
     }
