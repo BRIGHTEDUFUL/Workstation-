@@ -4,7 +4,7 @@
 
 import { Download, Share2, Save, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toBlob } from 'html-to-image';
+import { toPng } from 'html-to-image';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
 import { useState } from 'react';
@@ -23,21 +23,28 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
     const isMobile = useIsMobile();
     
     const downloadImage = async (node: HTMLDivElement, filename: string) => {
-      try {
-        const blob = await toBlob(node, { cacheBust: true, pixelRatio: 2, skipAutoScale: true });
-        if (!blob) {
-          throw new Error('Failed to create blob.');
+        try {
+            const dataUrl = await toPng(node, {
+                cacheBust: true,
+                pixelRatio: 2,
+                skipAutoScale: true,
+                filter: (node) => {
+                    // Exclude Next.js Image components which can cause issues
+                    if (node.tagName === 'IMG' && node.parentElement?.tagName === 'PICTURE') {
+                        return false;
+                    }
+                    return true;
+                }
+            });
+
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = dataUrl;
+            link.click();
+        } catch (error) {
+           console.error(`Failed to export ${filename}:`, error);
+           throw error; // re-throw to be caught by the main handler
         }
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.download = filename;
-        link.href = url;
-        link.click();
-        URL.revokeObjectURL(url); // Clean up the object URL
-      } catch (error) {
-         console.error(`Failed to export ${filename}:`, error);
-         throw error; // re-throw to be caught by the main handler
-      }
     };
 
     const handleExport = async () => {
