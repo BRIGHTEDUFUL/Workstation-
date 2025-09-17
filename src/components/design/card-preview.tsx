@@ -16,7 +16,7 @@ const CardFront = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Car
     ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
     backgroundColor: cardDetails.bgColor,
   };
-  if (cardDetails.backgroundImage && !card.pattern) {
+  if (cardDetails.backgroundImage && !cardDetails.pattern) {
     frontStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
     frontStyle.backgroundSize = 'cover';
     frontStyle.backgroundPosition = 'center';
