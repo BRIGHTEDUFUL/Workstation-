@@ -5,7 +5,7 @@ import { ArrowRight, Brush, Library, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import type { CardDetails } from '@/components/design/card-data';
+import type { CardDetails } from '@/ai/schema';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import placeholderImages from '@/lib/placeholder-images.json';

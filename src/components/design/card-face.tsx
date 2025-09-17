@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import type { CardDetails } from './card-data';
+import type { CardDetails } from '@/ai/schema';
 import cardLayouts from '@/lib/card-layouts.json';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';

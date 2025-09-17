@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { CardDetails } from './card-data';
+import type { CardDetails } from '@/ai/schema';
 import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 

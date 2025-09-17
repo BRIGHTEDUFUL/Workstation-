@@ -15,7 +15,7 @@ import { useSearchParams } from 'next/navigation';
 import placeholderImages from '@/lib/placeholder-images.json';
 import cardLayouts from '@/lib/card-layouts.json';
 import { v4 as uuidv4 } from 'uuid';
-import { CardDetails, DEFAULT_CARD_DETAILS } from '@/components/design/card-data';
+import { CardDetails, DEFAULT_CARD_DETAILS } from '@/ai/schema';
 import DesignHeader from '@/components/design/design-header';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 

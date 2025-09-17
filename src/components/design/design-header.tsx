@@ -5,7 +5,7 @@
 import { Download, Share2, Save, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import type { CardDetails } from './card-data';
+import type { CardDetails } from '@/ai/schema';
 import { useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';

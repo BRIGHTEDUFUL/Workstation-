@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
-import type { CardDetails } from './card-data';
+import type { CardDetails } from '@/ai/schema';
 import { Button } from '../ui/button';
 import { Upload, Globe } from 'lucide-react';
 import cardLayouts from '@/lib/card-layouts.json';

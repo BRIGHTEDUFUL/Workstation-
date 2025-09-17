@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import type { CardDetails } from './card-data';
+import type { CardDetails } from '@/ai/schema';
 import { Download, Loader2 } from 'lucide-react';
 import { generateCardImageAction } from '@/ai/flows/generate-card-image';
 

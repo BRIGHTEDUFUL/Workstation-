@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Globe, Sparkles, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { CardDetails } from './card-data';
+import type { CardDetails } from '@/ai/schema';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';

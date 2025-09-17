@@ -26,6 +26,7 @@ export const CardElementSchema = z.object({
     height: z.number().optional(),
     imageUrl: z.string().optional(),
 });
+export type CardElement = z.infer<typeof CardElementSchema>;
 
 export const CardDetailsSchema = z.object({
     id:z.string(),
@@ -48,3 +49,23 @@ export const CardDetailsSchema = z.object({
     profilePicUrl: z.string().optional(),
     website: z.string().optional(),
 });
+export type CardDetails = z.infer<typeof CardDetailsSchema>;
+
+
+export const DEFAULT_CARD_DETAILS: CardDetails = {
+    id: '1',
+    name: 'Your Name',
+    title: 'Your Title',
+    company: 'Your Company',
+    qrUrl: '',
+    bgColor: '#ffffff',
+    textColor: '#111827',
+    accentColor: '#3b82f6',
+    font: 'var(--font-inter)',
+    category: 'Business',
+    designDescription: 'A clean and modern business card design with a white background, dark text, and blue accents. It features a prominent name and title on the front, and a QR code on the back.',
+    profilePicUrl: "https://picsum.photos/seed/user-avatar/100/100",
+    elements: [],
+    layoutId: 'center-aligned',
+    website: '',
+};

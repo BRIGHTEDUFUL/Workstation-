@@ -4,7 +4,7 @@ import { PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import type { CardDetails } from '@/components/design/card-data';
+import type { CardDetails } from '@/ai/schema';
 import CardActions from './CardActions';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -105,5 +105,3 @@ export default function MyCards() {
     </div>
   );
 };
-
-    

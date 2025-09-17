@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import { MoreHorizontal, Pencil, Search, Filter } from 'lucide-react';
 import mockSubmissions from '@/lib/submitted-designs.json';
-import { CardDetails } from '@/components/design/card-data';
+import { CardDetails } from '@/ai/schema';
 import { useToast } from '@/hooks/use-toast';
 import SubmissionCardPreview from './SubmissionCardPreview';
 

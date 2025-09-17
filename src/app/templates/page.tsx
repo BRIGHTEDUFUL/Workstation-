@@ -6,7 +6,7 @@ import placeholderImages from '@/lib/placeholder-images.json';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import CardFace from '@/components/design/card-face';
-import { CardDetails } from '@/components/design/card-data';
+import { CardDetails } from '@/ai/schema';
 import { getPatternStyle } from '@/lib/patterns';
 
 export default function Templates() {

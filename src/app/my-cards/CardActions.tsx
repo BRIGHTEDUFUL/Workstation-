@@ -26,7 +26,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import type { CardDetails } from '@/components/design/card-data';
+import type { CardDetails } from '@/ai/schema';
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import CardFace from '@/components/design/card-face';
 import { getPatternStyle } from '@/lib/patterns';

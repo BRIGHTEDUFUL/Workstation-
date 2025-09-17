@@ -28,20 +28,17 @@ export async function generateCardImageAction(
   return generateCardImageFlow(input);
 }
 
-
 const getFontFamily = (font: string | undefined): string => {
     if (!font) return 'Inter, sans-serif';
-    // Handle CSS variable format
     if (font.startsWith('var(--font-')) {
         const fontName = font.match(/--font-([^)]+)/)?.[1];
         switch(fontName) {
             case 'inter': return 'Inter, sans-serif';
             case 'source-code-pro': return "'Source Code Pro', monospace";
-            default: return 'sans-serif'; // Fallback
+            default: return 'sans-serif';
         }
     }
-    // Handle direct font family names, ensuring they are properly quoted if needed
-    return font.replace(/'/g, "");
+    return font;
 };
 
 const getCss = (cardDetails: z.infer<typeof CardDetailsSchema>) => {
