@@ -74,6 +74,10 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
     frontStyle.backgroundSize = 'cover';
     frontStyle.backgroundPosition = 'center';
   }
+  
+  const backStyle: React.CSSProperties = {
+    backgroundColor: cardDetails.bgColor,
+  };
 
   useEffect(() => {
     if (!is3D || !wrapperRef.current) return;
