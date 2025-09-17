@@ -71,6 +71,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
              <span className="text-xs text-muted-foreground">Enter a website URL in the editor to generate a QR code.</span>
           </div>
         )}
+        {cardDetails.website && <p className="mt-2 text-xs" style={{fontFamily: cardDetails.font, color: cardDetails.textColor}}>{cardDetails.website}</p>}
         <p className="mt-4 text-xs text-center px-4" style={{ fontFamily: cardDetails.font, color: cardDetails.textColor }}>
           {cardDetails.slogan || (cardDetails.website ? 'Scan to connect' : '')}
         </p>
