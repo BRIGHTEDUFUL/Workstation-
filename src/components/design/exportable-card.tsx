@@ -26,10 +26,17 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
         return `/api/image-proxy?url=${encodeURIComponent(url)}`;
     };
 
+    const getFontFamily = (font: string) => {
+        if (font.startsWith('var(--font-')) {
+            return font.replace('var(--font-', '').replace(')', '').replace(/-/g, ' ');
+        }
+        return font.split(',')[0].replace(/'/g, "");
+    }
+
     const cardStyle: React.CSSProperties = {
         width: `${baseWidth}px`,
         height: `${baseHeight}px`,
-        fontFamily: cardDetails.font.split(',')[0].replace(/'/g, "").replace('var(','').replace('--font-',''),
+        fontFamily: getFontFamily(cardDetails.font),
         position: 'relative',
         overflow: 'hidden',
     };
@@ -53,7 +60,7 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
         }
         
         const containerStyle: React.CSSProperties = {
-            fontFamily: cardDetails.font,
+            fontFamily: getFontFamily(cardDetails.font),
             display: 'flex',
             flexDirection: 'column',
             alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'),
@@ -144,7 +151,7 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
                     <div style={{ width: '6rem', height: '6rem' }}></div>
                 )}
                 {cardDetails.slogan && (
-                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.65rem', color: cardDetails.textColor, fontFamily: cardDetails.font }}>
+                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.65rem', color: cardDetails.textColor, fontFamily: getFontFamily(cardDetails.font) }}>
                         {cardDetails.slogan}
                     </p>
                 )}
@@ -161,3 +168,4 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
 
 ExportableCard.displayName = 'ExportableCard';
 export default ExportableCard;
+
