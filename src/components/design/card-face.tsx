@@ -8,6 +8,10 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
+interface CardFaceProps {
+  cardDetails: CardDetails;
+}
+
 const CardFace = ({ cardDetails }: CardFaceProps) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
@@ -18,7 +22,6 @@ const CardFace = ({ cardDetails }: CardFaceProps) => {
   const logoElement = elements.find(e => e.component === 'logo');
   const profilePicElement = elements.find(e => e.component === 'profilePic');
 
-  // Use vw for scaling in preview, but fixed rem for thumbnails
   const fontSize = (vw: number | undefined) => `clamp(0.8rem, ${vw || 1}vw, 2.5rem)`;
 
   const renderImage = (url: string | undefined, alt: string, isLogo: boolean = false) => {
@@ -30,7 +33,6 @@ const CardFace = ({ cardDetails }: CardFaceProps) => {
 
   const renderAvatar = (url: string | undefined, name: string) => {
     if (!url) return null;
-
     const sizeClass = "w-20 h-20";
     return (
         <Avatar className={cn("border-2", sizeClass)} style={{ borderColor: cardDetails.accentColor }}>
@@ -104,11 +106,11 @@ const CardFace = ({ cardDetails }: CardFaceProps) => {
 
   return (
     <div
-      className={cn("w-full h-full")}
+      className={"w-full h-full"}
       style={containerStyle}
     >
       {profilePicElement && cardDetails.profilePicUrl && (
-        <div className={cn("mb-4")}>
+        <div className={"mb-4"}>
           {renderAvatar(cardDetails.profilePicUrl, cardDetails.name)}
         </div>
       )}
@@ -126,7 +128,7 @@ const CardFace = ({ cardDetails }: CardFaceProps) => {
       </div>
 
       {logoElement && cardDetails.logoUrl && (
-        <div className={cn("mt-auto")}>
+        <div className={"mt-auto"}>
           {renderImage(cardDetails.logoUrl, "Company Logo", true)}
         </div>
       )}
@@ -136,7 +138,4 @@ const CardFace = ({ cardDetails }: CardFaceProps) => {
 
 CardFace.displayName = 'CardFace';
 
-export interface CardFaceProps {
-  cardDetails: CardDetails;
-}
 export default CardFace;

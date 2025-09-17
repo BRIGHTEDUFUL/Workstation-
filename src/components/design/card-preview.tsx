@@ -9,11 +9,6 @@ import type { CardDetails } from './card-data';
 import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 
-const getProxiedUrl = (url: string | undefined) => {
-    if (!url || url.startsWith('data:')) return url;
-    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
-};
-
 // CardFront Component
 const CardFront = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const frontStyle: React.CSSProperties = {
@@ -35,7 +30,7 @@ const CardFront = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>
       <CardFace cardDetails={cardDetails} />
     </div>
   );
-}));
+});
 CardFront.displayName = 'CardFront';
 
 
@@ -54,7 +49,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
       <div className="flex flex-col items-center justify-center w-full h-full p-4">
         {cardDetails.logoUrl && (
            <img
-            src={getProxiedUrl(cardDetails.logoUrl)}
+            src={cardDetails.logoUrl}
             alt="Company Logo"
             width={100}
             height={40}
