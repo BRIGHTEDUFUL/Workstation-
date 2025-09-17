@@ -67,8 +67,8 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
             className="rounded-lg aspect-square"
           />
         ) : (
-          <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse flex items-center justify-center text-center p-2">
-             <span className="text-xs text-muted-foreground">Enter a website URL in the editor to generate a QR code.</span>
+          <div className="w-32 h-32 flex items-center justify-center text-center p-2">
+             <span className="text-xs text-muted-foreground"></span>
           </div>
         )}
       </div>
