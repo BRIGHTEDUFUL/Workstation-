@@ -4,7 +4,7 @@
 
 import { Download, Share2, Save, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toPng } from 'html-to-image';
+import { toBlob } from 'html-to-image';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
 import { useState } from 'react';
@@ -22,6 +22,24 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
     const [isSaving, setIsSaving] = useState(false);
     const isMobile = useIsMobile();
     
+    const downloadImage = async (node: HTMLDivElement, filename: string) => {
+      try {
+        const blob = await toBlob(node, { cacheBust: true, pixelRatio: 2 });
+        if (!blob) {
+          throw new Error('Failed to create blob.');
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url); // Clean up the object URL
+      } catch (error) {
+         console.error(`Failed to export ${filename}:`, error);
+         throw error; // re-throw to be caught by the main handler
+      }
+    };
+
     const handleExport = async () => {
         const frontNode = cardFrontRef.current;
         const backNode = cardBackRef.current;
@@ -37,28 +55,19 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
 
         try {
             // Export Front
-            const frontDataUrl = await toPng(frontNode, { cacheBust: true, pixelRatio: 2 });
-            const frontLink = document.createElement('a');
-            frontLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-front.png`;
-            frontLink.href = frontDataUrl;
-            frontLink.click();
+            await downloadImage(frontNode, `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-front.png`);
             
-            // Wait a moment before starting the next download
-            await new Promise(resolve => setTimeout(resolve, 200));
+            // Wait a moment before starting the next download to prevent browser issues
+            await new Promise(resolve => setTimeout(resolve, 500));
 
             // Export Back
-            const backDataUrl = await toPng(backNode, { cacheBust: true, pixelRatio: 2 });
-            const backLink = document.createElement('a');
-            backLink.download = `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`;
-            backLink.href = backDataUrl;
-            backLink.click();
+            await downloadImage(backNode, `${cardDetails.name.replace(/\s+/g, '-').toLowerCase()}-card-back.png`);
 
         } catch (err) {
-            console.error(err);
             toast({
                 variant: 'destructive',
                 title: 'Export Failed',
-                description: 'Could not export the card images.',
+                description: 'An error occurred while generating the card images.',
             });
         }
     };
