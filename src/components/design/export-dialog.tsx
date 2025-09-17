@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from './card-data';
-import { toPng, toJpeg, toSvg } from 'html-to-image';
+import { toPng, toJpeg, toSvg, toCanvas } from 'html-to-image';
 import jsPDF from 'jspdf';
 import { Download } from 'lucide-react';
 import ExportableCard from './exportable-card';
@@ -57,39 +57,37 @@ const DownloadDialog = ({
     onOpenChange(open);
   };
   
-  const generateImage = async (node: HTMLElement, dpi: number, format: 'png' | 'jpeg' | 'svg'): Promise<string> => {
+  const generateImage = async (node: HTMLElement, dpi: number, format: 'png' | 'jpeg' | 'svg' | 'canvas'): Promise<string | HTMLCanvasElement> => {
     const cardWidthInches = 3.5;
     const cardHeightInches = 2;
-    const pixelRatio = dpi / 96; // 96 is the standard browser DPI
 
     const options = {
         width: cardWidthInches * dpi,
         height: cardHeightInches * dpi,
-        pixelRatio: 1, // We manually adjust width/height for DPI
         style: {
-          transform: 'scale(1)',
+          transform: `scale(${dpi / 96})`,
           transformOrigin: 'top left',
           width: `${cardWidthInches * 96}px`,
           height: `${cardHeightInches * 96}px`,
         },
-        // A hack to make sure fonts are loaded.
         fontEmbedCSS: `
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600;700&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600;700&family=Times+New+Roman&family=Georgia&display=swap');
         `,
       };
       
-    // Set a timeout to prevent hangs
     const timeoutPromise = new Promise<string>((_, reject) =>
-        setTimeout(() => reject(new Error('Image generation timed out')), 10000)
+        setTimeout(() => reject(new Error('Image generation timed out after 10 seconds')), 10000)
     );
 
     let imagePromise;
     if (format === 'png') {
         imagePromise = toPng(node, options);
     } else if (format === 'jpeg') {
-        imagePromise = toJpeg(node, { ...options, quality: 0.95 });
-    } else { // svg
+        imagePromise = toJpeg(node, { ...options, quality: 0.95, backgroundColor: cardDetails.bgColor });
+    } else if (format === 'svg') {
         imagePromise = toSvg(node, options);
+    } else { // canvas
+        imagePromise = toCanvas(node, options);
     }
 
     return Promise.race([imagePromise, timeoutPromise]);
@@ -110,6 +108,8 @@ const DownloadDialog = ({
     }
 
     setIsDownloading(true);
+    // Keep dialog open during download
+    setIsOpen(true); 
     onOpenChange(true);
 
     const dpi = quality === 'print' ? 300 : 72;
@@ -117,8 +117,8 @@ const DownloadDialog = ({
 
     try {
       if (format === 'pdf') {
-        const frontImage = await generateImage(frontNode, dpi, 'jpeg');
-        const backImage = await generateImage(backNode, dpi, 'jpeg');
+        const frontCanvas = await generateImage(frontNode, dpi, 'canvas') as HTMLCanvasElement;
+        const backCanvas = await generateImage(backNode, dpi, 'canvas') as HTMLCanvasElement;
         
         const pdf = new jsPDF({
           orientation: 'landscape',
@@ -126,19 +126,19 @@ const DownloadDialog = ({
           format: [3.5, 2],
         });
 
-        pdf.addImage(frontImage, 'JPEG', 0, 0, 3.5, 2);
+        pdf.addImage(frontCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 3.5, 2);
         pdf.addPage();
-        pdf.addImage(backImage, 'JPEG', 0, 0, 3.5, 2);
+        pdf.addImage(backCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 3.5, 2);
 
         pdf.save(`${filenameBase}.pdf`);
 
       } else {
-        const frontImage = await generateImage(frontNode, dpi, format as 'png' | 'jpeg' | 'svg');
+        const frontImage = await generateImage(frontNode, dpi, format as 'png' | 'jpeg' | 'svg') as string;
         downloadDataUrl(frontImage, `${filenameBase}-front.${format}`);
 
         await new Promise(resolve => setTimeout(resolve, 500)); 
         
-        const backImage = await generateImage(backNode, dpi, format as 'png' | 'jpeg' | 'svg');
+        const backImage = await generateImage(backNode, dpi, format as 'png' | 'jpeg' | 'svg') as string;
         downloadDataUrl(backImage, `${filenameBase}-back.${format}`);
       }
 
@@ -216,7 +216,7 @@ const DownloadDialog = ({
         </Button>
       </DialogFooter>
       {/* Off-screen container for rendering exportable cards */}
-      <div className="absolute -left-[9999px] top-0">
+      <div className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none">
           <ExportableCard cardDetails={cardDetails} face="front" ref={cardFrontRef} />
           <ExportableCard cardDetails={cardDetails} face="back" ref={cardBackRef} />
       </div>

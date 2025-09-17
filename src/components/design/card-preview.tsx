@@ -40,6 +40,11 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
     backgroundColor: cardDetails.bgColor,
   };
 
+  const getProxiedUrl = (url: string | undefined) => {
+    if (!url || url.startsWith('data:')) return url;
+    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+  };
+
   return (
     <div
       ref={ref}
@@ -49,7 +54,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
       <div className="flex flex-col items-center justify-center w-full h-full p-4">
         {cardDetails.logoUrl && (
            <img
-            src={cardDetails.logoUrl}
+            src={getProxiedUrl(cardDetails.logoUrl)}
             alt="Company Logo"
             width={100}
             height={40}

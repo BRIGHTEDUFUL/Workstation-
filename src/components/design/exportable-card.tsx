@@ -2,9 +2,8 @@
 'use client'
 
 import React from 'react';
-import type { CardDetails, CardElement } from './card-data';
+import type { CardDetails } from './card-data';
 import cardLayouts from '@/lib/card-layouts.json';
-import { cn } from '@/lib/utils';
 import { getPatternStyle } from '@/lib/patterns';
 
 interface ExportableCardProps {
@@ -30,7 +29,7 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
     const cardStyle: React.CSSProperties = {
         width: `${baseWidth}px`,
         height: `${baseHeight}px`,
-        fontFamily: "'Inter', sans-serif", // Use a standard font family for export
+        fontFamily: cardDetails.font.split(',')[0].replace(/'/g, "").replace('var(',''),
         position: 'relative',
         overflow: 'hidden',
     };
@@ -64,9 +63,10 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
             width: '100%',
             padding: '1rem',
             boxSizing: 'border-box',
+            color: cardDetails.textColor,
         };
 
-        const getFontSize = (vw: number | undefined) => `${(vw || 1) * 0.01 * 20}px`; // Rough conversion from vw to px for export
+        const getFontSize = (vw: number | undefined) => `${(vw || 1) * 0.01 * baseHeight * 0.5}px`;
 
         const nameElement = elements.find(e => e.component === 'name') || { fontSize: 2.2, fontWeight: 700 };
         const titleElement = elements.find(e => e.component === 'title') || { fontSize: 1.4, fontWeight: 400 };
@@ -83,18 +83,18 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
                              <img 
                                 src={getProxiedUrl(cardDetails.profilePicUrl)} 
                                 alt={cardDetails.name} 
-                                style={{ width: '5rem', height: '5rem', borderRadius: '50%', objectFit: 'cover', border: `2px solid ${cardDetails.accentColor}` }} 
+                                style={{ width: '4rem', height: '4rem', borderRadius: '50%', objectFit: 'cover', border: `2px solid ${cardDetails.accentColor}` }} 
                              />
                         </div>
                     )}
                      <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <h2 style={{ fontSize: getFontSize(nameElement.fontSize), fontWeight: nameElement.fontWeight, color: cardDetails.textColor, margin: 0, padding: 0 }}>
+                        <h2 style={{ fontSize: getFontSize(nameElement.fontSize), fontWeight: nameElement.fontWeight, margin: 0, padding: 0, lineHeight: 1.2 }}>
                             {cardDetails.name}
                         </h2>
-                        <p style={{ fontSize: getFontSize(titleElement.fontSize), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor, margin: 0, padding: 0 }}>
+                        <p style={{ fontSize: getFontSize(titleElement.fontSize), fontWeight: titleElement.fontWeight, color: cardDetails.accentColor, margin: 0, padding: 0, lineHeight: 1.2 }}>
                             {cardDetails.title}
                         </p>
-                        <p style={{ fontSize: getFontSize(companyElement.fontSize), fontWeight: companyElement.fontWeight, color: cardDetails.textColor, marginTop: '0.5rem', marginBlock: 0, padding: 0 }}>
+                        <p style={{ fontSize: getFontSize(companyElement.fontSize), fontWeight: companyElement.fontWeight, marginTop: '0.25rem', marginBlock: 0, padding: 0, lineHeight: 1.2 }}>
                             {cardDetails.company}
                         </p>
                      </div>
@@ -103,7 +103,7 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
                            <img 
                                 src={getProxiedUrl(cardDetails.logoUrl)} 
                                 alt="Company Logo" 
-                                style={{ height: '1.5rem', objectFit: 'contain' }}
+                                style={{ maxHeight: '1.5rem', maxWidth: '4rem', objectFit: 'contain' }}
                             />
                         </div>
                     )}
@@ -131,20 +131,20 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
                     <img
                         src={getProxiedUrl(cardDetails.logoUrl)}
                         alt="Company Logo"
-                        style={{ height: '2.5rem', objectFit: 'contain', marginBottom: '1rem' }}
+                        style={{ maxHeight: '2rem', maxWidth: '5rem', objectFit: 'contain', marginBottom: '1rem' }}
                     />
                 )}
                 {cardDetails.website && cardDetails.qrUrl ? (
                     <img
                         src={cardDetails.qrUrl} // QR is a data URI, no proxy needed
                         alt="QR Code"
-                        style={{ width: '8rem', height: '8rem', borderRadius: '0.5rem' }}
+                        style={{ width: '6rem', height: '6rem', borderRadius: '0.25rem' }}
                     />
                 ) : (
-                    <div style={{ width: '8rem', height: '8rem' }}></div>
+                    <div style={{ width: '6rem', height: '6rem' }}></div>
                 )}
                 {cardDetails.slogan && (
-                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.75rem', color: cardDetails.textColor, fontFamily: cardDetails.font }}>
+                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.65rem', color: cardDetails.textColor, fontFamily: cardDetails.font }}>
                         {cardDetails.slogan}
                     </p>
                 )}
