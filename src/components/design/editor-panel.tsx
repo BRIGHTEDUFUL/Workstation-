@@ -24,11 +24,14 @@ import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 
 const qrStyleSuggestions = [
-    { name: 'Vintage', prompt: 'A vintage, sepia-toned QR code with ornate, classic patterns.' },
+    { name: 'Default', prompt: '' },
+    { name: 'Vintage', prompt: 'A vintage, sepia-toned QR code with ornate, classic patterns integrated into the design.' },
     { name: 'Futuristic', prompt: 'A futuristic, glowing neon blue QR code on a dark circuit board background.' },
-    { name: 'Floral', prompt: 'A QR code with delicate, floral patterns integrated into the dark modules, using soft pastel colors.' },
-    { name: 'Watercolor', prompt: 'A QR code that looks like a watercolor painting, with soft, blended colors.' },
-    { name: 'Origami', prompt: 'A QR code that appears to be folded from paper, with geometric origami patterns.'},
+    { name: 'Floral', prompt: 'A QR code with delicate, watercolor floral patterns integrated into the dark modules, using soft pastel colors.' },
+    { name: 'Watercolor', prompt: 'A QR code that looks like a watercolor painting, with soft, blended colors, while remaining scannable.' },
+    { name: 'Origami', prompt: 'A QR code that appears to be folded from paper, with geometric origami patterns, making it look 3D.'},
+    { name: 'Gold Leaf', prompt: 'A luxurious QR code with the dark modules appearing as cracked gold leaf on a black marble background.' },
+    { name: 'Pixel Art', prompt: 'An 8-bit pixel art style QR code, with chunky pixels and a retro video game color palette.' },
 ];
 
 interface EditorPanelProps {
@@ -91,14 +94,6 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                 variant: 'destructive',
                 title: 'Missing Website URL',
                 description: 'Please enter a website URL to generate a QR code.',
-            });
-            return;
-        }
-        if (!qrPrompt) {
-            toast({
-                variant: 'destructive',
-                title: 'Missing Design Prompt',
-                description: 'Please enter a prompt to style your QR code.',
             });
             return;
         }
@@ -264,23 +259,17 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                         <Card className="border-0 shadow-none">
                             <CardContent className="space-y-6 pt-6">
                                 <div className="space-y-2">
-                                    <Label htmlFor="qrPrompt">AI Design Prompt</Label>
-                                    <Textarea id="qrPrompt" name="qrPrompt" value={qrPrompt} onChange={(e) => setQrPrompt(e.target.value)} placeholder="e.g., A QR code made of blooming flowers" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label className="text-sm text-muted-foreground">Suggestions</Label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {qrStyleSuggestions.map((s) => (
-                                            <Badge
-                                                key={s.name}
-                                                variant="outline"
-                                                className="cursor-pointer"
-                                                onClick={() => setQrPrompt(s.prompt)}
-                                            >
-                                                {s.name}
-                                            </Badge>
-                                        ))}
-                                    </div>
+                                    <Label htmlFor="qrStyle">AI Design Style</Label>
+                                    <Select value={qrPrompt} onValueChange={setQrPrompt}>
+                                        <SelectTrigger id="qrStyle">
+                                            <SelectValue placeholder="Select a style" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {qrStyleSuggestions.map(s => (
+                                                <SelectItem key={s.name} value={s.prompt}>{s.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <Button onClick={handleGenerateQrCode} disabled={isGeneratingQr || !cardDetails.website} className="w-full">
                                     <Sparkles className="w-4 h-4 mr-2" />

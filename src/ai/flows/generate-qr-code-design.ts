@@ -57,10 +57,29 @@ const generateQrCodeDesignFlow = ai.defineFlow(
     });
     const baseQrCodeDataUri = `data:image/png;base64,${qrCodeBuffer.toString('base64')}`;
 
-    // AI stylization is disabled for free-tier key compatibility.
-    // Return the standard QR code for now.
+    if (!prompt) {
+      return { qrCodeDataUri: baseQrCodeDataUri };
+    }
+
+    // 2. Use AI to stylize the QR code
+    const {media} = await ai.generate({
+      model: 'googleai/gemini-2.5-flash-image-preview',
+      prompt: [
+        {media: {url: baseQrCodeDataUri, contentType: 'image/png'}},
+        {text: `Stylize this QR code based on the following prompt, ensuring it remains perfectly scannable: "${prompt}"`},
+      ],
+      config: {
+        responseModalities: ['TEXT', 'IMAGE'],
+      },
+    });
+    
+    if (!media?.url) {
+      console.error('AI stylization failed, returning standard QR code.');
+      return { qrCodeDataUri: baseQrCodeDataUri };
+    }
+
     return {
-      qrCodeDataUri: baseQrCodeDataUri,
+      qrCodeDataUri: media.url,
     };
   }
 );
