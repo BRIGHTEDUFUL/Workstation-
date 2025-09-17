@@ -57,7 +57,7 @@ export default function CardActions({ cards, handleDelete, handleDuplicate, hand
                         <Card className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1 bg-card">
                         <Link href={`/design?id=${card.id}`}>
                             <div className="relative w-full overflow-hidden border-b aspect-video" style={cardStyle}>
-                                <CardFace cardDetails={card} isPreview={false} />
+                                <CardFace cardDetails={card} />
                             </div>
                         </Link>
                         <CardHeader className="flex-row items-center justify-between p-4">

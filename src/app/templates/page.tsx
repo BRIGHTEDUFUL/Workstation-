@@ -123,7 +123,7 @@ export default function Templates() {
                       className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1"
                     >
                       <CardContent className="relative p-0 border-b aspect-video" style={cardStyle}>
-                        <CardFace cardDetails={cardDetails} isPreview={false} />
+                        <CardFace cardDetails={cardDetails} />
                       </CardContent>
                       <CardFooter className="flex-wrap items-center justify-between p-4 bg-card">
                         <p className="font-semibold">{template.description}</p>

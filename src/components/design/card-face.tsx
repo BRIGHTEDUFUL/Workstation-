@@ -10,10 +10,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface CardFaceProps {
   cardDetails: CardDetails;
-  isPreview?: boolean;
 }
 
-const CardFace = ({ cardDetails, isPreview = true }: CardFaceProps) => {
+const CardFace = ({ cardDetails }: CardFaceProps) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 

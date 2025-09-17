@@ -37,14 +37,14 @@ export default function SubmissionCardPreview({ cardDetails }: SubmissionCardPre
                 >
                     <div className="transform scale-[0.25] origin-top-left">
                          <div className="w-96 h-56">
-                            <CardFace cardDetails={cardDetails} isPreview={false} />
+                            <CardFace cardDetails={cardDetails} />
                         </div>
                     </div>
                 </div>
             </AlertDialogTrigger>
             <AlertDialogContent className="max-w-3xl">
                 <div className="aspect-video w-full rounded-lg border" style={cardStyle}>
-                     <CardFace cardDetails={cardDetails} isPreview={true} />
+                     <CardFace cardDetails={cardDetails} />
                 </div>
                 <div className="flex justify-end gap-2 mt-4">
                      <Button asChild>

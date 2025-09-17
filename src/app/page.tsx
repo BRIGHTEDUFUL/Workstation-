@@ -52,7 +52,7 @@ function RecentCards() {
                 className="relative w-full overflow-hidden transition-all duration-300 ease-in-out border rounded-lg shadow-sm group aspect-video hover:shadow-lg hover:-translate-y-1"
                 style={cardStyle}
             >
-                <CardFace cardDetails={card} isPreview={false} />
+                <CardFace cardDetails={card} />
             </div>
             </Link>
         )
@@ -93,7 +93,7 @@ function TemplateSuggestions() {
             className="overflow-hidden transition-all duration-300 ease-in-out shadow-sm group hover:shadow-lg hover:-translate-y-1"
             >
             <CardContent className="relative p-0 aspect-video" style={cardStyle}>
-                <CardFace cardDetails={cardDetails} isPreview={false} />
+                <CardFace cardDetails={cardDetails} />
             </CardContent>
             <CardHeader className="flex-row items-center justify-between p-4">
                 <p className="font-semibold">{template.description}</p>
