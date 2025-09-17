@@ -20,7 +20,7 @@ interface DesignHeaderProps {
 const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderProps) => {
     const { toast } = useToast();
     const [isSaving, setIsSaving] = useState(false);
-    const [isExporting, setIsExporting] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
     const isMobile = useIsMobile();
     
     const handleSave = (share: boolean = false) => {
@@ -87,11 +87,11 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                 cardFrontRef={cardFrontRef}
                 cardBackRef={cardBackRef}
                 cardDetails={cardDetails}
-                onOpenChange={setIsExporting}
+                onOpenChange={setIsDownloading}
             >
-                <Button disabled={isExporting}>
+                <Button disabled={isDownloading}>
                     <Download className="w-4 h-4 mr-2" /> 
-                    {isExporting ? 'Exporting...' : 'Export'}
+                    {isDownloading ? 'Downloading...' : 'Download'}
                 </Button>
             </ExportDialog>
         </>
@@ -115,16 +115,16 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
                         <DropdownMenuItem onClick={() => handleSave(true)} disabled={!cardDetails.website}>
                             <Share2 className="w-4 h-4 mr-2" /> Share
                         </DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => setIsExporting(true)}>
+                        <DropdownMenuItem onSelect={() => setIsDownloading(true)}>
                              <ExportDialog
                                 cardFrontRef={cardFrontRef}
                                 cardBackRef={cardBackRef}
                                 cardDetails={cardDetails}
-                                onOpenChange={setIsExporting}
+                                onOpenChange={setIsDownloading}
                                 isMobile={true}
                             >
                                 <div className='flex items-center'>
-                                    <Download className="w-4 h-4 mr-2" /> Export
+                                    <Download className="w-4 h-4 mr-2" /> Download
                                 </div>
                             </ExportDialog>
                         </DropdownMenuItem>

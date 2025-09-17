@@ -43,7 +43,7 @@ const ExportDialog = ({
   const [format, setFormat] = useState<Format>('png');
   const [quality, setQuality] = useState<Quality>('print');
   const [isOpen, setIsOpen] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const { toast } = useToast();
 
   const handleOpenChange = (open: boolean) => {
@@ -82,20 +82,20 @@ const ExportDialog = ({
   };
 
 
-  const handleExport = async () => {
+  const handleDownload = async () => {
     const frontNode = cardFrontRef.current;
     const backNode = cardBackRef.current;
 
     if (!frontNode || !backNode) {
       toast({
         variant: 'destructive',
-        title: 'Export Failed',
+        title: 'Download Failed',
         description: 'Card elements could not be found. Please try again.',
       });
       return;
     }
 
-    setIsExporting(true);
+    setIsDownloading(true);
     onOpenChange(true); // Keep parent aware of state
 
     const dpi = quality === 'print' ? 300 : 72;
@@ -123,7 +123,7 @@ const ExportDialog = ({
         pdf.save(`${filenameBase}.pdf`);
 
       } else {
-        // Handle PNG and JPG exports
+        // Handle PNG and JPG downloads
         const fileType = format === 'png' ? 'png' : 'jpeg';
         const frontImage = await generateImage(frontNode, dpi, fileType);
         const backImage = await generateImage(backNode, dpi, fileType);
@@ -135,19 +135,19 @@ const ExportDialog = ({
       }
 
       toast({
-        title: 'Export Successful!',
-        description: `Your card has been exported as ${format.toUpperCase()}.`,
+        title: 'Download Successful!',
+        description: `Your card has been downloaded as ${format.toUpperCase()}.`,
       });
 
     } catch (error) {
-      console.error('Export failed:', error);
+      console.error('Download failed:', error);
       toast({
         variant: 'destructive',
-        title: 'Export Failed',
+        title: 'Download Failed',
         description: 'An unexpected error occurred. Please try again.',
       });
     } finally {
-      setIsExporting(false);
+      setIsDownloading(false);
       handleOpenChange(false);
     }
   };
@@ -164,9 +164,9 @@ const ExportDialog = ({
   const dialogContent = (
     <>
       <DialogHeader>
-        <DialogTitle>Export Card Design</DialogTitle>
+        <DialogTitle>Download Card Design</DialogTitle>
         <DialogDescription>
-          Choose the format and quality for your export. Print quality (300 DPI) is recommended for physical cards.
+          Choose the format and quality for your download. Print quality (300 DPI) is recommended for physical cards.
         </DialogDescription>
       </DialogHeader>
       <div className="grid gap-4 py-4">
@@ -201,9 +201,9 @@ const ExportDialog = ({
         </div>
       </div>
       <DialogFooter>
-        <Button onClick={handleExport} disabled={isExporting}>
+        <Button onClick={handleDownload} disabled={isDownloading}>
           <Download className="w-4 h-4 mr-2" />
-          {isExporting ? 'Exporting...' : 'Export'}
+          {isDownloading ? 'Downloading...' : 'Download'}
         </Button>
       </DialogFooter>
     </>
