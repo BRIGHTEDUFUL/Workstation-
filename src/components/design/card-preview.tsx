@@ -9,6 +9,11 @@ import type { CardDetails } from './card-data';
 import CardFace from './card-face';
 import { getPatternStyle } from '@/lib/patterns';
 
+const getProxiedUrl = (url: string | undefined) => {
+    if (!url || url.startsWith('data:')) return url;
+    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+};
+
 // CardFront Component
 const CardFront = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const frontStyle: React.CSSProperties = {
@@ -38,11 +43,6 @@ CardFront.displayName = 'CardFront';
 const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
   const backStyle: React.CSSProperties = {
     backgroundColor: cardDetails.bgColor,
-  };
-
-  const getProxiedUrl = (url: string | undefined) => {
-    if (!url || url.startsWith('data:')) return url;
-    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
   };
 
   return (

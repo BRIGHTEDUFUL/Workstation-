@@ -25,9 +25,12 @@ import type { CardDetails } from './card-data';
 import { toPng, toJpeg, toSvg, toCanvas } from 'html-to-image';
 import jsPDF from 'jspdf';
 import { Download } from 'lucide-react';
-import ExportableCard from './exportable-card';
+import CardFace from './card-face';
+import { getPatternStyle } from '@/lib/patterns';
 
 interface DownloadDialogProps {
+  cardFrontRef: React.RefObject<HTMLDivElement>;
+  cardBackRef: React.RefObject<HTMLDivElement>;
   cardDetails: CardDetails;
   children: React.ReactNode;
   onOpenChange: (open: boolean) => void;
@@ -36,6 +39,98 @@ interface DownloadDialogProps {
 
 type Format = 'png' | 'jpg' | 'svg' | 'pdf';
 type Quality = 'web' | 'print';
+
+
+const getProxiedUrl = (url: string | undefined) => {
+    if (!url) return '';
+    if (url.startsWith('data:')) return url;
+    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+};
+
+
+const ExportableCard = React.forwardRef<HTMLDivElement, { cardDetails: CardDetails; face: 'front' | 'back' }>(({ cardDetails, face }, ref) => {
+    // Standard business card: 3.5 x 2 inches. At 96 DPI, this is 336x192 px.
+    const baseWidth = 336;
+    const baseHeight = 192;
+    
+    const cardStyle: React.CSSProperties = {
+        width: `${baseWidth}px`,
+        height: `${baseHeight}px`,
+        fontFamily: cardDetails.font.replace(/var\((--font-.*?)\)/, (match, p1) => p1.replace('--font-', '').replace(/-/g, ' ')),
+        position: 'relative',
+        overflow: 'hidden',
+    };
+
+    const renderFront = () => {
+        const frontStyle: React.CSSProperties = {
+            ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
+            backgroundColor: cardDetails.bgColor,
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+        };
+
+        if (cardDetails.backgroundImage && !cardDetails.pattern) {
+            frontStyle.backgroundImage = `url(${getProxiedUrl(cardDetails.backgroundImage)})`;
+            frontStyle.backgroundSize = 'cover';
+            frontStyle.backgroundPosition = 'center';
+        }
+        
+        return (
+            <div style={frontStyle}>
+                <CardFace cardDetails={cardDetails} isExport={true} />
+            </div>
+        );
+    };
+
+    const renderBack = () => {
+        const backStyle: React.CSSProperties = {
+            backgroundColor: cardDetails.bgColor,
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+            boxSizing: 'border-box'
+        };
+
+        return (
+            <div style={backStyle}>
+                {cardDetails.logoUrl && (
+                    <img
+                        src={getProxiedUrl(cardDetails.logoUrl)}
+                        alt="Company Logo"
+                        style={{ maxHeight: '2rem', maxWidth: '5rem', objectFit: 'contain', marginBottom: '1rem' }}
+                    />
+                )}
+                {cardDetails.website && cardDetails.qrUrl ? (
+                    <img
+                        src={cardDetails.qrUrl} // QR is a data URI, no proxy needed
+                        alt="QR Code"
+                        style={{ width: '6rem', height: '6rem', borderRadius: '0.25rem' }}
+                    />
+                ) : (
+                    <div style={{ width: '6rem', height: '6rem' }}></div>
+                )}
+                {cardDetails.slogan && (
+                    <p style={{ marginTop: '1rem', textAlign: 'center', fontSize: '0.65rem', color: cardDetails.textColor }}>
+                        {cardDetails.slogan}
+                    </p>
+                )}
+            </div>
+        );
+    };
+
+    return (
+      <div ref={ref} style={cardStyle}>
+        {face === 'front' ? renderFront() : renderBack()}
+      </div>
+    );
+});
+ExportableCard.displayName = 'ExportableCard';
+
 
 const DownloadDialog = ({
   cardDetails,
@@ -70,9 +165,7 @@ const DownloadDialog = ({
           width: `${cardWidthInches * 96}px`,
           height: `${cardHeightInches * 96}px`,
         },
-        fontEmbedCSS: `
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600;700&family=Times+New+Roman&family=Georgia&display=swap');
-        `,
+        fontEmbedCSS: `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro&display=swap');`,
       };
       
     const timeoutPromise = new Promise<string>((_, reject) =>
@@ -90,7 +183,7 @@ const DownloadDialog = ({
         imagePromise = toCanvas(node, options);
     }
 
-    return Promise.race([imagePromise, timeoutPromise]);
+    return Promise.race([imagePromise, timeoutPromise]) as Promise<string | HTMLCanvasElement>;
   };
 
 
@@ -108,9 +201,6 @@ const DownloadDialog = ({
     }
 
     setIsDownloading(true);
-    // Keep dialog open during download, but allow user interaction with the rest of the page.
-    // setIsOpen(true); 
-    // onOpenChange(true);
 
     const dpi = quality === 'print' ? 300 : 72;
     const filenameBase = `cardhub-${cardDetails.name.replace(/\s+/g, '-').toLowerCase() || 'card'}`;
@@ -126,9 +216,9 @@ const DownloadDialog = ({
           format: [3.5, 2],
         });
 
-        pdf.addImage(frontCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 3.5, 2);
+        pdf.addImage(frontCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 3.5, 2);
         pdf.addPage();
-        pdf.addImage(backCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 3.5, 2);
+        pdf.addImage(backCanvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, 0, 3.5, 2);
 
         pdf.save(`${filenameBase}.pdf`);
 

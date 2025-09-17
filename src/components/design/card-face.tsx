@@ -11,9 +11,16 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 interface CardFaceProps {
   cardDetails: CardDetails;
   isPreview?: boolean;
+  isExport?: boolean;
 }
 
-const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
+const getProxiedUrl = (url: string | undefined) => {
+    if (!url) return '';
+    if (url.startsWith('data:')) return url;
+    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+};
+
+const CardFace = ({ cardDetails, isPreview = false, isExport = false }: CardFaceProps) => {
   const layout = cardLayouts.layouts.find(l => l.id === cardDetails.layoutId) || cardLayouts.layouts[0];
   const elements = cardDetails.elements || [];
 
@@ -28,16 +35,22 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
 
   const renderImage = (url: string | undefined, alt: string, isLogo: boolean = false) => {
     if (!url) return null;
+    if (isExport) {
+        return <img src={getProxiedUrl(url)} alt={alt} style={{ objectFit: 'contain', height: isLogo ? '1.5rem' : 'auto', maxHeight: '1.5rem', width: 'auto', maxWidth: isLogo ? '6rem' : '100%' }} />;
+    }
     const width = isLogo ? (isPreview ? 100 : 80) : (isPreview ? 80 : 48);
     const height = isLogo ? (isPreview ? 25 : 20) : (isPreview ? 80 : 48);
-
     return <Image src={url} alt={alt} width={width} height={height} className={cn("object-contain", isLogo ? (isPreview ? "h-6" : "h-5") : "")} crossOrigin="anonymous" />;
   }
 
   const renderAvatar = (url: string | undefined, name: string) => {
     if (!url) return null;
-    const sizeClass = isPreview ? "w-20 h-20" : "w-12 h-12";
 
+    if (isExport) {
+        return <img src={getProxiedUrl(url)} alt={name} style={{ width: '4rem', height: '4rem', borderRadius: '50%', objectFit: 'cover', border: `2px solid ${cardDetails.accentColor}` }} />;
+    }
+
+    const sizeClass = isPreview ? "w-20 h-20" : "w-12 h-12";
     return (
         <Avatar className={cn("border-2", sizeClass)} style={{ borderColor: cardDetails.accentColor }}>
             <AvatarImage src={url} crossOrigin="anonymous" />
@@ -45,7 +58,6 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
         </Avatar>
     );
   }
-
 
   if (layout.id.startsWith('split-')) {
       const isVertical = layout.id.includes('vertical');
@@ -115,7 +127,7 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
       style={containerStyle}
     >
       {profilePicElement && cardDetails.profilePicUrl && (
-        <div className="mb-4">
+        <div className={cn(isExport ? "" : "mb-4")}>
           {renderAvatar(cardDetails.profilePicUrl, cardDetails.name)}
         </div>
       )}
@@ -133,7 +145,7 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
       </div>
 
       {logoElement && cardDetails.logoUrl && (
-        <div className="mt-auto">
+        <div className={cn(isExport ? "" : "mt-auto")}>
           {renderImage(cardDetails.logoUrl, "Company Logo", true)}
         </div>
       )}
