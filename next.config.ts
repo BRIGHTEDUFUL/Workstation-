@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https,',
         hostname: 'lh3.googleusercontent.com',
         port: '',
         pathname: '/**',
@@ -41,15 +41,6 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-        config.resolve.fallback = {
-            ...config.resolve.fallback,
-            'async_hooks': false,
-        }
-    }
-    return config
   },
 };
 
