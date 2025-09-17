@@ -12,6 +12,7 @@ import { getPatternStyle } from '@/lib/patterns';
 
 // CardBack Component
 const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: CardDetails }>(({ cardDetails }, ref) => {
+  // The back of the card should only ever have a solid background color.
   const backStyle: React.CSSProperties = {
     backgroundColor: cardDetails.bgColor,
   };
@@ -66,11 +67,11 @@ const CardPreview = React.memo(({ cardDetails, cardFrontRef, cardBackRef }: Card
   const is3D = cardDetails.category === '3D';
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  // Style for the front of the card, including patterns and images.
   const frontStyle: React.CSSProperties = {
     ...getPatternStyle(cardDetails.pattern, cardDetails.accentColor),
     backgroundColor: cardDetails.bgColor,
   };
-
   if (cardDetails.backgroundImage && !cardDetails.pattern) {
     frontStyle.backgroundImage = `url(${cardDetails.backgroundImage})`;
     frontStyle.backgroundSize = 'cover';
