@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { FileCode, Palette, Terminal } from 'lucide-react';
+import { Palette, Terminal } from 'lucide-react';
 import { useTheme } from '@/components/theme/theme-provider';
 
 const themes = [
@@ -23,29 +23,41 @@ const themes = [
     { name: 'Light', value: 'light' },
 ];
 
+type ApiKeys = {
+    google: string;
+    openai: string;
+    deepseek: string;
+};
+
 export default function Settings() {
     const { toast } = useToast();
-    const [apiKey, setApiKey] = useState('');
+    const [apiKeys, setApiKeys] = useState<ApiKeys>({ google: '', openai: '', deepseek: '' });
     const [isMounted, setIsMounted] = useState(false);
     const { theme, setTheme } = useTheme();
 
     useEffect(() => {
         setIsMounted(true);
-        const storedKey = localStorage.getItem('googleApiKey');
-        if (storedKey) {
-            setApiKey(storedKey);
+        const storedKeys = localStorage.getItem('apiKeys');
+        if (storedKeys) {
+            setApiKeys(JSON.parse(storedKeys));
         }
     }, []);
 
     const handleSave = () => {
-        localStorage.setItem('googleApiKey', apiKey);
+        localStorage.setItem('apiKeys', JSON.stringify(apiKeys));
         toast({
             title: 'Settings Saved',
-            description: 'Your API key has been stored in your browser.',
+            description: 'Your API keys have been stored in your browser.',
         });
         // Force a reload to make sure all components check for the key again
         window.location.reload();
     };
+
+    const handleKeyChange = (provider: keyof ApiKeys, value: string) => {
+        setApiKeys(prev => ({ ...prev, [provider]: value }));
+    };
+    
+    const isAnyKeyEntered = apiKeys.google || apiKeys.openai || apiKeys.deepseek;
 
     if (!isMounted) {
         return null; // or a loading spinner
@@ -86,32 +98,50 @@ export default function Settings() {
                 <CardHeader>
                     <CardTitle>AI Model Configuration</CardTitle>
                     <CardDescription>
-                        Enter your Google AI API key here to enable the AI tools in the design studio.
+                        Enter your API keys here. This enables the AI tools in the design studio.
                     </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
                      <Alert variant='default'>
                         <Terminal className='w-4 h-4' />
-                        <AlertTitle>Server-Side API Key Required</AlertTitle>
+                        <AlertTitle>Server-Side API Keys Required</AlertTitle>
                         <AlertDescription>
-                            For AI features to function, you must set the <code>GOOGLE_API_KEY</code> environment variable on the server. The setting below only enables the AI feature UI in your browser.
+                            For AI features to function, you must set the corresponding environment variables on the server (e.g., <code>GOOGLE_API_KEY</code>). The settings below only enable the AI feature UI in your browser.
                         </AlertDescription>
                     </Alert>
-                    <div className="space-y-2">
-                        <Label htmlFor="ai-provider">AI Provider</Label>
-                        <Input id="ai-provider" value="Google AI" readOnly disabled />
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="google-key">Google AI API Key</Label>
+                            <Input
+                                id="google-key"
+                                type="password"
+                                value={apiKeys.google}
+                                onChange={(e) => handleKeyChange('google', e.target.value)}
+                                placeholder="Enter your Google AI API key"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="openai-key">OpenAI API Key</Label>
+                            <Input
+                                id="openai-key"
+                                type="password"
+                                value={apiKeys.openai}
+                                onChange={(e) => handleKeyChange('openai', e.target.value)}
+                                placeholder="Enter your OpenAI (ChatGPT) API key"
+                            />
+                        </div>
+                         <div className="space-y-2">
+                            <Label htmlFor="deepseek-key">DeepSeek API Key</Label>
+                            <Input
+                                id="deepseek-key"
+                                type="password"
+                                value={apiKeys.deepseek}
+                                onChange={(e) => handleKeyChange('deepseek', e.target.value)}
+                                placeholder="Enter your DeepSeek API key"
+                            />
+                        </div>
                     </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="api-key">Google AI API Key (for Browser)</Label>
-                        <Input
-                            id="api-key"
-                            type="password"
-                            value={apiKey}
-                            onChange={(e) => setApiKey(e.target.value)}
-                            placeholder="Enter your Google AI API key"
-                        />
-                    </div>
-                    <Button onClick={handleSave} disabled={!apiKey}>Save Key to Browser</Button>
+                    <Button onClick={handleSave} disabled={!isAnyKeyEntered}>Save Keys to Browser</Button>
                 </CardContent>
             </Card>
         </div>

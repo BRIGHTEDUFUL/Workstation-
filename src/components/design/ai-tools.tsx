@@ -38,8 +38,12 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
 
     useEffect(() => {
       if (typeof window !== 'undefined') {
-        const storedApiKey = localStorage.getItem('googleApiKey');
-        setIsApiKeySet(!!storedApiKey);
+        const storedApiKeys = localStorage.getItem('apiKeys');
+        if (storedApiKeys) {
+            const keys = JSON.parse(storedApiKeys);
+            // For now, we just check if the Google key is set as it's the only one integrated.
+            setIsApiKeySet(!!keys.google);
+        }
       }
     }, []);
 
@@ -207,7 +211,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                     {!isApiKeySet && (
                         <Alert className="mb-4">
                             <Terminal className="h-4 w-4" />
-                            <AlertTitle>API Key Not Set</AlertTitle>
+                            <AlertTitle>Google AI API Key Not Set</AlertTitle>
                             <AlertDescription>
                                 To enable AI features, please set your Google AI API key in <Link href="/settings" className="font-semibold underline">Settings</Link>.
                             </AlertDescription>
