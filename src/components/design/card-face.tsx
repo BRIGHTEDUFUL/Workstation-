@@ -42,7 +42,7 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
               style={{...splitSectionStyle, justifyContent: layout.justifyContent as any, alignItems: layout.textAlign === 'center' ? 'center' : (layout.textAlign === 'right' ? 'flex-end' : 'flex-start'), textAlign: layout.textAlign as any }}
           >
               {logoElement && cardDetails.logoUrl && (
-                  <Image src={cardDetails.logoUrl} alt="Company Logo" width={isPreview ? 100 : 80} height={isPreview ? 40 : 30} className="object-contain" />
+                  <Image src={cardDetails.logoUrl} alt="Company Logo" width={isPreview ? 100 : 80} height={isPreview ? 40 : 30} className="object-contain" crossOrigin="anonymous" />
               )}
           </div>
       );
@@ -55,7 +55,7 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
               {profilePicElement && cardDetails.profilePicUrl && (
                   <div className="mb-4">
                       <Avatar className={cn("border-2", isPreview ? "w-20 h-20" : "w-12 h-12")} style={{ borderColor: cardDetails.textColor }}>
-                          <AvatarImage src={cardDetails.profilePicUrl} />
+                          <AvatarImage src={cardDetails.profilePicUrl} crossOrigin="anonymous" />
                           <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                   </div>
@@ -99,7 +99,7 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
       {profilePicElement && cardDetails.profilePicUrl && (
         <div className="mb-4">
           <Avatar className={cn("border-2", isPreview ? "w-20 h-20" : "w-12 h-12")} style={{ borderColor: cardDetails.accentColor }}>
-            <AvatarImage src={cardDetails.profilePicUrl} />
+            <AvatarImage src={cardDetails.profilePicUrl} crossOrigin="anonymous" />
             <AvatarFallback>{cardDetails.name.charAt(0)}</AvatarFallback>
           </Avatar>
         </div>
@@ -119,7 +119,7 @@ const CardFace = ({ cardDetails, isPreview = false }: CardFaceProps) => {
 
       {logoElement && cardDetails.logoUrl && (
         <div className="mt-auto">
-          <Image src={cardDetails.logoUrl} alt="Company Logo" width={isPreview ? 100 : 80} height={isPreview ? 25 : 20} className={cn("object-contain", isPreview ? "h-6" : "h-5")} />
+          <Image src={cardDetails.logoUrl} alt="Company Logo" width={isPreview ? 100 : 80} height={isPreview ? 25 : 20} className={cn("object-contain", isPreview ? "h-6" : "h-5")} crossOrigin="anonymous" />
         </div>
       )}
     </div>

@@ -18,8 +18,8 @@ import { Button } from '../ui/button';
 import { Upload, Globe } from 'lucide-react';
 import cardLayouts from '@/lib/card-layouts.json';
 import PatternSelector from './pattern-selector';
-import { generateQrCodeDesignAction } from '@/ai/flows/generate-qr-code-design';
 import { useToast } from '@/hooks/use-toast';
+import QRCode from 'qrcode';
 
 interface EditorPanelProps {
     cardDetails: CardDetails;
@@ -84,10 +84,18 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
 
         setIsGeneratingQr(true);
         try {
-            const result = await generateQrCodeDesignAction({ url, prompt: 'default-qr' });
+            const qrCodeDataUri = await QRCode.toDataURL(url, {
+                errorCorrectionLevel: 'H',
+                scale: 10,
+                margin: 2,
+                color: {
+                    dark: '#000000FF',
+                    light: '#FFFFFFFF',
+                },
+            });
             setCardDetails(prev => ({
                 ...prev,
-                qrUrl: result.qrCodeDataUri,
+                qrUrl: qrCodeDataUri,
             }));
         } catch (error) {
             console.error('Failed to generate QR code:', error);
@@ -106,7 +114,7 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
         if (cardDetails.website && !cardDetails.qrUrl) {
             generateQrCode(cardDetails.website);
         }
-    }, [cardDetails.website, cardDetails.qrUrl]);
+    }, [cardDetails.website, cardDetails.qrUrl, generateQrCode]);
 
     return (
         <div className="p-6 space-y-8">
