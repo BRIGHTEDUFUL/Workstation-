@@ -24,7 +24,7 @@ const DesignHeader = ({ cardDetails, cardFrontRef, cardBackRef }: DesignHeaderPr
     
     const handleExport = async () => {
         const frontNode = cardFrontRef.current;
-        const backNode = backNodeRef.current;
+        const backNode = cardBackRef.current;
 
         if (!frontNode || !backNode) {
             toast({
