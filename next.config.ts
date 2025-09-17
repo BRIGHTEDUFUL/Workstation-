@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    // This is the correct way to exclude server-only packages from the client
+    // bundle when using Turbopack.
+    serverComponentsExternalPackages: [
+      '@genkit-ai/googleai',
+      '@opentelemetry/api',
+      'firebase-admin',
+    ],
+  },
   images: {
     remotePatterns: [
       {
