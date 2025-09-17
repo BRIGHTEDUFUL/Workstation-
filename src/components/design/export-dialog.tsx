@@ -83,7 +83,7 @@ const DownloadDialog = ({
     if (format === 'png') {
         imagePromise = toPng(node, options);
     } else if (format === 'jpeg') {
-        imagePromise = toJpeg(node, { ...options, quality: 0.95, backgroundColor: cardDetails.bgColor });
+        imagePromise = toJpeg(node, { ...options, quality: 0.95 });
     } else if (format === 'svg') {
         imagePromise = toSvg(node, options);
     } else { // canvas
@@ -108,9 +108,9 @@ const DownloadDialog = ({
     }
 
     setIsDownloading(true);
-    // Keep dialog open during download
-    setIsOpen(true); 
-    onOpenChange(true);
+    // Keep dialog open during download, but allow user interaction with the rest of the page.
+    // setIsOpen(true); 
+    // onOpenChange(true);
 
     const dpi = quality === 'print' ? 300 : 72;
     const filenameBase = `cardhub-${cardDetails.name.replace(/\s+/g, '-').toLowerCase() || 'card'}`;

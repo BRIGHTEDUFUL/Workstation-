@@ -29,7 +29,7 @@ const ExportableCard = React.forwardRef<HTMLDivElement, ExportableCardProps>(({ 
     const cardStyle: React.CSSProperties = {
         width: `${baseWidth}px`,
         height: `${baseHeight}px`,
-        fontFamily: cardDetails.font.split(',')[0].replace(/'/g, "").replace('var(',''),
+        fontFamily: cardDetails.font.split(',')[0].replace(/'/g, "").replace('var(','').replace('--font-',''),
         position: 'relative',
         overflow: 'hidden',
     };
