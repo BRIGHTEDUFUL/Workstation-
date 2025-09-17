@@ -24,7 +24,7 @@ import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 
 const qrStyleSuggestions = [
-    { name: 'Default', prompt: '' },
+    { name: 'Default', prompt: 'default-qr' },
     { name: 'Vintage', prompt: 'A vintage, sepia-toned QR code with ornate, classic patterns integrated into the design.' },
     { name: 'Futuristic', prompt: 'A futuristic, glowing neon blue QR code on a dark circuit board background.' },
     { name: 'Floral', prompt: 'A QR code with delicate, watercolor floral patterns integrated into the dark modules, using soft pastel colors.' },
@@ -126,6 +126,14 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
         } finally {
             setIsGeneratingQr(false);
         }
+    };
+    
+    const handleQrSelectChange = (value: string) => {
+      if (value === 'default-qr') {
+        setQrPrompt('');
+      } else {
+        setQrPrompt(value);
+      }
     };
 
     return (
@@ -260,7 +268,7 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                             <CardContent className="space-y-6 pt-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="qrStyle">AI Design Style</Label>
-                                    <Select value={qrPrompt} onValueChange={setQrPrompt}>
+                                    <Select value={qrPrompt || 'default-qr'} onValueChange={handleQrSelectChange}>
                                         <SelectTrigger id="qrStyle">
                                             <SelectValue placeholder="Select a style" />
                                         </SelectTrigger>
