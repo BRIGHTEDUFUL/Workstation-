@@ -12,6 +12,7 @@ import { MoreHorizontal, Pencil, Search, Filter } from 'lucide-react';
 import mockSubmissions from '@/lib/submitted-designs.json';
 import { CardDetails } from '@/components/design/card-data';
 import { useToast } from '@/hooks/use-toast';
+import SubmissionCardPreview from './SubmissionCardPreview';
 
 export type Submission = {
     orderId: string;
@@ -137,6 +138,7 @@ export default function SubmittedDesigns() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Order ID</TableHead>
+                                <TableHead>Preview</TableHead>
                                 <TableHead>Customer</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead>Template/Category</TableHead>
@@ -149,6 +151,9 @@ export default function SubmittedDesigns() {
                                 filteredSubmissions.map(submission => (
                                     <TableRow key={submission.orderId}>
                                         <TableCell className="font-medium">{submission.orderId}</TableCell>
+                                        <TableCell>
+                                            <SubmissionCardPreview cardDetails={submission.cardDetails} />
+                                        </TableCell>
                                         <TableCell>
                                             <div className="font-medium">{submission.customerName}</div>
                                             <div className="text-sm text-muted-foreground">{submission.customerContact}</div>
@@ -189,7 +194,7 @@ export default function SubmittedDesigns() {
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={6} className="h-24 text-center">
+                                    <TableCell colSpan={7} className="h-24 text-center">
                                         No results found.
                                     </TableCell>
                                 </TableRow>
