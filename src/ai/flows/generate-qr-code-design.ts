@@ -1,14 +1,13 @@
 
 'use server';
 /**
- * @fileOverview Generates a custom-styled QR code using AI or predefined static styles.
+ * @fileOverview Generates a standard QR code.
  *
  * - generateQrCodeDesignAction - A server action that takes a URL and a design prompt to create a styled QR code.
  * - GenerateQrCodeDesignInput - The input type for the QR code generation function.
  * - GenerateQrCodeDesignOutput - The return type for the QR code generation function.
  */
 
-import {ai} from '@/ai/config';
 import {z} from 'genkit';
 import QRCode from 'qrcode';
 
@@ -31,77 +30,22 @@ export type GenerateQrCodeDesignOutput = z.infer<
   typeof GenerateQrCodeDesignOutputSchema
 >;
 
-// Define static styles that can be applied without AI
-const staticStyles: Record<string, {dark: string; light: string}> = {
-    'static-invert': { dark: '#FFFFFF', light: '#000000' },
-    'static-ocean': { dark: '#004d40', light: '#e0f7fa' },
-    'static-forest': { dark: '#ffffff', light: '#004d40' },
-};
-
 export async function generateQrCodeDesignAction(
   input: GenerateQrCodeDesignInput
 ): Promise<GenerateQrCodeDesignOutput> {
-  return generateQrCodeDesignFlow(input);
+  // Default QR Code options
+  const qrCodeOptions: QRCode.QRCodeToBufferOptions = {
+    errorCorrectionLevel: 'H',
+    scale: 10,
+    margin: 2,
+    color: {
+        dark: '#000000FF',
+        light: '#FFFFFFFF',
+    },
+  };
+  
+  const baseQrCodeBuffer = await QRCode.toBuffer(input.url, qrCodeOptions);
+  const baseQrCodeDataUri = `data:image/png;base64,${baseQrCodeBuffer.toString('base64')}`;
+
+  return { qrCodeDataUri: baseQrCodeDataUri };
 }
-
-
-const generateQrCodeDesignFlow = ai.defineFlow(
-  {
-    name: 'generateQrCodeDesignFlow',
-    inputSchema: GenerateQrCodeDesignInputSchema,
-    outputSchema: GenerateQrCodeDesignOutputSchema,
-  },
-  async ({ url, prompt }) => {
-    // Default QR Code options
-    let qrCodeOptions: QRCode.QRCodeToBufferOptions = {
-        errorCorrectionLevel: 'H',
-        scale: 10,
-        margin: 2,
-        color: {
-            dark: '#000000FF',
-            light: '#FFFFFFFF',
-        },
-    };
-    
-    // Check if a static style is requested
-    if (prompt.startsWith('static-') && staticStyles[prompt]) {
-        qrCodeOptions.color = staticStyles[prompt];
-        const qrCodeBuffer = await QRCode.toBuffer(url, qrCodeOptions);
-        const staticQrCodeDataUri = `data:image/png;base64,${qrCodeBuffer.toString('base64')}`;
-        return { qrCodeDataUri: staticQrCodeDataUri };
-    }
-
-    // Generate the base QR for AI stylization or default usage
-    const baseQrCodeBuffer = await QRCode.toBuffer(url, {
-        ...qrCodeOptions,
-        color: { dark: '#000000FF', light: '#FFFFFFFF' } // AI works best with a standard b&w QR
-    });
-    const baseQrCodeDataUri = `data:image/png;base64,${baseQrCodeBuffer.toString('base64')}`;
-
-    // If no prompt or default prompt, return the standard QR code
-    if (!prompt || prompt === 'default-qr') {
-      return { qrCodeDataUri: baseQrCodeDataUri };
-    }
-
-    // 2. Use AI to stylize the QR code
-    const {media} = await ai.generate({
-      model: 'googleai/gemini-2.5-flash-image-preview',
-      prompt: [
-        {media: {url: baseQrCodeDataUri, contentType: 'image/png'}},
-        {text: `Stylize this QR code based on the following prompt, ensuring it remains perfectly scannable: "${prompt}"`},
-      ],
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
-    });
-    
-    if (!media?.url) {
-      console.error('AI stylization failed, returning standard QR code.');
-      return { qrCodeDataUri: baseQrCodeDataUri };
-    }
-
-    return {
-      qrCodeDataUri: media.url,
-    };
-  }
-);

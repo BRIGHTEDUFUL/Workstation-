@@ -8,9 +8,6 @@ import {
 import {
   importCardDesignAction,
 } from '@/ai/flows/import-card-design-from-image';
-import {
-    generateDesignSuggestionsAction
-} from '@/ai/flows/generate-design-suggestions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -23,8 +20,6 @@ import type { CardDetails } from './card-data';
 import Link from 'next/link';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
-import { Badge } from '../ui/badge';
-import { Skeleton } from '../ui/skeleton';
 
 interface AiToolsProps {
   cardDetails: CardDetails;
@@ -39,8 +34,6 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const [activeTab, setActiveTab] = useState('generate');
     const [filename, setFilename] = useState('');
     const [isApiKeySet, setIsApiKeySet] = useState(false);
-    const [suggestions, setSuggestions] = useState<string[]>([]);
-    const [suggestionsLoading, setSuggestionsLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -49,25 +42,6 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
         setIsApiKeySet(!!storedApiKey);
       }
     }, []);
-
-    useEffect(() => {
-        const fetchSuggestions = async () => {
-            if (!isApiKeySet || !cardDetails.category) return;
-            setSuggestionsLoading(true);
-            setSuggestions([]); // Clear old suggestions
-            try {
-                const result = await generateDesignSuggestionsAction({ category: cardDetails.category });
-                setSuggestions(result.suggestions);
-            } catch (error) {
-                console.error("Failed to fetch suggestions:", error);
-                setSuggestions([]);
-            } finally {
-                setSuggestionsLoading(false);
-            }
-        };
-
-        fetchSuggestions();
-    }, [cardDetails.category, isApiKeySet]);
 
     const handleGenerate = async () => {
         if (!isApiKeySet) {
@@ -102,8 +76,8 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             }));
 
             toast({
-              title: "Design Generated!",
-              description: "The AI has created a new design for your card.",
+              title: "Design Plan Generated!",
+              description: "The AI has created a new design plan for your card.",
             });
         } catch (error) {
             console.error(error);
@@ -203,7 +177,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                     <Label htmlFor="prompt">Design Prompt</Label>
                                     <Textarea
                                         id="prompt"
-                                        placeholder="e.g., A minimalist card with a galaxy background"
+                                        placeholder="e.g., A minimalist card for a tech company"
                                         value={prompt}
                                         onChange={(e) => setPrompt(e.target.value)}
                                         disabled={!isApiKeySet}
@@ -222,37 +196,12 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                                             className='pl-10'
                                         />
                                     </div>
-                                    <p className="text-xs text-muted-foreground">The AI will visit this site to better inform the design.</p>
+                                    <p className="text-xs text-muted-foreground">The AI can use this to inform the design plan.</p>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label className="text-sm text-muted-foreground">Suggestions for '{cardDetails.category}'</Label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {suggestionsLoading && isApiKeySet ? (
-                                            <>
-                                                <Skeleton className="h-6 w-48" />
-                                                <Skeleton className="h-6 w-40" />
-                                                <Skeleton className="h-6 w-52" />
-                                            </>
-                                        ) : (
-                                            suggestions.map((p) => (
-                                                <Badge
-                                                    key={p}
-                                                    variant="outline"
-                                                    className="cursor-pointer"
-                                                    onClick={() => isApiKeySet && setPrompt(p)}
-                                                >
-                                                    {p}
-                                                </Badge>
-                                            ))
-                                        )}
-                                         {!isApiKeySet && (
-                                            <p className="text-xs text-muted-foreground">Enable AI features in settings to see suggestions.</p>
-                                        )}
-                                    </div>
-                                </div>
+                                
                                 <Button onClick={handleGenerate} disabled={isLoadingGenerate || !prompt || !isApiKeySet} className="w-full">
                                     <Sparkles className="w-4 h-4 mr-2" />
-                                    {isLoadingGenerate ? 'Generating...' : 'Generate with AI'}
+                                    {isLoadingGenerate ? 'Generating...' : 'Generate Design Plan'}
                                 </Button>
                             </div>
                         </TabsContent>

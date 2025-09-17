@@ -11,35 +11,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectSeparator,
-  SelectGroup,
-  SelectLabel,
 } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import type { CardDetails } from './card-data';
 import { Button } from '../ui/button';
-import { Upload, Globe, Sparkles } from 'lucide-react';
+import { Upload, Globe } from 'lucide-react';
 import cardLayouts from '@/lib/card-layouts.json';
 import PatternSelector from './pattern-selector';
 import { generateQrCodeDesignAction } from '@/ai/flows/generate-qr-code-design';
 import { useToast } from '@/hooks/use-toast';
-import { Textarea } from '../ui/textarea';
-
-const staticQrCodeStyles = [
-    { name: 'Classic Invert', prompt: 'static-invert' },
-    { name: 'Ocean Blue', prompt: 'static-ocean' },
-    { name: 'Forest Green', prompt: 'static-forest' },
-];
-
-const aiQrCodeStyleSuggestions = [
-    { name: 'Vintage', prompt: 'A vintage, sepia-toned QR code with ornate, classic patterns integrated into the design.' },
-    { name: 'Futuristic', prompt: 'A futuristic, glowing neon blue QR code on a dark circuit board background.' },
-    { name: 'Floral', prompt: 'A QR code with delicate, watercolor floral patterns integrated into the dark modules, using soft pastel colors.' },
-    { name: 'Watercolor', prompt: 'A QR code that looks like a watercolor painting, with soft, blended colors, while remaining scannable.' },
-    { name: 'Origami', prompt: 'A QR code that appears to be folded from paper, with geometric origami patterns, making it look 3D.'},
-    { name: 'Gold Leaf', prompt: 'A luxurious QR code with the dark modules appearing as cracked gold leaf on a black marble background.' },
-    { name: 'Pixel Art', prompt: 'An 8-bit pixel art style QR code, with chunky pixels and a retro video game color palette.' },
-];
 
 interface EditorPanelProps {
     cardDetails: CardDetails;
@@ -49,7 +29,6 @@ interface EditorPanelProps {
 const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProps) => {
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const logoInputRef = useRef<HTMLInputElement>(null);
-    const [qrPrompt, setQrPrompt] = useState(cardDetails.qrDesignPrompt || '');
     const [isGeneratingQr, setIsGeneratingQr] = useState(false);
     const { toast } = useToast();
 
@@ -62,9 +41,9 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
         const { name, value } = e.target;
         // Trigger QR generation on website URL change
         if (name === 'website') {
-            generateQrCode(value, qrPrompt);
+            generateQrCode(value);
         }
-    }, [setCardDetails, qrPrompt]);
+    }, [setCardDetails]);
 
     const handleSelectChange = useCallback((name: string, value: string) => {
         setCardDetails(prev => ({ ...prev, [name]: value as any }));
@@ -97,52 +76,35 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
         }
     };
     
-    const generateQrCode = useCallback(async (url: string, prompt: string) => {
+    const generateQrCode = useCallback(async (url: string) => {
         if (!url) {
-            setCardDetails(prev => ({ ...prev, qrUrl: '', qrDesignPrompt: prompt }));
+            setCardDetails(prev => ({ ...prev, qrUrl: '' }));
             return;
         }
 
         setIsGeneratingQr(true);
         try {
-            const result = await generateQrCodeDesignAction({ url, prompt });
+            const result = await generateQrCodeDesignAction({ url, prompt: 'default-qr' });
             setCardDetails(prev => ({
                 ...prev,
                 qrUrl: result.qrCodeDataUri,
-                qrDesignPrompt: prompt,
             }));
-            if (prompt && prompt !== 'default-qr' && !prompt.startsWith('static-')) {
-                toast({
-                    title: 'AI QR Code Styled!',
-                    description: 'Your custom QR code has been updated.',
-                });
-            }
         } catch (error) {
             console.error('Failed to generate QR code:', error);
             toast({
                 variant: 'destructive',
-                title: 'Generation Failed',
-                description: 'Could not generate the QR code design. Please check your API key and try again.',
+                title: 'QR Code Generation Failed',
+                description: 'Could not generate the QR code. Please try again.',
             });
         } finally {
             setIsGeneratingQr(false);
         }
     }, [setCardDetails, toast]);
     
-    const handleQrSelectChange = (value: string) => {
-      const newPrompt = value === 'default-qr' ? '' : value;
-      setQrPrompt(newPrompt);
-      generateQrCode(cardDetails.website || '', newPrompt);
-    };
-
-    const handleCustomQrPromptUpdate = () => {
-        generateQrCode(cardDetails.website || '', qrPrompt);
-    };
-
     // Effect to generate QR code when component loads with a website url
     useEffect(() => {
         if (cardDetails.website && !cardDetails.qrUrl) {
-            generateQrCode(cardDetails.website, cardDetails.qrDesignPrompt || 'default-qr');
+            generateQrCode(cardDetails.website);
         }
     }, [cardDetails.website, cardDetails.qrUrl]);
 
@@ -170,7 +132,7 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                     <Label htmlFor="website">Website URL (for QR Code)</Label>
                                     <div className="relative">
                                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="website" name="website" defaultValue={cardDetails.website || ''} onChange={handleInputChange} onBlur={handleInputBlur} placeholder="https://your-website.com" className="pl-10" />
+                                        <Input id="website" name="website" defaultValue={cardDetails.website || ''} onChange={handleInputChange} onBlur={handleInputBlur} placeholder="https://your-website.com" className="pl-10" disabled={isGeneratingQr} />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
@@ -271,47 +233,13 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                     </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="qr-code">
-                    <AccordionTrigger className='text-base font-semibold'>QR Code Design</AccordionTrigger>
+                    <AccordionTrigger className='text-base font-semibold'>QR Code</AccordionTrigger>
                     <AccordionContent>
                         <Card className="border-0 shadow-none">
-                            <CardContent className="space-y-6 pt-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="qrStyle">Design Style</Label>
-                                    <Select value={qrPrompt || 'default-qr'} onValueChange={handleQrSelectChange}>
-                                        <SelectTrigger id="qrStyle" disabled={isGeneratingQr}>
-                                            <SelectValue placeholder="Select a style" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="default-qr">Default</SelectItem>
-                                            <SelectGroup>
-                                                <SelectLabel>Static Styles</SelectLabel>
-                                                {staticQrCodeStyles.map(s => (
-                                                    <SelectItem key={s.name} value={s.prompt}>{s.name}</SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                            <SelectGroup>
-                                                <SelectLabel>AI Styles</SelectLabel>
-                                                {aiQrCodeStyleSuggestions.map(s => (
-                                                    <SelectItem key={s.name} value={s.prompt}>{s.name}</SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="qrPrompt">Custom AI Prompt (Optional)</Label>
-                                    <Textarea
-                                        id="qrPrompt"
-                                        value={qrPrompt}
-                                        onChange={(e) => setQrPrompt(e.target.value)}
-                                        placeholder="Or describe your own style..."
-                                        disabled={isGeneratingQr}
-                                    />
-                                </div>
-                                <Button onClick={handleCustomQrPromptUpdate} disabled={isGeneratingQr || !cardDetails.website} className="w-full">
-                                    <Sparkles className="w-4 h-4 mr-2" />
-                                    {isGeneratingQr ? 'Updating QR Code...' : 'Update QR Code'}
-                                </Button>
+                            <CardContent className="pt-6">
+                                <p className="text-sm text-muted-foreground">
+                                    A QR code will be automatically generated when you add a website URL.
+                                </p>
                             </CardContent>
                         </Card>
                     </AccordionContent>
