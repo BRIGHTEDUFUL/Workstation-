@@ -57,35 +57,27 @@ const DownloadDialog = ({
     const width = cardWidthInches * dpi;
     const height = cardHeightInches * dpi;
 
-    // By passing the node to a filter function, we can screenshot the node.
-    const filter = (n: HTMLElement) => {
-        if (n.contains && n.contains(node)) {
-            return true;
-        }
-        return n === node;
-    }
-
-    // Since we are using a filter, we should use document.body to get the whole page.
-    const canvas = await toCanvas(document.body, {
-        width,
-        height,
-        pixelRatio: 1, // We are handling resolution via width/height, so pixelRatio should be 1.
-        filter,
-        // The following props improve reliability
-        skipAutoScale: true,
-        cacheBust: true,
-        // The canvas background should be transparent.
-        backgroundColor: 'rgba(0,0,0,0)',
+    const canvas = await toCanvas(node, {
+      width,
+      height,
+      pixelRatio: 1, // We control DPI via width/height, so pixelRatio is 1
+      cacheBust: true,
+      // The canvas background should be transparent.
+      backgroundColor: 'rgba(0,0,0,0)',
     });
     
-    // We create a new canvas to draw the background color.
+    // Create a new canvas to draw the node's background color, then the generated canvas.
+    // This is because html-to-image doesn't always capture the parent background.
     const finalCanvas = document.createElement('canvas');
     finalCanvas.width = width;
     finalCanvas.height = height;
     const ctx = finalCanvas.getContext('2d');
+    
     if (ctx) {
+      // Use the node's actual background style
       ctx.fillStyle = node.style.backgroundColor || '#ffffff';
       ctx.fillRect(0, 0, width, height);
+      // Draw the captured content on top
       ctx.drawImage(canvas, 0, 0);
     }
     
