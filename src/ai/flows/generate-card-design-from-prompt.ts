@@ -78,11 +78,29 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
       throw new Error('Failed to generate design plan.');
     }
     
-    // Step 2: Return the design plan.
-    // Background image generation is disabled for free-tier key compatibility.
+    let backgroundImageDataUri = '';
+
+    // Step 2: If the design plan does not specify a pattern, generate a background image.
+    if (!designPlan.pattern) {
+        try {
+            console.log(`Generating image with prompt: ${designPlan.styleDescription}`);
+            const {media} = await ai.generate({
+                model: 'googleai/imagen-4.0-fast-generate-001',
+                prompt: `A professional, high-resolution business card background image: ${designPlan.styleDescription}. 8k, photorealistic, no text.`,
+                config: {
+                    aspectRatio: '16:9',
+                }
+            });
+            backgroundImageDataUri = media?.url || '';
+        } catch (error) {
+            console.error("Background image generation failed, returning only design plan.", error);
+            // Fail gracefully, the user still gets a design plan.
+        }
+    }
+    
     return {
       designPlan,
-      backgroundImageDataUri: '',
+      backgroundImageDataUri,
     };
   }
 );
