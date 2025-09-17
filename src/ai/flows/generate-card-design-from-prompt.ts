@@ -28,7 +28,6 @@ export type GenerateCardDesignFromPromptInput = z.infer<
 
 const GenerateCardDesignFromPromptOutputSchema = z.object({
   designPlan: DesignPlanSchema,
-  backgroundImageDataUri: z.string().optional().describe('This is no longer used.'),
 });
 export type GenerateCardDesignFromPromptOutput = z.infer<
   typeof GenerateCardDesignFromPromptOutputSchema
@@ -78,7 +77,6 @@ const generateCardDesignFromPromptFlow = ai.defineFlow(
     
     return {
       designPlan,
-      backgroundImageDataUri: '',
     };
   }
 );

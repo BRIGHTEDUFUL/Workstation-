@@ -29,7 +29,6 @@ interface EditorPanelProps {
 const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProps) => {
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const logoInputRef = useRef<HTMLInputElement>(null);
-    const [isGeneratingQr, setIsGeneratingQr] = useState(false);
     const { toast } = useToast();
 
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -37,13 +36,32 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
         setCardDetails(prev => ({ ...prev, [name]: value }));
     }, [setCardDetails]);
 
-    const handleInputBlur = useCallback((e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputBlur = useCallback(async (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        // Trigger QR generation on website URL change
         if (name === 'website') {
-            generateQrCode(value);
+            if (!value) {
+                 setCardDetails(prev => ({ ...prev, qrUrl: '' }));
+            } else {
+                // Generate a standard QR code when the user enters a URL
+                try {
+                    const qrCodeDataUri = await QRCode.toDataURL(value, {
+                        errorCorrectionLevel: 'H',
+                        scale: 10,
+                        margin: 1,
+                        color: { dark: '#000000FF', light: '#FFFFFFFF' },
+                    });
+                    setCardDetails(prev => ({ ...prev, qrUrl: qrCodeDataUri }));
+                } catch (err) {
+                    console.error('QR code generation failed:', err);
+                    toast({
+                        variant: 'destructive',
+                        title: 'Invalid URL',
+                        description: 'Could not generate QR code for the entered URL.',
+                    });
+                }
+            }
         }
-    }, [setCardDetails]);
+    }, [setCardDetails, toast]);
 
     const handleSelectChange = useCallback((name: string, value: string) => {
         setCardDetails(prev => ({ ...prev, [name]: value as any }));
@@ -76,46 +94,6 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
         }
     };
     
-    const generateQrCode = useCallback(async (url: string) => {
-        if (!url) {
-            setCardDetails(prev => ({ ...prev, qrUrl: '' }));
-            return;
-        }
-
-        setIsGeneratingQr(true);
-        try {
-            const qrCodeDataUri = await QRCode.toDataURL(url, {
-                errorCorrectionLevel: 'H',
-                scale: 10,
-                margin: 2,
-                color: {
-                    dark: '#000000FF',
-                    light: '#FFFFFFFF',
-                },
-            });
-            setCardDetails(prev => ({
-                ...prev,
-                qrUrl: qrCodeDataUri,
-            }));
-        } catch (error) {
-            console.error('Failed to generate QR code:', error);
-            toast({
-                variant: 'destructive',
-                title: 'QR Code Generation Failed',
-                description: 'Could not generate the QR code. Please try again.',
-            });
-        } finally {
-            setIsGeneratingQr(false);
-        }
-    }, [setCardDetails, toast]);
-    
-    // Effect to generate QR code when component loads with a website url
-    useEffect(() => {
-        if (cardDetails.website && !cardDetails.qrUrl) {
-            generateQrCode(cardDetails.website);
-        }
-    }, [cardDetails.website, cardDetails.qrUrl, generateQrCode]);
-
     return (
         <div className="p-6 space-y-8">
             <Accordion type="multiple" defaultValue={['card-content', 'card-style']} className="w-full">
@@ -140,7 +118,7 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                     <Label htmlFor="website">Website URL (for QR Code)</Label>
                                     <div className="relative">
                                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                                        <Input id="website" name="website" defaultValue={cardDetails.website || ''} onChange={handleInputChange} onBlur={handleInputBlur} placeholder="https://your-website.com" className="pl-10" disabled={isGeneratingQr} />
+                                        <Input id="website" name="website" defaultValue={cardDetails.website || ''} onChange={handleInputChange} onBlur={handleInputBlur} placeholder="https://your-website.com" className="pl-10" />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
@@ -236,18 +214,6 @@ const EditorPanel = React.memo(({ cardDetails, setCardDetails }: EditorPanelProp
                                         </SelectContent>
                                     </Select>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="qr-code">
-                    <AccordionTrigger className='text-base font-semibold'>QR Code</AccordionTrigger>
-                    <AccordionContent>
-                        <Card className="border-0 shadow-none">
-                            <CardContent className="pt-6">
-                                <p className="text-sm text-muted-foreground">
-                                    A QR code will be automatically generated when you add a website URL.
-                                </p>
                             </CardContent>
                         </Card>
                     </AccordionContent>

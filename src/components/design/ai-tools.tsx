@@ -1,8 +1,10 @@
+
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
   generateCardDesignAction,
+  generateStyledQrCodeAction,
   importCardDesignAction,
 } from '@/ai';
 import { Button } from '@/components/ui/button';
@@ -11,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Globe, Sparkles, Upload } from 'lucide-react';
+import { Globe, Sparkles, Upload, QrCode } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { CardDetails } from '@/ai/schema';
 import Link from 'next/link';
@@ -27,8 +29,9 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
     const { toast } = useToast();
     const [prompt, setPrompt] = useState('');
     const [websiteUrl, setWebsiteUrl] = useState('');
+    const [qrPrompt, setQrPrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState('generate');
+    const [loadingSection, setLoadingSection] = useState<'generate' | 'import' | 'qr'>('generate');
     const [filename, setFilename] = useState('');
     const [isApiKeySet, setIsApiKeySet] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -50,7 +53,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             return;
         }
         setIsLoading(true);
-        setActiveTab('generate');
+        setLoadingSection('generate');
         try {
             const result = await generateCardDesignAction({
                 prompt,
@@ -67,7 +70,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                 textColor: result.designPlan.textColor,
                 accentColor: result.designPlan.accentColor,
                 font: result.designPlan.font,
-                backgroundImage: result.backgroundImageDataUri,
+                backgroundImage: undefined,
                 pattern: result.designPlan.pattern,
                 category: result.designPlan.category,
             }));
@@ -113,7 +116,7 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             return;
         }
         setIsLoading(true);
-        setActiveTab('import');
+        setLoadingSection('import');
         try {
             const result = await importCardDesignAction({ fileDataUri });
             setCardDetails(prev => ({
@@ -142,15 +145,62 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
             setFilename('');
         }
     };
+    
+    const handleGenerateQr = async () => {
+        if (!isApiKeySet) {
+            toast({
+                variant: 'destructive',
+                title: 'API Key Missing',
+                description: 'Please set your Google AI API key in the settings.',
+            });
+            return;
+        }
+        if (!cardDetails.website) {
+             toast({
+                variant: 'destructive',
+                title: 'Website URL Required',
+                description: 'Please add a website URL in the Card Content editor first.',
+            });
+            return;
+        }
+        setIsLoading(true);
+        setLoadingSection('qr');
+        try {
+            const result = await generateStyledQrCodeAction({
+                websiteUrl: cardDetails.website,
+                prompt: qrPrompt,
+            });
 
-    const isLoadingGenerate = isLoading && activeTab === 'generate';
-    const isLoadingImport = isLoading && activeTab === 'import';
+            setCardDetails(prev => ({
+                ...prev,
+                qrUrl: result.qrCodeDataUri,
+            }));
+
+            toast({
+              title: "Styled QR Code Generated!",
+              description: "The AI has created a new QR code for your card.",
+            });
+        } catch (error) {
+            console.error(error);
+            toast({
+                variant: 'destructive',
+                title: 'QR Code Generation Failed',
+                description: 'Could not generate the QR code. Please try again.',
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const isLoadingGenerate = isLoading && loadingSection === 'generate';
+    const isLoadingImport = isLoading && loadingSection === 'import';
+    const isLoadingQr = isLoading && loadingSection === 'qr';
 
     return (
         <div>
             <Card>
                 <CardHeader>
-                    <CardTitle>AI Tools</CardTitle>
+                    <CardTitle>AI Design Tools</CardTitle>
                     <CardDescription>Use AI to generate or import designs.</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -217,12 +267,41 @@ const AiTools = ({ cardDetails, setCardDetails }: AiToolsProps) => {
                     </Tabs>
                 </CardContent>
             </Card>
-             <Card className="mt-8">
+
+            <Card className="mt-6">
+                <CardHeader>
+                    <CardTitle>AI Styled QR Code</CardTitle>
+                    <CardDescription>Generate an artistic QR code for your website.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="qr-prompt">QR Code Style Prompt</Label>
+                            <Textarea
+                                id="qr-prompt"
+                                placeholder="e.g., A QR code that looks like a circuit board"
+                                value={qrPrompt}
+                                onChange={(e) => setQrPrompt(e.target.value)}
+                                disabled={!isApiKeySet}
+                            />
+                             <p className="text-xs text-muted-foreground">
+                                Requires a website URL in the "Card Content" editor above.
+                            </p>
+                        </div>
+                        <Button onClick={handleGenerateQr} disabled={isLoadingQr || !qrPrompt || !isApiKeySet} className="w-full">
+                            <QrCode className="w-4 h-4 mr-2" />
+                            {isLoadingQr ? 'Generating QR Code...' : 'Generate Styled QR Code'}
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+             
+             <Card className="mt-6">
                 <CardHeader>
                     <CardTitle>AI-Generated Description</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-sm text-muted-foreground mt-2">
+                    <p className="text-sm text-muted-foreground">
                         {cardDetails.designDescription}
                     </p>
                 </CardContent>
