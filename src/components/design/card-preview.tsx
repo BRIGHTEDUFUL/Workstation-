@@ -32,7 +32,7 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
             className="object-contain h-10 mb-4"
           />
         )}
-        {cardDetails.qrUrl ? (
+        {cardDetails.website && cardDetails.qrUrl ? (
           <Image
             src={cardDetails.qrUrl}
             alt="QR Code"
@@ -41,10 +41,12 @@ const CardBack = React.memo(React.forwardRef<HTMLDivElement, { cardDetails: Card
             className="rounded-lg aspect-square"
           />
         ) : (
-          <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse" />
+          <div className="w-32 h-32 bg-gray-200/50 rounded-lg animate-pulse flex items-center justify-center text-center p-2">
+             <span className="text-xs text-muted-foreground">Enter a website URL in the editor to generate a QR code.</span>
+          </div>
         )}
         <p className="mt-4 text-xs text-center px-4" style={{ fontFamily: cardDetails.font, color: cardDetails.textColor }}>
-          {cardDetails.slogan || 'Scan to connect'}
+          {cardDetails.slogan || (cardDetails.website ? 'Scan to connect' : '')}
         </p>
       </div>
     </div>
