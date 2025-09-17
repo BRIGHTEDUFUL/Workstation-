@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview Generates a card image on the server using html-to-image.
+ * @fileOverview Generates a card image on the server using Puppeteer.
  *
  * - generateCardImageAction - A server action that takes card details and returns an image data URI.
  */
@@ -31,14 +31,16 @@ export async function generateCardImageAction(
 
 const getFontFamily = (font: string | undefined): string => {
     if (!font) return 'Inter, sans-serif';
+    // Handle CSS variable format
     if (font.startsWith('var(--font-')) {
         const fontName = font.match(/--font-([^)]+)/)?.[1];
         switch(fontName) {
             case 'inter': return 'Inter, sans-serif';
             case 'source-code-pro': return "'Source Code Pro', monospace";
-            default: return 'sans-serif';
+            default: return 'sans-serif'; // Fallback
         }
     }
+    // Handle direct font family names, ensuring they are properly quoted if needed
     return font.replace(/'/g, "");
 };
 
@@ -61,7 +63,7 @@ const getCss = (cardDetails: z.infer<typeof CardDetailsSchema>) => {
     }
 
     return `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Source+Code+Pro:wght@400;700&family=Georgia&family=Times+New+Roman&family=Arial&display=swap');
         body {
             font-family: ${getFontFamily(font)};
             margin: 0;
@@ -157,7 +159,7 @@ const generateCardImageFlow = ai.defineFlow(
     outputSchema: GenerateCardImageOutputSchema,
   },
   async ({ cardDetails, face, dpi }) => {
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     const page = await browser.newPage();
 
     const cardWidthInches = 3.5;

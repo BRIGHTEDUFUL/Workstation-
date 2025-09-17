@@ -32,7 +32,7 @@ interface DownloadDialogProps {
   isMobile?: boolean;
 }
 
-type Format = 'png' | 'jpg';
+type Format = 'png'; // Simplified to PNG only for reliability
 type Quality = 'web' | 'print';
 
 const DownloadDialog = ({
@@ -123,7 +123,6 @@ const DownloadDialog = ({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="png">PNG</SelectItem>
-              <SelectItem value="jpg">JPG</SelectItem>
             </SelectContent>
           </Select>
         </div>
