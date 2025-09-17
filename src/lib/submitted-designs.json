@@ -1,0 +1,97 @@
+
+[
+  {
+    "orderId": "CH-84B91",
+    "customerName": "Elena Vance",
+    "customerContact": "elena.vance@example.com",
+    "submissionDate": "2024-07-28T10:00:00Z",
+    "status": "Pending",
+    "cardDetails": {
+      "id": "template-3d-05",
+      "name": "Eleonor Vance",
+      "title": "Luxury Real Estate",
+      "company": "CARD.CO Properties",
+      "bgColor": "#3A253B",
+      "textColor": "#DFB6B2",
+      "accentColor": "#FBE4D8",
+      "font": "Georgia, serif",
+      "category": "3D",
+      "designDescription": "Elegant Emboss design submitted by customer.",
+      "layoutId": "center-aligned",
+      "elements": [],
+      "website": "https://example.com/eleonor-vance",
+      "qrUrl": ""
+    }
+  },
+  {
+    "orderId": "CH-A5D82",
+    "customerName": "Javier Reyes",
+    "customerContact": "j.reyes@email.com",
+    "submissionDate": "2024-07-27T14:30:00Z",
+    "status": "In Progress",
+    "cardDetails": {
+      "id": "template-14",
+      "name": "Javier Reyes",
+      "title": "Illustrator",
+      "company": "Javi Draws",
+      "bgColor": "#fff3e0",
+      "textColor": "#e65100",
+      "accentColor": "#ff9800",
+      "font": "'Inter', sans-serif",
+      "category": "Creative",
+      "designDescription": "Vibrant Portfolio design submitted by customer.",
+      "layoutId": "left-aligned",
+      "elements": [],
+      "website": "https://javida.ws",
+      "qrUrl": ""
+    }
+  },
+  {
+    "orderId": "CH-C3F73",
+    "customerName": "Dr. Aris Thorne",
+    "customerContact": "aris.thorne.md@ocean.org",
+    "submissionDate": "2024-07-26T09:00:00Z",
+    "status": "Finalized",
+    "cardDetails": {
+      "id": "template-17",
+      "name": "Dr. Aris Thorne",
+      "title": "Marine Biologist",
+      "company": "Oceanic Institute",
+      "bgColor": "#000080",
+      "textColor": "#ffffff",
+      "accentColor": "#add8e6",
+      "font": "'Inter', sans-serif",
+      "pattern": "wavy",
+      "category": "Business",
+      "designDescription": "Deep Ocean design submitted by customer.",
+      "layoutId": "split-vertical",
+      "elements": [],
+      "website": "https://oceanic-institute.org/aris-thorne",
+      "qrUrl": ""
+    }
+  },
+    {
+    "orderId": "CH-D4E64",
+    "customerName": "Mika",
+    "customerContact": "mika@superpxl.com",
+    "submissionDate": "2024-07-25T18:45:00Z",
+    "status": "Pending",
+    "cardDetails": {
+        "id": "template-18",
+        "name": "Mika",
+        "title": "Graphic Artist",
+        "company": "Super Pxl",
+        "bgColor": "#ffde59",
+        "textColor": "#000000",
+        "accentColor": "#ff007f",
+        "font": "'Source Code Pro', monospace",
+        "pattern": "zig-zag",
+        "category": "Creative",
+        "designDescription": "Playful Pop Art design submitted by customer.",
+        "layoutId": "center-aligned",
+        "elements": [],
+        "website": "https://superpxl.design",
+        "qrUrl": ""
+    }
+  }
+]
